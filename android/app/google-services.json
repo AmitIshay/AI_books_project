@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "40952848882",
+    "project_id": "pjbooksnew",
+    "storage_bucket": "pjbooksnew.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:40952848882:android:2d16e0f70977979bf60b6b",
+        "android_client_info": {
+          "package_name": "com.example.pjbooks"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCC_DS9R5DotGbWrelUiLF8UWsoZ-Ik3mo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

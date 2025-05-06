@@ -1,0 +1,82 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+class AuthService {
+  static const String baseUrl = 'http://10.100.102.10:5000';
+
+  static Future<Map<String, dynamic>> signUp({
+    required String fullName,
+    required String email,
+    required String mobile,
+    required String password,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/auth/signup'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'full_name': fullName,
+        'email': email,
+        'mobile': mobile,
+        'password': password,
+      }),
+    );
+
+    return {
+      'statusCode': response.statusCode,
+      'body': json.decode(response.body),
+    };
+  }
+
+  static Future<Map<String, dynamic>> signIn({
+    required String email,
+    required String password,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/auth/login'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'email': email, 'password': password}),
+    );
+
+    return {
+      'statusCode': response.statusCode,
+      'body': json.decode(response.body),
+    };
+  }
+
+  static final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  static Future<UserCredential?> signInWithGoogle() async {
+    try {
+      final googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        print("❌ Google Sign-In aborted by user");
+        return null;
+      }
+
+      final googleAuth = await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential = await _auth.signInWithCredential(credential);
+      print("✅ Google Sign-In success: ${userCredential.user?.email}");
+      return userCredential;
+    } catch (e) {
+      print("🔥 Google Sign-In failed: $e");
+      return null;
+    }
+  }
+
+  static Future<String?> getGoogleToken() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) return null;
+
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+    return googleAuth.idToken; // זה ה-Token שצריך לשלוח ל-Flask
+  }
+}

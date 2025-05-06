@@ -1,0 +1,37 @@
+from bson import ObjectId
+import datetime
+
+class Book:
+    def __init__(self, user_id, title, author, pages, shared=False, _id=None, created_at=None):
+        self._id = _id or ObjectId()
+        self.user_id = ObjectId(user_id)
+        self.title = title
+        self.author = author
+        self.pages = pages  # dict: { "1": { "text": ..., "image_url": ... }, ... }
+        self.num_pages = len(pages)
+        self.shared = shared
+        self.created_at = created_at or datetime.datetime.utcnow()
+
+    def to_dict(self):
+        return {
+            "_id": self._id,
+            "user_id": self.user_id,
+            "title": self.title,
+            "author": self.author,
+            "num_pages": self.num_pages,
+            "pages": self.pages,
+            "shared": self.shared,
+            "created_at": self.created_at
+        }
+
+    @staticmethod
+    def from_dict(data):
+        return Book(
+            user_id=data["user_id"],
+            title=data["title"],
+            author=data["author"],
+            pages=data["pages"],
+            shared=data.get("shared", False),
+            _id=data.get("_id"),
+            created_at=data.get("created_at")
+        )

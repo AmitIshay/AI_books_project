@@ -116,7 +116,7 @@ class _HomeViewState extends State<HomeView> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(height: media.width * 0.1),
+                    // SizedBox(height: media.width * 0.1),
                     AppBar(
                       backgroundColor: Colors.transparent,
                       elevation: 0,
@@ -139,7 +139,7 @@ class _HomeViewState extends State<HomeView> {
                           onPressed: () {
                             sideMenuScaffoldKey.currentState?.openEndDrawer();
                           },
-                          icon: const Icon(Icons.menu),
+                          icon: const Icon(Icons.menu, size: 50),
                         ),
                       ],
                     ),

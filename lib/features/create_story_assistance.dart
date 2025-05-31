@@ -52,108 +52,125 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var media = MediaQuery.of(context).size;
+
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back_ios, color: TColor.primary),
-        ),
-      ),
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Create your own story with assistance",
-                  style: TextStyle(
-                    color: TColor.text,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  "Answer the guiding questions to create a book tailored to your idea.",
-                  style: TextStyle(color: TColor.subTitle, fontSize: 15),
-                ),
-                const SizedBox(height: 15),
-                Text(
-                  "Based on the answers you provide, we will be able to create a complete book that includes text and images based on your responses. Please note that it's not required to answer all the questions.",
-                  style: TextStyle(color: TColor.subTitle, fontSize: 15),
-                ),
-                const SizedBox(height: 15),
-              ],
+          Opacity(
+            opacity: 0.8,
+            child: Image.asset(
+              "assets/img/blue-background-with-isometric-book.jpg",
+              width: media.width,
+              height: media.height,
+              fit: BoxFit.cover,
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16.0),
-              itemCount: questions.keys.length,
-              itemBuilder: (context, categoryIndex) {
-                String category = questions.keys.elementAt(categoryIndex);
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: ExpansionTile(
-                    title: Text(
-                      category,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 70),
+
+                    Text(
+                      "Create your own story with assistance",
+                      style: TextStyle(
+                        color: TColor.text,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                    children:
-                        questions[category]!.map((question) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                              vertical: 8.0,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  question,
-                                  style: const TextStyle(fontSize: 16),
+                    const SizedBox(height: 20),
+                    Text(
+                      "Answer the guiding questions to create a book tailored to your idea.",
+                      style: TextStyle(color: TColor.subTitle, fontSize: 15),
+                    ),
+                    const SizedBox(height: 15),
+                    Text(
+                      "Based on the answers you provide, we will be able to create a complete book that includes text and images based on your responses. Please note that it's not required to answer all the questions.",
+                      style: TextStyle(color: TColor.subTitle, fontSize: 15),
+                    ),
+                    const SizedBox(height: 15),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(16.0),
+                  itemCount: questions.keys.length,
+                  itemBuilder: (context, categoryIndex) {
+                    String category = questions.keys.elementAt(categoryIndex);
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: ExpansionTile(
+                        title: Text(
+                          category,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        children:
+                            questions[category]!.map((question) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                  vertical: 8.0,
                                 ),
-                                const SizedBox(height: 8.0),
-                                TextField(
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    hintText: "Write your answer here...",
-                                  ),
-                                  maxLines: null,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      userAnswers[question] = value;
-                                    });
-                                  },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      question,
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    TextField(
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        hintText: "Write your answer here...",
+                                      ),
+                                      maxLines: null,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          userAnswers[question] = value;
+                                        });
+                                      },
+                                    ),
+                                    const SizedBox(height: 16.0),
+                                  ],
                                 ),
-                                const SizedBox(height: 16.0),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                  ),
-                );
-              },
-            ),
+                              );
+                            }).toList(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Action to create the story
+                    print("User answers: $userAnswers");
+                  },
+                  child: const Text("Create Story"),
+                ),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                // Action to create the story
-                print("User answers: $userAnswers");
-              },
-              child: const Text("Create Story"),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.arrow_back_ios, color: TColor.primary),
+              ),
             ),
           ),
         ],

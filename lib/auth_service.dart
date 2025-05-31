@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:pjbooks/backend/config.dart';
 
 class AuthService {
-  static const String baseUrl = 'http://10.100.102.10:5000';
+  static const String baseUrl = Config.baseUrl;
 
   static Future<Map<String, dynamic>> signUp({
     required String fullName,

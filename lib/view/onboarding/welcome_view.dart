@@ -16,9 +16,11 @@ class _WelcomeViewState extends State<WelcomeView> {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
+
     return Scaffold(
       body: Stack(
         children: [
+          // רקע שקוף
           Opacity(
             opacity: 0.8,
             child: Image.asset(
@@ -29,46 +31,62 @@ class _WelcomeViewState extends State<WelcomeView> {
             ),
           ),
           SafeArea(
-            child: Container(
+            child: SizedBox(
               width: media.width,
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                children: [
-                  SizedBox(height: media.width * 0.25),
-                  Text(
-                    "Books For\nEvery Taste.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: TColor.primary,
-                      fontSize: 35,
-                      fontWeight: FontWeight.w600,
+              height: media.height,
+              child: SingleChildScrollView(
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxWidth: 400, // או כל ערך שנראה לך מתאים
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(height: media.height * 0.15),
+                        Text(
+                          "Books For\nEvery Taste.",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: TColor.primary,
+                            fontSize: 35,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(height: media.height * 0.05),
+                        Image.asset(
+                          "assets/img/4img.png",
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
+                        SizedBox(height: media.height * 0.05),
+                        RoundButton(
+                          title: "Sign in",
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SignInView(),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        RoundButton(
+                          title: "Sign up",
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SignUpView(),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 40),
+                      ],
                     ),
                   ),
-                  SizedBox(height: media.width * 0.28),
-                  RoundButton(
-                    title: "Sign in",
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SignInView(),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  RoundButton(
-                    title: "Sign up",
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SignUpView(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                ),
               ),
             ),
           ),

@@ -96,6 +96,11 @@ class UserPrefs {
     return prefs.getString('image_base64');
   }
 
+  static Future<void> setImageBase64(String imageBase64) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_image_base64, imageBase64);
+  }
+
   static Future<void> saveBooks(List<Map<String, dynamic>> books) async {
     final prefs = await SharedPreferences.getInstance();
     final List<String> booksJsonList =

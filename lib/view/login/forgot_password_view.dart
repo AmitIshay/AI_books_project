@@ -1,3 +1,4 @@
+import 'package:pjbooks/auth_service.dart';
 import 'package:pjbooks/common/color_extenstion.dart';
 import 'package:flutter/material.dart';
 
@@ -48,7 +49,32 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
 
               const SizedBox(height: 25),
 
-              RoundLineButton(title: "Submit", onPressed: () {}),
+              RoundLineButton(
+                title: "Submit",
+                onPressed: () async {
+                  final res = await AuthService.resetPassword(
+                    email: txtEmail.text.trim(),
+                  );
+                  if (res['statusCode'] == 200) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "Password reset link sent to your email.",
+                        ),
+                      ),
+                    );
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "Failed to send reset link. Please try again.",
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
             ],
           ),
         ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -46,38 +47,53 @@ class AuthService {
     };
   }
 
-  static final FirebaseAuth _auth = FirebaseAuth.instance;
+  static Future<Map<String, dynamic>> resetPassword({
+    required String email,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/auth/reset_password'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'email': email}),
+    );
 
-  static Future<UserCredential?> signInWithGoogle() async {
-    try {
-      final googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) {
-        print("❌ Google Sign-In aborted by user");
-        return null;
-      }
-
-      final googleAuth = await googleUser.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      final userCredential = await _auth.signInWithCredential(credential);
-      print("✅ Google Sign-In success: ${userCredential.user?.email}");
-      return userCredential;
-    } catch (e) {
-      print("🔥 Google Sign-In failed: $e");
-      return null;
-    }
+    return {
+      'statusCode': response.statusCode,
+      'body': json.decode(response.body),
+    };
   }
 
-  static Future<String?> getGoogleToken() async {
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    if (googleUser == null) return null;
+  // static final FirebaseAuth _auth = FirebaseAuth.instance;
 
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-    return googleAuth.idToken; // זה ה-Token שצריך לשלוח ל-Flask
-  }
+  // static Future<UserCredential?> signInWithGoogle() async {
+  //   try {
+  //     final googleUser = await GoogleSignIn().signIn();
+  //     if (googleUser == null) {
+  //       print("❌ Google Sign-In aborted by user");
+  //       return null;
+  //     }
+
+  //     final googleAuth = await googleUser.authentication;
+
+  //     final credential = GoogleAuthProvider.credential(
+  //       accessToken: googleAuth.accessToken,
+  //       idToken: googleAuth.idToken,
+  //     );
+
+  //     final userCredential = await _auth.signInWithCredential(credential);
+  //     print("✅ Google Sign-In success: ${userCredential.user?.email}");
+  //     return userCredential;
+  //   } catch (e) {
+  //     print("🔥 Google Sign-In failed: $e");
+  //     return null;
+  //   }
+  // }
+
+  // static Future<String?> getGoogleToken() async {
+  //   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  //   if (googleUser == null) return null;
+
+  //   final GoogleSignInAuthentication googleAuth =
+  //       await googleUser.authentication;
+  //   return googleAuth.idToken; // זה ה-Token שצריך לשלוח ל-Flask
+  // }
 }

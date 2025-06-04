@@ -85,22 +85,22 @@ class _SignUpViewState extends State<SignUpView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          socialButton("assets/img/google.png", () async {
-                            final user = await AuthService.signInWithGoogle();
-                            if (user != null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Google Sign-In Successful"),
-                                ),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Google Sign-In Failed"),
-                                ),
-                              );
-                            }
-                          }),
+                          // socialButton("assets/img/google.png", () async {
+                          //   final user = await AuthService.signInWithGoogle();
+                          //   if (user != null) {
+                          //     ScaffoldMessenger.of(context).showSnackBar(
+                          //       const SnackBar(
+                          //         content: Text("Google Sign-In Successful"),
+                          //       ),
+                          //     );
+                          //   } else {
+                          //     ScaffoldMessenger.of(context).showSnackBar(
+                          //       const SnackBar(
+                          //         content: Text("Google Sign-In Failed"),
+                          //       ),
+                          //     );
+                          //   }
+                          // }),
                           const SizedBox(width: 15),
                         ],
                       ),

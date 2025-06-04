@@ -48,7 +48,7 @@ class _AccountViewState extends State<AccountView> {
   final ImagePicker _picker = ImagePicker();
   String image_base64 = '';
   int bookCount = 0;
-
+  TextEditingController imageController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -86,6 +86,7 @@ class _AccountViewState extends State<AccountView> {
 
     setState(() {
       image_base64 = userImageBase64 ?? "image_base64";
+      imageController.text = image_base64;
     });
   }
 
@@ -100,7 +101,9 @@ class _AccountViewState extends State<AccountView> {
       setState(() {
         _imageFile = File(pickedFile.path);
         image_base64 = imageBase64;
+        imageController.text = imageBase64;
       });
+      await UserPrefs.setImageBase64(imageBase64);
       await _uploadProfileImage(imageBase64);
     }
   }
@@ -474,31 +477,31 @@ class _AccountViewState extends State<AccountView> {
                     ],
                   ),
                   const SizedBox(width: 30),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "5",
-                        style: TextStyle(
-                          color: TColor.subTitle,
-                          fontSize: 30,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "Reviews",
-                        style: TextStyle(color: TColor.subTitle, fontSize: 11),
-                      ),
-                    ],
-                  ),
+                  // Column(
+                  //   crossAxisAlignment: CrossAxisAlignment.center,
+                  //   children: [
+                  //     Text(
+                  //       "5",
+                  //       style: TextStyle(
+                  //         color: TColor.subTitle,
+                  //         fontSize: 30,
+                  //         fontWeight: FontWeight.w700,
+                  //       ),
+                  //     ),
+                  //     const SizedBox(height: 8),
+                  //     Text(
+                  //       "Reviews",
+                  //       style: TextStyle(color: TColor.subTitle, fontSize: 11),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
               child: Text(
-                "Your Books (21)",
+                "Your Books (${booksCount})",
                 style: TextStyle(
                   color: TColor.subTitle,
                   fontSize: 20,
@@ -565,27 +568,27 @@ class _AccountViewState extends State<AccountView> {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-              child: Text(
-                "Books you like (7)",
-                style: TextStyle(
-                  color: TColor.subTitle,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 25),
-              itemCount: sResultArr.length,
-              itemBuilder: (context, index) {
-                var rObj = sResultArr[index] as Map? ?? {};
-                return YourReviewRow(sObj: rObj);
-              },
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+            //   child: Text(
+            //     "Books you like (7)",
+            //     style: TextStyle(
+            //       color: TColor.subTitle,
+            //       fontSize: 20,
+            //       fontWeight: FontWeight.w700,
+            //     ),
+            //   ),
+            // ),
+            // ListView.builder(
+            //   physics: const NeverScrollableScrollPhysics(),
+            //   shrinkWrap: true,
+            //   padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 25),
+            //   itemCount: sResultArr.length,
+            //   itemBuilder: (context, index) {
+            //     var rObj = sResultArr[index] as Map? ?? {};
+            //     return YourReviewRow(sObj: rObj);
+            //   },
+            // ),
           ],
         ),
       ),

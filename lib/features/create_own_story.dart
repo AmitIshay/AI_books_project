@@ -6,7 +6,7 @@ import 'package:pjbooks/common/color_extenstion.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 class CreateOwnStory extends StatefulWidget {
   const CreateOwnStory({super.key});
@@ -48,6 +48,8 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
     }
 
     Map<String, dynamic> pages = {};
+    List<String> pagesTexts = [];
+
     for (int i = 0; i < controllers.length; i++) {
       String text = controllers[i].text.trim();
       if (text.isNotEmpty) {
@@ -55,28 +57,57 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
           "text": text,
           "image_url": "", // נוכל למלא בהמשך כשה-AI ייצור תמונות
         };
+        pagesTexts.add(text);
       }
     }
 
-    final bookData = {
-      "title": titleController.text.trim(),
-      "author": author, // בהמשך תביא מהיוזר
-      "pages": pages,
-    };
+    // final bookData = {
+    //   "title": titleController.text.trim(),
+    //   "author": author, // בהמשך תביא מהיוזר
+    //   "pages": pages,
+    // };
 
     try {
-      final response = await http.post(
-        Uri.parse(
-          "${Config.baseUrl}/api/books/createbook",
-        ), // שים את הכתובת הנכונה
+      // final response = await http.post(
+      //   Uri.parse(
+      //     "${Config.baseUrl}/api/books/createbook",
+      //   ), // שים את הכתובת הנכונה
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     "Authorization": "Bearer $token",
+      //   },
+      //   body: jsonEncode(bookData),
+      // );
+      // קריאה שנייה: יצירת סיפור עם AI
+      final aiStoryData = {
+        "subject": "children story", // אתה יכול לשפר את זה מהמשתמש
+        "numPages": pagesTexts.length,
+        "auther": author,
+        "description": "user-generated story", // אפשר לבקש מהמשתמש
+        "title": titleController.text.trim(),
+        "text_to_voice": true,
+        "story_pages": pagesTexts,
+      };
+      final aiResponse = await http.post(
+        Uri.parse("${Config.baseUrl}/api/story-ai/MagicOfStory/Story"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $token",
         },
-        body: jsonEncode(bookData),
+        body: jsonEncode(aiStoryData),
       );
-
-      if (response.statusCode == 201) {
+      if (aiResponse.statusCode == 201) {
+        if (aiResponse.statusCode == 200) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Book & AI story created successfully!"),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("AI story error: ${aiResponse.body}")),
+          );
+        }
         await context.read<BookService>().loadBooks();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Book created successfully!")),
@@ -85,7 +116,7 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
       } else {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text("Error: ${response.body}")));
+        ).showSnackBar(SnackBar(content: Text("Error: ${aiResponse.body}")));
       }
     } catch (e) {
       ScaffoldMessenger.of(

@@ -4,12 +4,12 @@ import 'package:pjbooks/features/create_own_story.dart';
 import 'package:pjbooks/features/create_story_assistance.dart';
 import 'package:pjbooks/features/sequel_to_story.dart';
 import 'package:pjbooks/view/login/sign_in_view.dart';
-import 'package:pjbooks/view/onboarding/spalsh_screen.dart';
+// import 'package:pjbooks/view/onboarding/spalsh_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../account/account_view.dart';
 import '../home/home_view.dart';
-import '../our_book/out_books_view.dart';
+// import '../our_book/out_books_view.dart';
 import '../search/search_view.dart';
 
 class MainTabView extends StatefulWidget {

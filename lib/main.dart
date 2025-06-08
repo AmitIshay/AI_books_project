@@ -1,10 +1,10 @@
 import 'package:pjbooks/book_service.dart';
 import 'package:pjbooks/common/color_extenstion.dart';
-import 'package:pjbooks/view/main_tab/main_tab_view.dart';
-import 'package:pjbooks/view/onboarding/onboarding_view.dart';
+// import 'package:pjbooks/view/main_tab/main_tab_view.dart';
+// import 'package:pjbooks/view/onboarding/onboarding_view.dart';
 import 'package:pjbooks/view/onboarding/spalsh_screen.dart';
-import 'package:pjbooks/view/onboarding/welcome_view.dart';
-import 'package:pjbooks/view/page.dart';
+// import 'package:pjbooks/view/onboarding/welcome_view.dart';
+// import 'package:pjbooks/view/page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';

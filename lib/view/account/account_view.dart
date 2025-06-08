@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pjbooks/book_service.dart';
 
 import '../../common/color_extenstion.dart';
-import '../../common_widget/your_review_row.dart';
+// import '../../common_widget/your_review_row.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';

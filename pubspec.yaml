@@ -43,6 +43,7 @@ dependencies:
   page_flip: ^0.2.3
   shared_preferences: ^2.5.3
   provider: ^6.1.5
+  flip_card: ^0.7.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

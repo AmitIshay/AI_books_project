@@ -60,6 +60,7 @@ class _WelcomeViewState extends State<WelcomeView> {
                         ),
                         SizedBox(height: media.height * 0.05),
                         RoundButton(
+                          key: Key('sign in'),
                           title: "Sign in",
                           onPressed: () {
                             Navigator.push(
@@ -72,6 +73,7 @@ class _WelcomeViewState extends State<WelcomeView> {
                         ),
                         const SizedBox(height: 20),
                         RoundButton(
+                          key: Key("sign up"),
                           title: "Sign up",
                           onPressed: () {
                             Navigator.push(

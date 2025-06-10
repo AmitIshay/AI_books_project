@@ -136,6 +136,7 @@ class _HomeViewState extends State<HomeView> {
                       leadingWidth: 1,
                       actions: [
                         IconButton(
+                          key: Key("menu"),
                           onPressed: () {
                             sideMenuScaffoldKey.currentState?.openEndDrawer();
                           },

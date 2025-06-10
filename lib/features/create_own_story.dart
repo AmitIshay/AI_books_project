@@ -225,6 +225,7 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
                     ),
                     const SizedBox(height: 15),
                     TextField(
+                      key: Key("title"),
                       controller: titleController,
                       decoration: const InputDecoration(
                         labelText: "Book Title",
@@ -249,6 +250,7 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
                                   controller: controllers[index],
                                   minLines: 1,
                                   maxLines: null,
+                                  key: Key( "Page Number ${index + 1}"),
                                   keyboardType: TextInputType.multiline,
                                   decoration: InputDecoration(
                                     labelText: "Page Number ${index + 1}",
@@ -277,12 +279,14 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
                       child: Column(
                         children: [
                           ElevatedButton.icon(
+                            key: Key("add page"),
                             onPressed: addTextField,
                             icon: const Icon(Icons.add),
                             label: const Text("Add Page"),
                           ),
                           const SizedBox(height: 10),
                           ElevatedButton.icon(
+                            key: Key("create story"),
                             onPressed: submitStory,
                             icon: const Icon(Icons.book),
                             label: const Text("Create Story"),

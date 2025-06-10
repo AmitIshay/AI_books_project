@@ -60,11 +60,13 @@ class _SignInViewState extends State<SignInView> {
                       ),
                       const SizedBox(height: 25),
                       RoundTextField(
+                        key: Key('email_key'),
                         controller: txtEmail,
                         hintText: "Email Address",
                       ),
                       const SizedBox(height: 30),
                       RoundTextField(
+                        key: Key('password_key'),
                         controller: txtPassword,
                         hintText: "Password",
                         obscureText: true,
@@ -144,6 +146,7 @@ class _SignInViewState extends State<SignInView> {
                       ),
                       const SizedBox(height: 30),
                       RoundLineButton(
+                        key: Key('sign_in_key_login_screen'),
                         title: "Sign In",
                         onPressed: () async {
                           final res = await AuthService.signIn(

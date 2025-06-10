@@ -13,11 +13,13 @@ import '../home/home_view.dart';
 import '../search/search_view.dart';
 
 class MainTabView extends StatefulWidget {
-  const MainTabView({super.key});
+  const   MainTabView({super.key});
 
   @override
   State<MainTabView> createState() => _MainTabViewState();
 }
+
+
 
 GlobalKey<ScaffoldState> sideMenuScaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -29,7 +31,7 @@ class _MainTabViewState extends State<MainTabView>
   List menuArr = [
     {"name": "Home", "icon": Icons.home},
     {"name": "Story from scratch", "icon": Icons.book},
-    {"name": "Stroy with assistance", "icon": Icons.storefront},
+    {"name": "Story with assistance", "icon": Icons.storefront},
     {"name": "Sequel to Story", "icon": Icons.business_center},
     {"name": "Account", "icon": Icons.account_circle},
   ];
@@ -60,6 +62,7 @@ class _MainTabViewState extends State<MainTabView>
           children: const [HomeView(), SearchView(), AccountView()],
         ),
         bottomNavigationBar: BottomAppBar(
+
           color: TColor.primary,
           child: TabBar(
             controller: controller,
@@ -69,6 +72,7 @@ class _MainTabViewState extends State<MainTabView>
             tabs: [
               Tab(icon: Icon(Icons.home, size: 24 * iconScale), text: "Home"),
               Tab(
+                key: Key("search"),
                 icon: Icon(Icons.search, size: 24 * iconScale),
                 text: "Search",
               ),
@@ -94,6 +98,7 @@ class _MainTabViewState extends State<MainTabView>
     double paddingScale,
   ) {
     return Drawer(
+
       backgroundColor: Colors.transparent,
       elevation: 0,
       width: media.width * 0.8,
@@ -106,12 +111,14 @@ class _MainTabViewState extends State<MainTabView>
           boxShadow: const [BoxShadow(color: Colors.black54, blurRadius: 15)],
         ),
         child: SingleChildScrollView(
+
           child: Column(
             children: [
               SizedBox(height: 80 * paddingScale),
               ...menuArr.map((mObj) {
                 var index = menuArr.indexOf(mObj);
                 return Container(
+
                   padding: EdgeInsets.symmetric(
                     vertical: 12 * paddingScale,
                     horizontal: 15 * paddingScale,
@@ -130,6 +137,7 @@ class _MainTabViewState extends State<MainTabView>
                           )
                           : null,
                   child: GestureDetector(
+
                     onTap: () {
                       handleDrawerTap(index);
                     },
@@ -137,6 +145,7 @@ class _MainTabViewState extends State<MainTabView>
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
+                          key: Key(mObj["name"].toString()),
                           mObj["name"].toString(),
                           style: TextStyle(
                             color:

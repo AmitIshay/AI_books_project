@@ -11,6 +11,7 @@ class HistoryRow extends StatelessWidget {
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
     return Container(
+      key: Key("book_${sObj["name"].toString()}"),
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

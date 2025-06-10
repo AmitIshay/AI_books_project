@@ -129,6 +129,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       TextButton(
+                        key: Key('keySkip'),
                         onPressed: () async {
                           SharedPreferences prefs =
                               await SharedPreferences.getInstance();
@@ -142,6 +143,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                         },
                         child: Text(
                           "Skip",
+
                           style: TextStyle(
                             color: TColor.primary,
                             fontSize: 17,

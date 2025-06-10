@@ -59,11 +59,13 @@ class _SignUpViewState extends State<SignUpView> {
                       ),
                       const SizedBox(height: 20),
                       RoundTextField(
+                        key: Key("text_input_name"),
                         controller: txtFirstName,
                         hintText: "First & Last Name",
                       ),
                       const SizedBox(height: 15),
                       RoundTextField(
+                        key: Key("text_input_email"),
                         controller: txtEmail,
                         hintText: "Email Address",
                         keyboardType: TextInputType.emailAddress,
@@ -71,12 +73,14 @@ class _SignUpViewState extends State<SignUpView> {
                       const SizedBox(height: 15),
                       const SizedBox(height: 15),
                       RoundTextField(
+                        key: Key("text_input_phone"),
                         controller: txtMobile,
                         hintText: "Mobile Phone",
                         keyboardType: TextInputType.phone,
                       ),
                       const SizedBox(height: 15),
                       RoundTextField(
+                        key: Key("text_input_password"),
                         controller: txtPassword,
                         hintText: "Password",
                         obscureText: true,
@@ -105,6 +109,7 @@ class _SignUpViewState extends State<SignUpView> {
                         ],
                       ),
                       RoundLineButton(
+                        key: Key("sign up"),
                         title: "Sign Up",
                         onPressed: () async {
                           final res = await AuthService.signUp(

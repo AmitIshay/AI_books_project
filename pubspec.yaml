@@ -40,10 +40,14 @@ dependencies:
   http: ^0.13.6
   carousel_slider: ^5.0.0
   flutter_rating_bar: ^4.0.1
-  page_flip: ^0.2.3
   shared_preferences: ^2.5.3
   provider: ^6.1.5
   flip_card: ^0.7.0
+  turn_page_transition: ^0.4.0
+  page_flip: ^0.2.5+1
+  lottie: ^2.7.0
+  palette_generator: ^0.3.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -70,6 +74,7 @@ flutter:
   assets:
     - assets/img/
     - assets/fonts/
+    - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

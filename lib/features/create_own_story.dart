@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pjbooks/backend/config.dart';
 import 'package:pjbooks/backend/user_prefs.dart';
+import 'package:pjbooks/bookPages/book.dart';
+import 'package:pjbooks/bookPages/home_screen.dart';
 import 'package:pjbooks/book_service.dart';
 import 'package:pjbooks/common/color_extenstion.dart';
 import 'package:http/http.dart' as http;
@@ -17,10 +19,14 @@ class CreateOwnStory extends StatefulWidget {
 class _CreateOwnStoryState extends State<CreateOwnStory> {
   List<TextEditingController> controllers = [TextEditingController()];
   TextEditingController titleController = TextEditingController();
+  TextEditingController subjectController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
 
   @override
   void dispose() {
     titleController.dispose();
+    subjectController.dispose();
+    descriptionController.dispose();
     for (var controller in controllers) {
       controller.dispose();
     }
@@ -43,6 +49,18 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
     if (titleController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please enter a book title")),
+      );
+      return;
+    }
+    if (subjectController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Please enter a subject")));
+      return;
+    }
+    if (descriptionController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter a description")),
       );
       return;
     }
@@ -80,12 +98,13 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
       // );
       // קריאה שנייה: יצירת סיפור עם AI
       final aiStoryData = {
-        "subject": "children story", // אתה יכול לשפר את זה מהמשתמש
+        "subject": subjectController.text.trim(), // אתה יכול לשפר את זה מהמשתמש
         "numPages": pagesTexts.length,
         "auther": author,
-        "description": "user-generated story", // אפשר לבקש מהמשתמש
+        "description": descriptionController.text.trim(), // אפשר לבקש מהמשתמש
         "title": titleController.text.trim(),
         "text_to_voice": true,
+        "resolution": "1024x570",
         "story_pages": pagesTexts,
       };
       final aiResponse = await http.post(
@@ -96,28 +115,74 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
         },
         body: jsonEncode(aiStoryData),
       );
-      if (aiResponse.statusCode == 201) {
-        if (aiResponse.statusCode == 200) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Book & AI story created successfully!"),
-            ),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("AI story error: ${aiResponse.body}")),
-          );
-        }
-        await context.read<BookService>().loadBooks();
+      print(aiStoryData);
+      final Map<String, dynamic> responseData = jsonDecode(aiResponse.body);
+      // if (aiResponse.statusCode == 201) {
+      if (aiResponse.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Book created successfully!")),
+          const SnackBar(
+            content: Text("Book & AI story created successfully!"),
+          ),
         );
-        Navigator.pop(context); // חזרה למסך הקודם או מעבר לספר
       } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Error: ${aiResponse.body}")));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("AI story error: ${aiResponse.body}")),
+        );
       }
+      await context.read<BookService>().loadBooks();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Book created successfully!")),
+      );
+      final Book newBook = Book(
+        title: responseData["title"],
+        coverImage: responseData["cover_image"] ?? "",
+        pages:
+            (responseData["pages"] as List<dynamic>).map((page) {
+                return BookPage(
+                  imagePath: page["img_url"] ?? "",
+                  text: page["text_page"] ?? "",
+                );
+              }).toList()
+              ..add(
+                BookPage(imagePath: "", text: "", isEndPage: true),
+              ), // עמוד סיום
+      );
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
+        (route) => false,
+      );
+      // final sampleBook = Book(
+      //   title: 'sample book',
+      //   coverImage: 'assets/images/cover.jpg',
+      //   pages: [
+      //     BookPage(
+      //       imagePath: 'assets/images/image1.jpg',
+      //       text: 'the begin of our story',
+      //     ),
+      //     BookPage(
+      //       imagePath: 'assets/images/image2.jpg',
+      //       text: ' the animals go to the trip',
+      //     ),
+      //     BookPage(
+      //       imagePath: 'assets/images/image3.jpg',
+      //       text: 'the trip keep contusion with many obstetrical',
+      //     ),
+      //     BookPage(imagePath: '', text: '', isEndPage: true),
+      //   ],
+      // );
+      // Navigator.pushAndRemoveUntil(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => HomeScreen(book: sampleBook)),
+      //   (route) => false,
+      // );
+      // Navigator.pop(context); // חזרה למסך הקודם או מעבר לספר
+      // } else {
+      //   ScaffoldMessenger.of(
+      //     context,
+      //   ).showSnackBar(SnackBar(content: Text("Error: ${aiResponse.body}")));
+      // }
     } catch (e) {
       ScaffoldMessenger.of(
         context,
@@ -225,7 +290,22 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
                     ),
                     const SizedBox(height: 15),
                     TextField(
-                      key: Key("title"),
+                      controller: subjectController,
+                      decoration: const InputDecoration(
+                        labelText: "Subject",
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    TextField(
+                      controller: descriptionController,
+                      decoration: const InputDecoration(
+                        labelText: "Description",
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    TextField(
                       controller: titleController,
                       decoration: const InputDecoration(
                         labelText: "Book Title",
@@ -250,7 +330,6 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
                                   controller: controllers[index],
                                   minLines: 1,
                                   maxLines: null,
-                                  key: Key( "Page Number ${index + 1}"),
                                   keyboardType: TextInputType.multiline,
                                   decoration: InputDecoration(
                                     labelText: "Page Number ${index + 1}",
@@ -279,14 +358,12 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
                       child: Column(
                         children: [
                           ElevatedButton.icon(
-                            key: Key("add page"),
                             onPressed: addTextField,
                             icon: const Icon(Icons.add),
                             label: const Text("Add Page"),
                           ),
                           const SizedBox(height: 10),
                           ElevatedButton.icon(
-                            key: Key("create story"),
                             onPressed: submitStory,
                             icon: const Icon(Icons.book),
                             label: const Text("Create Story"),

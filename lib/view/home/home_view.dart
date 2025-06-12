@@ -23,6 +23,8 @@ class _HomeViewState extends State<HomeView> {
   TextEditingController txtName = TextEditingController();
   TextEditingController txtEmail = TextEditingController();
 
+
+  //TODO לעשות טופ פיק פונקציה בשרת ובאפליקציה
   List topPicksArr = [
     {
       "name": "The Dissapearance of Emila Zola",
@@ -146,7 +148,7 @@ class _HomeViewState extends State<HomeView> {
                     ),
                     SizedBox(
                       width: media.width,
-                      height: media.width * 0.8,
+                      height: media.width * 0.5,
                       child: CarouselSlider.builder(
                         itemCount: topPicksArr.length,
                         itemBuilder: (

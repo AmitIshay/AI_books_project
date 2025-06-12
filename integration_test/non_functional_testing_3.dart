@@ -35,21 +35,21 @@ void main() {
     const String email = "yam@smail.com";
     const String password ="yamking113";
     //key : elements on the widgits that help the tester to find the elements
-    const skip_button_Key = Key('keySkip');
-    const sign_in_key_first_screen = Key('sign in');
-    const email_key = Key('email_key');
-    const password_key = Key('password_key');
-    const sign_in_key_login_screen = Key('sign_in_key_login_screen');
+    const skipButtonKey = Key('keySkip');
+    const signInKeyFirstScreen = Key('sign in');
+    const emailKey = Key('email_key');
+    const passwordKey = Key('password_key');
+    const signInKeyLoginScreen = Key('sign_in_key_login_screen');
 
-    const key_menu = Key("menu");
-    const key_assistance = Key("Story with assistance");
+    const keyMenu = Key("menu");
+    const keyAssistance = Key("Story with assistance");
 
-    const basic_questions_key = Key("Basic Questions");
-    const question1_key = Key("text_input_What is the genre of the book you want to write?");
-    const question2_key = Key("text_input_What is the name of your book (if you have an idea)?");
+    const basicQuestionsKey = Key("Basic Questions");
+    const question1Key = Key("text_input_What is the genre of the book you want to write?");
+    const question2Key = Key("text_input_What is the name of your book (if you have an idea)?");
 
 
-    const create_story_key= Key("create story");
+    const createStoryKey= Key("create story");
 
     await tester.pumpAndSettle(); // Wait for all UI to settle
 
@@ -57,25 +57,25 @@ void main() {
     print("Tapping skip");
     expect(find.byKey(Key('keySkip')), findsOneWidget); // Add this check
 
-    await tester.tap(find.byKey(skip_button_Key));
+    await tester.tap(find.byKey(skipButtonKey));
     await tester.pumpAndSettle(const Duration(seconds: 2));
     //tap on sign in
     await tester.pumpAndSettle(); // Wait for all UI to settle
-    await tester.tap(find.byKey(sign_in_key_first_screen));
+    await tester.tap(find.byKey(signInKeyFirstScreen));
     await tester.pumpAndSettle();
     //tap on email
-    await tester.tap(find.byKey(email_key));
+    await tester.tap(find.byKey(emailKey));
 
     //put email
 
-    await  tester.enterText(find.byKey(email_key), email);
+    await  tester.enterText(find.byKey(emailKey), email);
 
     //tap on password
 
-    await tester.tap(find.byKey(password_key));
+    await tester.tap(find.byKey(passwordKey));
 
     //put password
-    await tester.enterText(find.byKey(password_key), password);
+    await tester.enterText(find.byKey(passwordKey), password);
 
     //enter done
     await tester.testTextInput.receiveAction(TextInputAction.done);
@@ -86,12 +86,12 @@ void main() {
     await tester.pumpAndSettle();
     print("Tapping sign in 1");
 
-    await tester.tap(find.byKey(sign_in_key_login_screen));
+    await tester.tap(find.byKey(signInKeyLoginScreen));
     await tester.pump(const Duration(seconds: 5));
     print("Tapping sign in 2 ");
 
 
-    await tester.tap(find.byKey(sign_in_key_login_screen));
+    await tester.tap(find.byKey(signInKeyLoginScreen));
     await tester.pump(const Duration(seconds: 5));
 
 
@@ -100,42 +100,42 @@ void main() {
     //go to search screen
 
     //click on menu
-    await tester.tap(find.byKey(key_menu));
+    await tester.tap(find.byKey(keyMenu));
     await tester.pump(const Duration(seconds: 5));
 
     //click on Story with assistance
-    await tester.tap(find.byKey(key_assistance));
+    await tester.tap(find.byKey(keyAssistance));
     await tester.pump(const Duration(seconds: 5));
 
     //click on Basic Questions
-    await tester.tap(find.byKey(basic_questions_key));
+    await tester.tap(find.byKey(basicQuestionsKey));
     await tester.pump(const Duration(seconds: 5));
 
     //click on the first question: What is the genre of the book you want to write?
-    await tester.tap(find.byKey(question1_key));
+    await tester.tap(find.byKey(question1Key));
     await tester.pump(const Duration(seconds: 5));
 
     //enter text
 
-    await tester.enterText(find.byKey(question1_key), genere);
+    await tester.enterText(find.byKey(question1Key), genere);
 
     //click on the second question : What is the name of your book (if you have an idea)?
-    await tester.tap(find.byKey(question2_key));
+    await tester.tap(find.byKey(question2Key));
     await tester.pump(const Duration(seconds: 5));
 
     //enter text
-    await tester.enterText(find.byKey(question2_key), title);
+    await tester.enterText(find.byKey(question2Key), title);
 
     //enter done
     await tester.testTextInput.receiveAction(TextInputAction.done);
     await tester.pumpAndSettle();
 
     //click on Basic Questions
-    await tester.tap(find.byKey(basic_questions_key));
+    await tester.tap(find.byKey(basicQuestionsKey));
     await tester.pump(const Duration(seconds: 5));
 
     //click on create story
-    await tester.tap(find.byKey(create_story_key));
+    await tester.tap(find.byKey(createStoryKey));
     await tester.pump(const Duration(seconds: 5));
 
 
@@ -153,8 +153,8 @@ void main() {
     //print time diffrents
     print('Time difference is ${difference.inSeconds} seconds');
 
-    int seconds_result = difference.inSeconds;
-    if (seconds_result > 80 ) {
+    int secondsResult = difference.inSeconds;
+    if (secondsResult > 80 ) {
       fail('result is bigger 1 minutes');
     }
 

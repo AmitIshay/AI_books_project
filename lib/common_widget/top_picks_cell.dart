@@ -32,8 +32,8 @@ class TopPicksCell extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 child: Image.asset(
                   iObj["img"].toString(),
-                  width: media.width * 0.32,
-                  height: media.width * 0.50,
+                  width: media.width * 0.20,
+                  height: media.width * 0.30,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -46,8 +46,8 @@ class TopPicksCell extends StatelessWidget {
               maxLines: 3,
               textAlign: TextAlign.center,
               style: TextStyle(
-                  color: TColor.text,
-                  fontSize: 13,
+                  color: TColor.showMessage,
+                  fontSize: 20,
                   fontWeight: FontWeight.w700),
             ),
             Text(
@@ -55,8 +55,8 @@ class TopPicksCell extends StatelessWidget {
               maxLines: 1,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: TColor.subTitle,
-                fontSize: 11,
+                color: TColor.showMessage2,
+                fontSize: 18,
               ),
             )
           ],

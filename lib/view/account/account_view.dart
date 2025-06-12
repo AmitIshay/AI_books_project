@@ -501,7 +501,7 @@ class _AccountViewState extends State<AccountView> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
               child: Text(
-                "Your Books (${booksCount})",
+                "Your Books ($booksCount)",
                 style: TextStyle(
                   color: TColor.subTitle,
                   fontSize: 20,

@@ -44,10 +44,11 @@ class _WelcomeViewState extends State<WelcomeView> {
                       children: [
                         SizedBox(height: media.height * 0.15),
                         Text(
-                          "Books For\nEvery Taste.",
+                          //"Books For\nEvery Taste.",
+                          "Explore The Power Of Your Imagination!",
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: TColor.primary,
+                            color: TColor.showMessage,
                             fontSize: 35,
                             fontWeight: FontWeight.w600,
                           ),

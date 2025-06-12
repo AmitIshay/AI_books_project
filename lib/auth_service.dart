@@ -39,7 +39,7 @@ class AuthService {
       Uri.parse('$baseUrl/api/auth/login'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'email': email, 'password': password}),
-    );
+    ).timeout(Duration(seconds:10));
 
     return {
       'statusCode': response.statusCode,

@@ -14,29 +14,29 @@ class UserPrefs {
   static Future<void> saveTokenAndUserIdAndfull_name(
     String token,
     String userId,
-    String full_name,
+    String fullName,
   ) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_tokenKey, token);
     await prefs.setString(_userIdKey, userId);
-    await prefs.setString(_full_nameKey, full_name);
+    await prefs.setString(_full_nameKey, fullName);
   }
 
   static Future<void> saveTokenAndUserIdAndfull_name_bio_location_image_base64(
     String token,
     String userId,
-    String full_name,
+    String fullName,
     String bio,
     String location,
-    String image_base64,
+    String imageBase64,
   ) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_tokenKey, token);
     await prefs.setString(_userIdKey, userId);
-    await prefs.setString(_full_nameKey, full_name);
+    await prefs.setString(_full_nameKey, fullName);
     await prefs.setString(_bio, bio);
     await prefs.setString(_location, location);
-    await prefs.setString(_image_base64, image_base64);
+    await prefs.setString(_image_base64, imageBase64);
   }
 
   /// מחזיר את הטוקן

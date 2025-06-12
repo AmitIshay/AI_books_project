@@ -27,7 +27,7 @@ class _MainTabViewState extends State<MainTabView>
     with TickerProviderStateMixin {
   TabController? controller;
   int selectMenu = 0;
-
+  int size_tap  = 19;
   List menuArr = [
     {"name": "Home", "icon": Icons.home},
     {"name": "Story from scratch", "icon": Icons.book},
@@ -53,7 +53,7 @@ class _MainTabViewState extends State<MainTabView>
     var paddingScale = isPortrait ? 0.8 : 1.0;
 
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaleFactor: textScale),
+      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(textScale)),
       child: Scaffold(
         key: sideMenuScaffoldKey,
         endDrawer: buildDrawer(media, iconScale, textScale, paddingScale),
@@ -70,14 +70,14 @@ class _MainTabViewState extends State<MainTabView>
             labelColor: Colors.white,
             unselectedLabelColor: Colors.white54,
             tabs: [
-              Tab(icon: Icon(Icons.home, size: 24 * iconScale), text: "Home"),
+              Tab(icon: Icon(Icons.home, size: 30 * iconScale), text: "Home"),
               Tab(
                 key: Key("search"),
-                icon: Icon(Icons.search, size: 24 * iconScale),
+                icon: Icon(Icons.search, size: 30 * iconScale),
                 text: "Search",
               ),
               Tab(
-                icon: Icon(Icons.account_circle, size: 24 * iconScale),
+                icon: Icon(Icons.account_circle, size: 30 * iconScale),
                 text: "Profile",
               ),
               // Tab(
@@ -117,7 +117,9 @@ class _MainTabViewState extends State<MainTabView>
               SizedBox(height: 80 * paddingScale),
               ...menuArr.map((mObj) {
                 var index = menuArr.indexOf(mObj);
-                return Container(
+                return Align(
+                    alignment: Alignment.centerRight,
+                    child:Container(
 
                   padding: EdgeInsets.symmetric(
                     vertical: 12 * paddingScale,
@@ -136,6 +138,10 @@ class _MainTabViewState extends State<MainTabView>
                             ],
                           )
                           : null,
+                  constraints: BoxConstraints(
+                    minWidth: 0,
+                    maxWidth: media.width * 0.6, // or whatever fits your design
+                  ),
                   child: GestureDetector(
 
                     onTap: () {
@@ -156,7 +162,7 @@ class _MainTabViewState extends State<MainTabView>
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        SizedBox(width: 15 * paddingScale),
+                        SizedBox(width: 10 * paddingScale),
                         Icon(
                           mObj["icon"] as IconData? ?? Icons.home,
                           color:
@@ -168,8 +174,8 @@ class _MainTabViewState extends State<MainTabView>
                       ],
                     ),
                   ),
-                );
-              }).toList(),
+                ));
+              }),
               SizedBox(height: 20 * paddingScale),
               Container(
                 margin: EdgeInsets.symmetric(

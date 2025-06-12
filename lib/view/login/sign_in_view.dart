@@ -97,8 +97,8 @@ class _SignInViewState extends State<SignInView> {
                               Text(
                                 "Stay Logged In",
                                 style: TextStyle(
-                                  color: TColor.subTitle.withOpacity(0.3),
-                                  fontSize: 15,
+                                  color: TColor.showMessage2,
+                                  fontSize: 17,
                                 ),
                               ),
                             ],
@@ -118,8 +118,8 @@ class _SignInViewState extends State<SignInView> {
                               child: Text(
                                 "Forgot Your Password?",
                                 style: TextStyle(
-                                  color: TColor.subTitle.withOpacity(0.3),
-                                  fontSize: 15,
+                                  color: TColor.showMessage2,
+                                  fontSize: 17,
                                 ),
                               ),
                             ),
@@ -136,7 +136,9 @@ class _SignInViewState extends State<SignInView> {
                             child: Row(
                               children: [
                                 socialIcon("assets/img/google.png"),
+                                SizedBox(width: 12), // Space between children,
                                 socialIcon("assets/img/facebook.png"),
+                                SizedBox(width: 12), // Space between children
                                 socialIcon("assets/img/apple.png"),
                               ],
                             ),
@@ -157,19 +159,19 @@ class _SignInViewState extends State<SignInView> {
                           if (res['statusCode'] == 200) {
                             final token = res['body']['token'];
                             final userId = res['body']['userId'];
-                            final full_name = res['body']['full_name'];
+                            final fullName = res['body']['full_name'];
                             final bio = res['body']['bio'];
                             final location = res['body']['location'] ?? "";
-                            final image_base64 =
+                            final imageBase64 =
                                 res['body']['image_base64'] ?? "";
 
                             await UserPrefs.saveTokenAndUserIdAndfull_name_bio_location_image_base64(
                               token,
                               userId,
-                              full_name,
+                              fullName,
                               bio,
                               location,
-                              image_base64,
+                              imageBase64,
                             );
                             await UserPrefs.setIsLoggedIn(isStay);
                             await context.read<BookService>().loadBooks();

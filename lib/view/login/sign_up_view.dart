@@ -122,10 +122,10 @@ class _SignUpViewState extends State<SignUpView> {
                           if (res['statusCode'] == 201) {
                             final token = res['body']['token'];
                             final userId = res['body']['userId'];
-                            final full_name = res['body']['full_name'];
+                            final fullName = res['body']['full_name'];
                             final bio = res['body']['bio'] ?? "";
                             final location = res['body']['location'] ?? "";
-                            final image_base64 =
+                            final imageBase64 =
                                 res['body']['image_base64'] ?? "";
                             // final prefs = await SharedPreferences.getInstance();
                             // await prefs.setString('token', token);
@@ -133,10 +133,10 @@ class _SignUpViewState extends State<SignUpView> {
                             await UserPrefs.saveTokenAndUserIdAndfull_name_bio_location_image_base64(
                               token,
                               userId,
-                              full_name,
+                              fullName,
                               bio,
                               location,
-                              image_base64,
+                              imageBase64,
                             );
 
                             ScaffoldMessenger.of(context).showSnackBar(

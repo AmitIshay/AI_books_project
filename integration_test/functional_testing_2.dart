@@ -45,17 +45,17 @@ void main() {
     const String email = "yam@smail.com";
     const String password ="yamking113";
     //key : elements on the widgits that help the tester to find the elements
-    const skip_button_Key = Key('keySkip');
-    const sign_in_key_first_screen = Key('sign in');
-    const email_key = Key('email_key');
-    const password_key = Key('password_key');
-    const sign_in_key_login_screen = Key('sign_in_key_login_screen');
-    const search_key = Key("search");
-    const search_input_key = Key("search_text_input");
-    const cancel_key = Key("cancel");
+    const skipButtonKey = Key('keySkip');
+    const signInKeyFirstScreen = Key('sign in');
+    const emailKey = Key('email_key');
+    const passwordKey = Key('password_key');
+    const signInKeyLoginScreen = Key('sign_in_key_login_screen');
+    const searchKey = Key("search");
+    const searchInputKey = Key("search_text_input");
+    const cancelKey = Key("cancel");
 
     //key to find the text to speach button
-    const text_to_speech_key = Key("text_to_speech_key");
+    const textToSpeechKey = Key("text_to_speech_key");
 
     await tester.pumpAndSettle(); // Wait for all UI to settle
 
@@ -63,25 +63,25 @@ void main() {
     print("Tapping skip");
     expect(find.byKey(Key('keySkip')), findsOneWidget); // Add this check
 
-    await tester.tap(find.byKey(skip_button_Key));
+    await tester.tap(find.byKey(skipButtonKey));
     await tester.pumpAndSettle(const Duration(seconds: 2));
     //tap on sign in
     await tester.pumpAndSettle(); // Wait for all UI to settle
-    await tester.tap(find.byKey(sign_in_key_first_screen));
+    await tester.tap(find.byKey(signInKeyFirstScreen));
     await tester.pumpAndSettle();
     //tap on email
-    await tester.tap(find.byKey(email_key));
+    await tester.tap(find.byKey(emailKey));
 
     //put email
 
-    await  tester.enterText(find.byKey(email_key), email);
+    await  tester.enterText(find.byKey(emailKey), email);
 
     //tap on password
 
-    await tester.tap(find.byKey(password_key));
+    await tester.tap(find.byKey(passwordKey));
 
     //put password
-    await tester.enterText(find.byKey(password_key), password);
+    await tester.enterText(find.byKey(passwordKey), password);
 
     //enter done
     await tester.testTextInput.receiveAction(TextInputAction.done);
@@ -92,42 +92,42 @@ void main() {
     await tester.pumpAndSettle();
     print("Tapping sign in 1");
 
-    await tester.tap(find.byKey(sign_in_key_login_screen));
+    await tester.tap(find.byKey(signInKeyLoginScreen));
     await tester.pump(const Duration(seconds: 5));
     print("Tapping sign in 2 ");
 
 
-    await tester.tap(find.byKey(sign_in_key_login_screen));
+    await tester.tap(find.byKey(signInKeyLoginScreen));
     await tester.pump(const Duration(seconds: 5));
 
 
     //assert we are in the main screen
     expect(find.text('Our Top Picks'), findsOneWidget);
     //go to search screen
-    await tester.tap(find.byKey(search_key));
+    await tester.tap(find.byKey(searchKey));
     await tester.pump(const Duration(seconds: 5));
 
       //tap on search bar
       await tester.pump(const Duration(seconds: 5));
 
-      await tester.tap(find.byKey(search_input_key));
+      await tester.tap(find.byKey(searchInputKey));
       await tester.pump(const Duration(seconds: 5));
       //enetr book name
-      await tester.enterText(find.byKey(search_input_key), book);
+      await tester.enterText(find.byKey(searchInputKey), book);
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
       //press on the result
-      var key_book = Key("book_$book");
+      var keyBook = Key("book_$book");
 
       expect(find.text(book), findsOneWidget);
 
       await tester.pump(const Duration(seconds: 5));
 
-      await tester.tap(find.byKey(key_book));
+      await tester.tap(find.byKey(keyBook));
 
       await tester.pump(const Duration(seconds: 5));
 
-      await tester.tap(find.byKey(key_book));
+      await tester.tap(find.byKey(keyBook));
       //check if there is book
       expect(find.text(book), findsOneWidget);
       final textFinder = find.byKey(Key('pages counter'));
@@ -135,23 +135,23 @@ void main() {
       final textWidget = tester.widget<Text>(textFinder);
       String value = textWidget.data ?? '';
       int len = value.length;
-      int pages_num = int.parse(value.substring(len-1 ,len));
+      int pagesNum = int.parse(value.substring(len-1 ,len));
 
-      if (pages_num != pages.length) {
+      if (pagesNum != pages.length) {
         fail("there is not correct number of pages");
       }
-    for (var i=0 ; i<pages_num ; i+=2)
+    for (var i=0 ; i<pagesNum ; i+=2)
     {
       //press on text to speech
-      await tester.tap(find.byKey(text_to_speech_key));
+      await tester.tap(find.byKey(textToSpeechKey));
 
       //see the text to speech in on text
       expect(find.text("text to speech on"), findsOneWidget);
-      await tester.tap(find.byKey(text_to_speech_key));
+      await tester.tap(find.byKey(textToSpeechKey));
 
       await tester.pump(const Duration(seconds: 5));
 
-      await tester.tap(find.byKey(cancel_key));
+      await tester.tap(find.byKey(cancelKey));
       expect(find.text(pages[i]), findsOneWidget);
       expect(find.text(pages[i+1]), findsOneWidget);
 
@@ -182,17 +182,17 @@ void main() {
     const String email = "yam@smail.com";
     const String password ="yamking113";
     //key : elements on the widgits that help the tester to find the elements
-    const skip_button_Key = Key('keySkip');
-    const sign_in_key_first_screen = Key('sign in');
-    const email_key = Key('email_key');
-    const password_key = Key('password_key');
-    const sign_in_key_login_screen = Key('sign_in_key_login_screen');
-    const search_key = Key("search");
-    const search_input_key = Key("search_text_input");
-    const cancel_key = Key("cancel");
+    const skipButtonKey = Key('keySkip');
+    const signInKeyFirstScreen = Key('sign in');
+    const emailKey = Key('email_key');
+    const passwordKey = Key('password_key');
+    const signInKeyLoginScreen = Key('sign_in_key_login_screen');
+    const searchKey = Key("search");
+    const searchInputKey = Key("search_text_input");
+    const cancelKey = Key("cancel");
 
     //key to find the text to speach button
-    const text_to_speech_key = Key("text_to_speech_key");
+    const textToSpeechKey = Key("text_to_speech_key");
 
     await tester.pumpAndSettle(); // Wait for all UI to settle
 
@@ -200,25 +200,25 @@ void main() {
     print("Tapping skip");
     expect(find.byKey(Key('keySkip')), findsOneWidget); // Add this check
 
-    await tester.tap(find.byKey(skip_button_Key));
+    await tester.tap(find.byKey(skipButtonKey));
     await tester.pumpAndSettle(const Duration(seconds: 2));
     //tap on sign in
     await tester.pumpAndSettle(); // Wait for all UI to settle
-    await tester.tap(find.byKey(sign_in_key_first_screen));
+    await tester.tap(find.byKey(signInKeyFirstScreen));
     await tester.pumpAndSettle();
     //tap on email
-    await tester.tap(find.byKey(email_key));
+    await tester.tap(find.byKey(emailKey));
 
     //put email
 
-    await  tester.enterText(find.byKey(email_key), email);
+    await  tester.enterText(find.byKey(emailKey), email);
 
     //tap on password
 
-    await tester.tap(find.byKey(password_key));
+    await tester.tap(find.byKey(passwordKey));
 
     //put password
-    await tester.enterText(find.byKey(password_key), password);
+    await tester.enterText(find.byKey(passwordKey), password);
 
     //enter done
     await tester.testTextInput.receiveAction(TextInputAction.done);
@@ -229,42 +229,42 @@ void main() {
     await tester.pumpAndSettle();
     print("Tapping sign in 1");
 
-    await tester.tap(find.byKey(sign_in_key_login_screen));
+    await tester.tap(find.byKey(signInKeyLoginScreen));
     await tester.pump(const Duration(seconds: 5));
     print("Tapping sign in 2 ");
 
 
-    await tester.tap(find.byKey(sign_in_key_login_screen));
+    await tester.tap(find.byKey(signInKeyLoginScreen));
     await tester.pump(const Duration(seconds: 5));
 
 
     //assert we are in the main screen
     expect(find.text('Our Top Picks'), findsOneWidget);
     //go to search screen
-    await tester.tap(find.byKey(search_key));
+    await tester.tap(find.byKey(searchKey));
     await tester.pump(const Duration(seconds: 5));
 
     //tap on search bar
     await tester.pump(const Duration(seconds: 5));
 
-    await tester.tap(find.byKey(search_input_key));
+    await tester.tap(find.byKey(searchInputKey));
     await tester.pump(const Duration(seconds: 5));
     //enetr book name
-    await tester.enterText(find.byKey(search_input_key), book);
+    await tester.enterText(find.byKey(searchInputKey), book);
     await tester.testTextInput.receiveAction(TextInputAction.done);
     await tester.pumpAndSettle();
     //press on the result
-    var key_book = Key("book_$book");
+    var keyBook = Key("book_$book");
 
     expect(find.text(book), findsOneWidget);
 
     await tester.pump(const Duration(seconds: 5));
 
-    await tester.tap(find.byKey(key_book));
+    await tester.tap(find.byKey(keyBook));
 
     await tester.pump(const Duration(seconds: 5));
 
-    await tester.tap(find.byKey(key_book));
+    await tester.tap(find.byKey(keyBook));
     //check if there is book
     expect(find.text(book), findsOneWidget);
     final textFinder = find.byKey(Key('pages counter'));
@@ -272,23 +272,23 @@ void main() {
     final textWidget = tester.widget<Text>(textFinder);
     String value = textWidget.data ?? '';
     int len = value.length;
-    int pages_num = int.parse(value.substring(len-1 ,len));
+    int pagesNum = int.parse(value.substring(len-1 ,len));
 
-    if (pages_num != pages.length) {
+    if (pagesNum != pages.length) {
       fail("there is not correct number of pages");
     }
-    for (var i=0 ; i<pages_num ; i+=2)
+    for (var i=0 ; i<pagesNum ; i+=2)
     {
       //press on text to speech
-      await tester.tap(find.byKey(text_to_speech_key));
+      await tester.tap(find.byKey(textToSpeechKey));
 
       //see the text to speech in on text
       expect(find.text("error text to speech is not available"), findsOneWidget);
-      await tester.tap(find.byKey(text_to_speech_key));
+      await tester.tap(find.byKey(textToSpeechKey));
 
       await tester.pump(const Duration(seconds: 5));
 
-      await tester.tap(find.byKey(cancel_key));
+      await tester.tap(find.byKey(cancelKey));
       expect(find.text(pages[i]), findsOneWidget);
       expect(find.text(pages[i+1]), findsOneWidget);
 

@@ -141,18 +141,29 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
                 return BookPage(
                   imagePath: page["img_url"] ?? "",
                   text: page["text_page"] ?? "",
+                  voiceUrl: page["voice_file_url"] ?? "",
                 );
               }).toList()
               ..add(
-                BookPage(imagePath: "", text: "", isEndPage: true),
+                BookPage(
+                  imagePath: "",
+                  text: "",
+                  voiceUrl: "",
+                  isEndPage: true,
+                ),
               ), // עמוד סיום
       );
+      for (var page in newBook.pages) {
+        if (page.imagePath.isNotEmpty) {
+          await precacheImage(NetworkImage(page.imagePath), context);
+        }
+      }
 
-      Navigator.pushAndRemoveUntil(
+      Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
-        (route) => false,
       );
+
       // final sampleBook = Book(
       //   title: 'sample book',
       //   coverImage: 'assets/images/cover.jpg',

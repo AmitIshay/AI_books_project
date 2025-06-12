@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pjbooks/common/color_extenstion.dart';
 import 'book.dart';
 import 'reader_screen.dart';
 import 'book_cover.dart';
@@ -40,6 +41,21 @@ class HomeScreen extends StatelessWidget {
                 child: const Text(
                   'Open Book',
                   style: TextStyle(fontSize: 30, color: Colors.black),
+                ),
+              ),
+            ),
+          ),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.topLeft,
+
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.arrow_back_ios, color: TColor.primary),
                 ),
               ),
             ),

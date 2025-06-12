@@ -3,6 +3,7 @@ import 'package:lottie/lottie.dart';
 import 'package:turn_page_transition/turn_page_transition.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'book.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class DoublePageBookViewer extends StatefulWidget {
   final List<BookPage> pages;
@@ -19,6 +20,30 @@ class _DoublePageBookViewerState extends State<DoublePageBookViewer> {
 
   // Map לשמירת הצבע הדומיננטי לכל דף לפי האינדקס
   Map<int, Color> _dominantColors = {};
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  int? _playingIndex;
+  Future<void> _playVoice(String url, int index) async {
+    try {
+      if (_playingIndex == index) {
+        await _audioPlayer.stop();
+        setState(() => _playingIndex = null);
+      } else {
+        await _audioPlayer.stop();
+        await _audioPlayer.play(UrlSource(url));
+        setState(() => _playingIndex = index);
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("שגיאה בניגון הקול: $e")));
+    }
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -76,7 +101,12 @@ class _DoublePageBookViewerState extends State<DoublePageBookViewer> {
               final rightPage =
                   rightIndex < widget.pages.length
                       ? widget.pages[rightIndex]
-                      : BookPage(imagePath: '', text: '', isEndPage: true);
+                      : BookPage(
+                        imagePath: '',
+                        text: '',
+                        voiceUrl: '',
+                        isEndPage: true,
+                      );
 
               return Padding(
                 padding: const EdgeInsets.all(3),
@@ -235,6 +265,27 @@ class _DoublePageBookViewerState extends State<DoublePageBookViewer> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const SizedBox(height: 12),
+                // כפתור קול
+                if (page.voiceUrl.isNotEmpty)
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkWell(
+                        onTap: () => _playVoice(page.voiceUrl, index),
+                        child: CircleAvatar(
+                          backgroundColor: Colors.black.withOpacity(0.6),
+                          child: Icon(
+                            _playingIndex == index
+                                ? Icons.stop
+                                : Icons.volume_up,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 Expanded(
                   child: Align(
                     alignment: Alignment.bottomCenter,

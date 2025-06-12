@@ -15,19 +15,19 @@ class MyApp extends StatelessWidget {
       title: 'sample book',
       coverImage: 'assets/images/cover.jpg',
       pages: [
-        BookPage(
-          imagePath: 'assets/images/image1.jpg',
-          text: 'the begin of our story',
-        ),
-        BookPage(
-          imagePath: 'assets/images/image2.jpg',
-          text: ' the animals go to the trip',
-        ),
-        BookPage(
-          imagePath: 'assets/images/image3.jpg',
-          text: 'the trip keep contusion with many obstetrical',
-        ),
-        BookPage(imagePath: '', text: '', isEndPage: true),
+        // BookPage(
+        //   imagePath: 'assets/images/image1.jpg',
+        //   text: 'the begin of our story',
+        // ),
+        // BookPage(
+        //   imagePath: 'assets/images/image2.jpg',
+        //   text: ' the animals go to the trip',
+        // ),
+        // BookPage(
+        //   imagePath: 'assets/images/image3.jpg',
+        //   text: 'the trip keep contusion with many obstetrical',
+        // ),
+        // BookPage(imagePath: '', text: '', isEndPage: true),
       ],
     );
 

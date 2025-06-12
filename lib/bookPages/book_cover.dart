@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pjbooks/common/color_extenstion.dart';
 
 class BookCover extends StatelessWidget {
   final String imagePath;
@@ -11,7 +12,7 @@ class BookCover extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Image.asset(imagePath, fit: BoxFit.cover),
+        Image.network(imagePath, fit: BoxFit.cover),
         Container(color: Colors.black.withOpacity(0.3)),
         Center(
           child: Text(

@@ -1,11 +1,13 @@
 class BookPage {
   final String imagePath;
   final String text;
+  final String voiceUrl;
   final bool isEndPage;
 
   BookPage({
     required this.imagePath,
     required this.text,
+    required this.voiceUrl,
     this.isEndPage = false,
   });
 }

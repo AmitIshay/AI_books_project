@@ -106,6 +106,7 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: ExpansionTile(
+                        key: Key(category),
                         title: Text(
                           category,
                           style: const TextStyle(
@@ -116,6 +117,7 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
                         children:
                             questions[category]!.map((question) {
                               return Padding(
+
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 16.0,
                                   vertical: 8.0,
@@ -129,6 +131,7 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
                                     ),
                                     const SizedBox(height: 8.0),
                                     TextField(
+                                      key: Key("text_input_$question"),
                                       decoration: InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText: "Write your answer here...",
@@ -153,6 +156,7 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton(
+                  key: Key("create story"),
                   onPressed: () {
                     // Action to create the story
                     print("User answers: $userAnswers");

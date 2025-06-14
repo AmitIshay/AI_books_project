@@ -95,6 +95,7 @@ class _HelpUsViewState extends State<HelpUsView> {
                                         topGenres[genre] = !topGenres[genre]!;
                                       });
                                     },
+                                    key:Key(genre),
                                     icon: Icon(
                                       topGenres[genre]!
                                           ? Icons.check_box
@@ -130,6 +131,7 @@ class _HelpUsViewState extends State<HelpUsView> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   IconButton(
+                                    key:Key(genre),
                                     onPressed: () {
                                       setState(() {
                                         otherGenres[genre] =
@@ -179,6 +181,7 @@ class _HelpUsViewState extends State<HelpUsView> {
                           SizedBox(
                             width: media.width * 0.1,
                             child: RoundButton(
+                              key: Key("save"),
                               title: "Save",
                               onPressed: () async {
                                 final selectedGenres = [

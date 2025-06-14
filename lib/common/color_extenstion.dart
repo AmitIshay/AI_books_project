@@ -6,6 +6,10 @@ class TColor {
   static Color get text => const Color(0xff212121);
   static Color get subTitle => const Color(0xff212121).withOpacity(0.4);
 
+  static Color get showMessage => const Color(0xDB212121);
+  static Color get showMessage2 => const Color(0xA8212121);
+
+
   static Color get color1 => const Color(0xff1C4A7E);
   static Color get color2 => const Color(0xffC65135);
 

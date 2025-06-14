@@ -58,6 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // מעבר למסך ההתחברות
     Navigator.pushReplacement(
       context,
+
       MaterialPageRoute(builder: (context) => const SignInView()),
     );
   }

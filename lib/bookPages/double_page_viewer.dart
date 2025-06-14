@@ -19,7 +19,7 @@ class _DoublePageBookViewerState extends State<DoublePageBookViewer> {
   int _currentPairIndex = 0;
 
   // Map לשמירת הצבע הדומיננטי לכל דף לפי האינדקס
-  Map<int, Color> _dominantColors = {};
+  final Map<int, Color> _dominantColors = {};
   final AudioPlayer _audioPlayer = AudioPlayer();
   int? _playingIndex;
   Future<void> _playVoice(String url, int index) async {

@@ -5,6 +5,8 @@ void main() {
 }
 
 class BookApp extends StatelessWidget {
+  const BookApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(home: BookScreen(), debugShowCheckedModeBanner: false);
@@ -17,6 +19,8 @@ class BookScreen extends StatelessWidget {
     (index) =>
         "This is the content of page ${index + 1}. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   );
+
+  BookScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +62,7 @@ class BookScreen extends StatelessWidget {
 class BookPage extends StatelessWidget {
   final String? content;
 
-  const BookPage({this.content});
+  const BookPage({super.key, this.content});
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +92,7 @@ class BookPage extends StatelessWidget {
 class BookCover extends StatelessWidget {
   final bool isFront;
 
-  const BookCover({required this.isFront});
+  const BookCover({super.key, required this.isFront});
 
   @override
   Widget build(BuildContext context) {

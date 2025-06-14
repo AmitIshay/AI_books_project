@@ -40,6 +40,11 @@ class AuthService {
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'email': email, 'password': password}),
     );
+    //for debug
+    print({
+      'statusCode': response.statusCode,
+      'body': json.decode(response.body),
+    });
 
     return {
       'statusCode': response.statusCode,

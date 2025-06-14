@@ -83,6 +83,7 @@ class _SearchViewState extends State<SearchView> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: TextField(
+                  key: Key("search_text_input"),
                   controller: txtSearch,
                   onTap: () async {
                     await Navigator.push(
@@ -141,6 +142,7 @@ class _SearchViewState extends State<SearchView> {
             if (txtSearch.text.isNotEmpty) const SizedBox(width: 8),
             if (txtSearch.text.isNotEmpty)
               TextButton(
+                key: Key("cancel"),
                 onPressed: () {
                   txtSearch.text = "";
                   setState(() {});

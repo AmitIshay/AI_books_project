@@ -1,3 +1,4 @@
+import 'package:pjbooks/book_service.dart';
 import 'package:pjbooks/common/color_extenstion.dart';
 import 'package:pjbooks/view/book_reading/book_reading_view.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -22,47 +23,12 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   TextEditingController txtName = TextEditingController();
   TextEditingController txtEmail = TextEditingController();
-
+  BookService service = BookService();
 
   //TODO לעשות טופ פיק פונקציה בשרת ובאפליקציה
-  List topPicksArr = [
-    {
-      "name": "The Dissapearance of Emila Zola",
-      "author": "Michael Rosen",
-      "img": "assets/img/1.jpg",
-    },
-    {
-      "name": "Fatherhood",
-      "author": "Marcus Berkmann",
-      "img": "assets/img/2.jpg",
-    },
-    {
-      "name": "The Time Travellers Handbook",
-      "author": "Stride Lottie",
-      "img": "assets/img/3.jpg",
-    },
-  ];
+  List topPicksArr = [];
 
-  List bestArr = [
-    {
-      "name": "Fatherhood",
-      "author": "by Christopher Wilson",
-      "img": "assets/img/4.jpg",
-      "rating": 5.0,
-    },
-    {
-      "name": "In A Land Of Paper Gods",
-      "author": "by Rebecca Mackenzie",
-      "img": "assets/img/5.jpg",
-      "rating": 4.0,
-    },
-    {
-      "name": "Tattletale",
-      "author": "by Sarah J. Noughton",
-      "img": "assets/img/6.jpg",
-      "rating": 3.0,
-    },
-  ];
+  List bestArr = [];
 
   List genresArr = [
     {"name": "Graphic Novels", "img": "assets/img/g1.png"},
@@ -87,6 +53,13 @@ class _HomeViewState extends State<HomeView> {
       "img": "assets/img/12.jpg",
     },
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    load_top_pick();
+    load_most_rated();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -185,7 +158,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     ),
                     SizedBox(
-                      height: media.width * 0.9,
+                      height: media.width * 0.6,
                       child: ListView.builder(
                         padding: const EdgeInsets.symmetric(
                           vertical: 15,
@@ -357,5 +330,15 @@ class _HomeViewState extends State<HomeView> {
         ),
       ),
     );
+  }
+
+  void load_top_pick() {
+    service.loadBooksTopPick();
+    this.topPicksArr= service.books_top_pick;
+  }
+
+  void load_most_rated() {
+    service.loadBooksRated();
+    this.bestArr = service.books_most_rated;
   }
 }

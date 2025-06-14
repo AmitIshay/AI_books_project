@@ -32,8 +32,8 @@ class BestSellerCell extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 child: Image.asset(
                   bObj["img"].toString(),
-                  width: media.width * 0.32,
-                  height: media.width * 0.50,
+                  width: media.width * 0.20,
+                  height: media.width * 0.30,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -47,7 +47,7 @@ class BestSellerCell extends StatelessWidget {
               textAlign: TextAlign.left,
               style: TextStyle(
                   color: TColor.text,
-                  fontSize: 13,
+                  fontSize: 20,
                   fontWeight: FontWeight.w700),
             ),
             const SizedBox(
@@ -59,7 +59,7 @@ class BestSellerCell extends StatelessWidget {
               textAlign: TextAlign.left,
               style: TextStyle(
                 color: TColor.subTitle,
-                fontSize: 11,
+                fontSize: 17,
               ),
             ),
             const SizedBox(
@@ -73,7 +73,7 @@ class BestSellerCell extends StatelessWidget {
                 direction: Axis.horizontal,
                 allowHalfRating: true,
                 itemCount: 5,
-                itemSize: 15,
+                itemSize: 17,
                 itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
                 itemBuilder: (context, _) => Icon(
                   Icons.star,

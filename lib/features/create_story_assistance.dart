@@ -1,5 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:pjbooks/backend/config.dart';
+import 'package:pjbooks/backend/user_prefs.dart';
+import 'package:pjbooks/bookPages/book.dart';
+import 'package:pjbooks/bookPages/home_screen.dart';
+import 'package:pjbooks/book_service.dart';
 import 'package:pjbooks/common/color_extenstion.dart';
+import 'package:provider/provider.dart';
+import 'dart:math';
 
 class BookQuestionsScreen extends StatefulWidget {
   const BookQuestionsScreen({super.key});
@@ -12,11 +22,10 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
   // Questions grouped by category
   final Map<String, List<String>> questions = {
     "Basic Questions": [
-      "What is the genre of the book you want to write?",
       "What is the name of your book (if you have an idea)?",
+      "What is the main idea or the subject of your book?",
     ],
     "Plot Questions": [
-      "What is the main idea or theme of your book?",
       "What is the starting point of the plot?",
       "What is the central conflict in the story?",
       "How do you envision the ending?",
@@ -49,6 +58,113 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
   };
 
   final Map<String, String> userAnswers = {}; // Store user answers
+  void submitStory() async {
+    final token = await UserPrefs.getToken();
+    final author = await UserPrefs.getFullName() ?? "Unknown";
+    final random = Random();
+    final numPages = (random.nextInt(8) + 3).toString();
+    if (token == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("You must be logged in")));
+      return;
+    }
+    if (userAnswers["What is the main idea or the subject of your book?"] ==
+            null ||
+        userAnswers["What is the name of your book (if you have an idea)?"] ==
+            null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("You must answer the main idea and name of the book."),
+        ),
+      );
+      return;
+    }
+    try {
+      // המרת התשובות למחרוזת תיאור
+      final descriptionBuffer = StringBuffer();
+      userAnswers.forEach((question, answer) {
+        descriptionBuffer.writeln("$question\n- $answer\n");
+      });
+
+      final aiStoryData = {
+        "subject":
+            userAnswers["What is the main idea or the subject of your book?"] ??
+            "", // אפשר לעדכן בהמשך
+        "numPages": numPages.toString(),
+        "auther": author,
+        "description": descriptionBuffer.toString(), // הכנסת התשובות כאן
+        "title":
+            userAnswers["What is the name of your book (if you have an idea)?"] ??
+            "",
+        "text_to_voice": true,
+        "resolution": "1024x898",
+      };
+
+      final aiResponse = await http.post(
+        Uri.parse("${Config.baseUrl}/api/story-ai/MagicOfStory/Story"),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+        body: jsonEncode(aiStoryData),
+      );
+
+      final Map<String, dynamic> responseData = jsonDecode(aiResponse.body);
+
+      if (aiResponse.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Book & AI story created successfully!"),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("AI story error: ${aiResponse.body}")),
+        );
+      }
+
+      await context.read<BookService>().loadBooks();
+
+      final Book newBook = Book(
+        title: responseData["title"],
+        coverImage: responseData["cover_image"] ?? "",
+        pages:
+            (responseData["pages"] as List<dynamic>)
+                .map(
+                  (page) => BookPage(
+                    imagePath: page["img_url"] ?? "",
+                    text: page["text_page"] ?? "",
+                    voiceUrl: page["voice_file_url"] ?? "",
+                  ),
+                )
+                .toList()
+              ..add(
+                BookPage(
+                  imagePath: "",
+                  text: "",
+                  voiceUrl: "",
+                  isEndPage: true,
+                ),
+              ),
+      );
+
+      for (var page in newBook.pages) {
+        if (page.imagePath.isNotEmpty) {
+          await precacheImage(NetworkImage(page.imagePath), context);
+        }
+      }
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error: $e")));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +222,6 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: ExpansionTile(
-                        key: Key(category),
                         title: Text(
                           category,
                           style: const TextStyle(
@@ -117,7 +232,6 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
                         children:
                             questions[category]!.map((question) {
                               return Padding(
-
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 16.0,
                                   vertical: 8.0,
@@ -131,7 +245,6 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
                                     ),
                                     const SizedBox(height: 8.0),
                                     TextField(
-                                      key: Key("text_input_$question"),
                                       decoration: InputDecoration(
                                         border: OutlineInputBorder(),
                                         hintText: "Write your answer here...",
@@ -155,13 +268,10 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: ElevatedButton(
-                  key: Key("create story"),
-                  onPressed: () {
-                    // Action to create the story
-                    print("User answers: $userAnswers");
-                  },
-                  child: const Text("Create Story"),
+                child: ElevatedButton.icon(
+                  onPressed: submitStory,
+                  icon: const Icon(Icons.book),
+                  label: const Text("Create Story"),
                 ),
               ),
             ],

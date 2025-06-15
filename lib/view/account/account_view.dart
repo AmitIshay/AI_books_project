@@ -23,6 +23,7 @@ class AccountView extends StatefulWidget {
 class _AccountViewState extends State<AccountView> {
   List purArr = ["assets/img/p1.jpg", "assets/img/p2.jpg", "assets/img/p3.jpg"];
   List UserBooks = [];
+
   List sResultArr = [
     {
       "img": "assets/img/p1.jpg",
@@ -55,11 +56,12 @@ class _AccountViewState extends State<AccountView> {
     loadFullName();
     loadBio();
     loadlocation();
-    loadimage_base64();
     loadBooks();
+    loadimage_base64();
     //loadBooksCount();
   }
-  void loadBooks() async{
+
+  void loadBooks() async {
     var bookService = BookService();
     bookService.loadBooks();
     UserBooks = bookService.books;
@@ -508,7 +510,7 @@ class _AccountViewState extends State<AccountView> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
               child: Text(
-                "Your Books ($booksCount)",
+                "Your Books (${booksCount})",
                 style: TextStyle(
                   color: TColor.subTitle,
                   fontSize: 20,
@@ -523,7 +525,7 @@ class _AccountViewState extends State<AccountView> {
                   height: media.width * 0.4,
                   width: media.width * 0.45,
                   decoration: const BoxDecoration(
-
+                    // color: Color(0xffFF5957),
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(20),
                       bottomRight: Radius.circular(20),
@@ -534,6 +536,9 @@ class _AccountViewState extends State<AccountView> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children:
+                        // purArr.map((iName) {
+                        //   var isFirst = purArr.first == iName;
+                        //   var isLast = purArr.last == iName;
                         UserBooks.map((iName) {
                           var isFirst = UserBooks.first == iName;
                           var isLast = UserBooks.last == iName;
@@ -564,6 +569,7 @@ class _AccountViewState extends State<AccountView> {
                                 borderRadius: BorderRadius.circular(15),
                                 child: Image.asset(
                                   iName,
+                                  // height: media.width * 0.5,
                                   height: media.width * 0.1,
                                   fit: BoxFit.fitHeight,
                                 ),

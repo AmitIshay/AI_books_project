@@ -25,7 +25,6 @@ class _HomeViewState extends State<HomeView> {
   TextEditingController txtEmail = TextEditingController();
   BookService service = BookService();
 
-  //TODO לעשות טופ פיק פונקציה בשרת ובאפליקציה
   List topPicksArr = [];
 
   List bestArr = [];
@@ -179,7 +178,7 @@ class _HomeViewState extends State<HomeView> {
                                 ),
                               );
                             },
-                            child: BestSellerCell(bObj: bObj),
+                            child:  TopPicksCell (iObj: bObj),
                           );
                         }),
                       ),
@@ -332,13 +331,17 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  void load_top_pick() {
-    service.loadBooksTopPick();
-    this.topPicksArr= service.books_top_pick;
+  void load_top_pick() async{
+    await service.loadBooksTopPick();
+    setState(() {
+      topPicksArr = service.books_top_pick;
+    });
   }
 
-  void load_most_rated() {
-    service.loadBooksRated();
-    this.bestArr = service.books_most_rated;
+  void load_most_rated() async{
+    await service.loadBooksRated();
+    setState(() {
+      bestArr = service.books_most_rated;
+    });
   }
 }

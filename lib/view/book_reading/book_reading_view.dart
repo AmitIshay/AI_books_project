@@ -23,13 +23,13 @@ class _BookReadingViewState extends State<BookReadingView> {
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
             SliverAppBar(
-              key: Key("bookObj_${widget.bObj["name"].toString()}"),
+              key: Key("bookObj_${widget.bObj["title"].toString()}"),
               pinned: false,
               floating: false,
               backgroundColor: Colors.transparent,
               elevation: 0,
               title: Text(
-                widget.bObj["name"].toString(),
+                widget.bObj["title"].toString(),
                 style: TextStyle(
                     color:  isDark ? Colors.white : TColor.text,
                     fontSize: 20,

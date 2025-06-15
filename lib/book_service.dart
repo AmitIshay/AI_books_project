@@ -32,7 +32,7 @@ class BookService extends ChangeNotifier {
 
   static Future<Map<String, dynamic>> getMostRatedBooks() async {
     final response = await http.get(
-      Uri.parse('$baseUrl/api/books/get_top_pick'),
+      Uri.parse('$baseUrl/api/books/get_top_rated'),
       headers: {
         'Content-Type': 'application/json',
       },

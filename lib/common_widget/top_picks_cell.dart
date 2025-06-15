@@ -32,8 +32,8 @@ class TopPicksCell extends StatelessWidget {
                   ]),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  chooseImage(),
+                child: Image.network(
+                    chooseImage() ,
                   width: media.width * 0.20,
                   height: media.width * 0.30,
                   fit: BoxFit.cover,
@@ -44,7 +44,8 @@ class TopPicksCell extends StatelessWidget {
               height: 15,
             ),
             Text(
-              iObj["name"].toString(),
+              iObj["title"].toString(),
+              //iObj["name"].toString(),
               maxLines: 3,
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -68,6 +69,9 @@ class TopPicksCell extends StatelessWidget {
   String chooseImage() {
     List pages = List<Map<String, dynamic>>.from(iObj["pages"]);
     var intValue = Random().nextInt(pages.length-1); // Value is >= 0 and < pages.length-1
-    return pages[intValue]["img_ur"].toString();
+    String str_img = pages[intValue]["img_url"].toString();
+    if (str_img == '')
+      str_img = 'https://blog-cdn.reedsy.com/directories/gallery/248/large_65b0ae90317f7596d6f95bfdd6131398.jpg';
+    return str_img;
   }
 }

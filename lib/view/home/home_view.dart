@@ -1,8 +1,8 @@
+import 'package:pjbooks/book_service.dart';
 import 'package:pjbooks/common/color_extenstion.dart';
 import 'package:pjbooks/view/book_reading/book_reading_view.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-
 import '../../common_widget/best_seller_cell.dart';
 import '../../common_widget/genres_cell.dart';
 import '../../common_widget/recently_cell.dart';
@@ -14,7 +14,6 @@ import '../main_tab/main_tab_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
-
   @override
   State<HomeView> createState() => _HomeViewState();
 }
@@ -22,52 +21,17 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   TextEditingController txtName = TextEditingController();
   TextEditingController txtEmail = TextEditingController();
+  BookService service = BookService();
 
-  List topPicksArr = [
-    {
-      "name": "The Dissapearance of Emila Zola",
-      "author": "Michael Rosen",
-      "img": "assets/img/1.jpg",
-    },
-    {
-      "name": "Fatherhood",
-      "author": "Marcus Berkmann",
-      "img": "assets/img/2.jpg",
-    },
-    {
-      "name": "The Time Travellers Handbook",
-      "author": "Stride Lottie",
-      "img": "assets/img/3.jpg",
-    },
-  ];
+  //TODO לעשות טופ פיק פונקציה בשרת ובאפליקציה
+  List topPicksArr = [];
 
-  List bestArr = [
-    {
-      "name": "Fatherhood",
-      "author": "by Christopher Wilson",
-      "img": "assets/img/4.jpg",
-      "rating": 5.0,
-    },
-    {
-      "name": "In A Land Of Paper Gods",
-      "author": "by Rebecca Mackenzie",
-      "img": "assets/img/5.jpg",
-      "rating": 4.0,
-    },
-    {
-      "name": "Tattletale",
-      "author": "by Sarah J. Noughton",
-      "img": "assets/img/6.jpg",
-      "rating": 3.0,
-    },
-  ];
-
+  List bestArr = [];
   List genresArr = [
     {"name": "Graphic Novels", "img": "assets/img/g1.png"},
     {"name": "Graphic Novels", "img": "assets/img/g1.png"},
     {"name": "Graphic Novels", "img": "assets/img/g1.png"},
   ];
-
   List recentArr = [
     {
       "name": "The Fatal Tree",
@@ -85,6 +49,12 @@ class _HomeViewState extends State<HomeView> {
       "img": "assets/img/12.jpg",
     },
   ];
+  @override
+  void initState() {
+    super.initState();
+    load_top_pick();
+    load_most_rated();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +106,7 @@ class _HomeViewState extends State<HomeView> {
                       leadingWidth: 1,
                       actions: [
                         IconButton(
+                          key: Key("menu"),
                           onPressed: () {
                             sideMenuScaffoldKey.currentState?.openEndDrawer();
                           },
@@ -145,7 +116,7 @@ class _HomeViewState extends State<HomeView> {
                     ),
                     SizedBox(
                       width: media.width,
-                      height: media.width * 0.8,
+                      height: media.width * 0.5,
                       child: CarouselSlider.builder(
                         itemCount: topPicksArr.length,
                         itemBuilder: (
@@ -182,7 +153,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     ),
                     SizedBox(
-                      height: media.width * 0.9,
+                      height: media.width * 0.6,
                       child: ListView.builder(
                         padding: const EdgeInsets.symmetric(
                           vertical: 15,
@@ -192,7 +163,6 @@ class _HomeViewState extends State<HomeView> {
                         itemCount: bestArr.length,
                         itemBuilder: ((context, index) {
                           var bObj = bestArr[index] as Map? ?? {};
-
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -203,7 +173,7 @@ class _HomeViewState extends State<HomeView> {
                                 ),
                               );
                             },
-                            child: BestSellerCell(bObj: bObj),
+                            child: TopPicksCell(iObj: bObj),
                           );
                         }),
                       ),
@@ -234,7 +204,6 @@ class _HomeViewState extends State<HomeView> {
                         itemCount: genresArr.length,
                         itemBuilder: ((context, index) {
                           var bObj = genresArr[index] as Map? ?? {};
-
                           return GenresCell(
                             bObj: bObj,
                             bgcolor:
@@ -270,7 +239,6 @@ class _HomeViewState extends State<HomeView> {
                         itemCount: recentArr.length,
                         itemBuilder: ((context, index) {
                           var bObj = recentArr[index] as Map? ?? {};
-
                           return RecentlyCell(iObj: bObj);
                         }),
                       ),
@@ -354,5 +322,19 @@ class _HomeViewState extends State<HomeView> {
         ),
       ),
     );
+  }
+
+  void load_top_pick() async {
+    await service.loadBooksTopPick();
+    setState(() {
+      topPicksArr = service.books_top_pick;
+    });
+  }
+
+  void load_most_rated() async {
+    await service.loadBooksRated();
+    setState(() {
+      bestArr = service.books_most_rated;
+    });
   }
 }

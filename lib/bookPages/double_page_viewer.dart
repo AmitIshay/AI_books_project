@@ -18,10 +18,12 @@ class _DoublePageBookViewerState extends State<DoublePageBookViewer> {
   late final TurnPageController _controller;
   int _currentPairIndex = 0;
 
-  // Map לשמירת הצבע הדומיננטי לכל דף לפי האינדקס
   Map<int, Color> _dominantColors = {};
   final AudioPlayer _audioPlayer = AudioPlayer();
   int? _playingIndex;
+
+  bool _showText = true;
+
   Future<void> _playVoice(String url, int index) async {
     try {
       if (_playingIndex == index) {
@@ -69,7 +71,6 @@ class _DoublePageBookViewerState extends State<DoublePageBookViewer> {
     }
   }
 
-  // פונקציה לזיהוי הצבע הדומיננטי של תמונה
   Future<void> _extractDominantColor(String imageUrl, int index) async {
     final PaletteGenerator paletteGenerator =
         await PaletteGenerator.fromImageProvider(
@@ -138,7 +139,7 @@ class _DoublePageBookViewerState extends State<DoublePageBookViewer> {
             top: MediaQuery.of(context).size.height / 2 - 24,
             child: _arrowButton(
               icon: Icons.arrow_back_ios,
-              onTap: _goToNextPagePair,
+              onTap: _goToPreviousPagePair,
             ),
           ),
           Positioned(
@@ -146,7 +147,7 @@ class _DoublePageBookViewerState extends State<DoublePageBookViewer> {
             top: MediaQuery.of(context).size.height / 2 - 24,
             child: _arrowButton(
               icon: Icons.arrow_forward_ios,
-              onTap: _goToPreviousPagePair,
+              onTap: _goToNextPagePair,
             ),
           ),
           Positioned(
@@ -167,6 +168,23 @@ class _DoublePageBookViewerState extends State<DoublePageBookViewer> {
                   'Pages ${_currentPairIndex + 1} - ${(_currentPairIndex + 2).clamp(1, widget.pages.length)} of ${widget.pages.length}',
                   style: const TextStyle(color: Colors.white, fontSize: 16),
                 ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 100,
+            right: 20,
+            child: FloatingActionButton(
+              mini: true,
+              backgroundColor: Colors.black54,
+              onPressed: () {
+                setState(() {
+                  _showText = !_showText;
+                });
+              },
+              child: Icon(
+                _showText ? Icons.visibility_off : Icons.visibility,
+                color: Colors.white,
               ),
             ),
           ),
@@ -199,7 +217,6 @@ class _DoublePageBookViewerState extends State<DoublePageBookViewer> {
       );
     }
 
-    // טעינת צבע רקע לפי התמונה אם קיים imagePath ועדיין לא טענו את הצבע
     if (page.imagePath.isNotEmpty && !_dominantColors.containsKey(index)) {
       _extractDominantColor(page.imagePath, index);
     }
@@ -209,11 +226,10 @@ class _DoublePageBookViewerState extends State<DoublePageBookViewer> {
     return Padding(
       padding: const EdgeInsets.all(5),
       child: Container(
-        height: 500,
         width: double.infinity,
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: backgroundColor, // זה צבע הרקע שאתה רוצה להתאים
+          color: backgroundColor,
           border: Border.all(color: Colors.grey.shade300),
           boxShadow: [
             BoxShadow(
@@ -226,96 +242,101 @@ class _DoublePageBookViewerState extends State<DoublePageBookViewer> {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // תמונה
             if (page.imagePath.isNotEmpty)
               Image.network(page.imagePath, fit: BoxFit.contain),
 
-            // טשטוש בקצוות
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    backgroundColor.withOpacity(0.85),
-                    Colors.transparent,
-                    Colors.transparent,
-                    backgroundColor.withOpacity(0.85),
-                  ],
-                  stops: [0.0, 0.1, 0.9, 1.0],
-                ),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    backgroundColor.withOpacity(0.85),
-                    Colors.transparent,
-                    Colors.transparent,
-                    backgroundColor.withOpacity(0.85),
-                  ],
-                  stops: [0.11, 0.15, 0.9, 1.0],
-                ),
-              ),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const SizedBox(height: 12),
-                // כפתור קול
-                if (page.voiceUrl.isNotEmpty)
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: InkWell(
-                        onTap: () => _playVoice(page.voiceUrl, index),
-                        child: CircleAvatar(
-                          backgroundColor: Colors.black.withOpacity(0.6),
-                          child: Icon(
-                            _playingIndex == index
-                                ? Icons.stop
-                                : Icons.volume_up,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                      ),
+            // Container(
+            //   decoration: BoxDecoration(
+            //     gradient: LinearGradient(
+            //       begin: Alignment.centerLeft,
+            //       end: Alignment.centerRight,
+            //       colors: [
+            //         backgroundColor.withOpacity(0.85),
+            //         Colors.transparent,
+            //         Colors.transparent,
+            //         backgroundColor.withOpacity(0.85),
+            //       ],
+            //       stops: [0.0, 0.1, 0.9, 1.0],
+            //     ),
+            //   ),
+            // ),
+
+            // Container(
+            //   decoration: BoxDecoration(
+            //     gradient: LinearGradient(
+            //       begin: Alignment.topCenter,
+            //       end: Alignment.bottomCenter,
+            //       colors: [
+            //         backgroundColor.withOpacity(0.85),
+            //         Colors.transparent,
+            //         Colors.transparent,
+            //         backgroundColor.withOpacity(0.85),
+            //       ],
+            //       stops: [0.11, 0.15, 0.9, 1.0],
+            //     ),
+            //   ),
+            // ),
+            if (page.voiceUrl.isNotEmpty)
+              Positioned(
+                top: 8,
+                right: 8,
+                child: InkWell(
+                  onTap: () => _playVoice(page.voiceUrl, index),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.black.withOpacity(0.6),
+                    child: Icon(
+                      _playingIndex == index ? Icons.stop : Icons.volume_up,
+                      color: Colors.white,
+                      size: 20,
                     ),
                   ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      padding: const EdgeInsets.all(3),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.85),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                ),
+              ),
+
+            if (_showText)
+              Positioned(
+                bottom: 40,
+                left: 20,
+                right: 20,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 300),
+                  opacity: _showText ? 1.0 : 0.0,
+                  child: Container(
+                    constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height * 0.25,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.6),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: SingleChildScrollView(
                       child: Text(
                         page.text,
-                        style: const TextStyle(fontSize: 20, height: 1.5),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          height: 1.4,
+                          color: Colors.white,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Text(
-                    'Page ${index + 1}',
-                    style: const TextStyle(color: Colors.black87, fontSize: 14),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
+              ),
+
+            Positioned(
+              bottom: 8,
+              left: 0,
+              right: 0,
+              child: Text(
+                'Page ${index + 1}',
+                style: const TextStyle(color: Colors.black87, fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
             ),
           ],
         ),

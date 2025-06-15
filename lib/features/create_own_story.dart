@@ -104,7 +104,7 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
         "description": descriptionController.text.trim(), // אפשר לבקש מהמשתמש
         "title": titleController.text.trim(),
         "text_to_voice": true,
-        "resolution": "1024x570",
+        "resolution": "1024x898",
         "story_pages": pagesTexts,
       };
       final aiResponse = await http.post(

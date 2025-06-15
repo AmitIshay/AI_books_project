@@ -9,8 +9,11 @@ import 'package:flutter/foundation.dart';
 class BookService extends ChangeNotifier {
   static const String baseUrl = Config.baseUrl;
   List<Map<String, dynamic>> _books = [];
-
+  List<Map<String, dynamic>> _books_top_pick = [];
+  List<Map<String, dynamic>> _books_most_rated = [];
   List<Map<String, dynamic>> get books => _books;
+  List<Map<String, dynamic>> get books_top_pick => _books_top_pick;
+  List<Map<String, dynamic>> get books_most_rated => _books_most_rated;
 
   static Future<Map<String, dynamic>> getUserBooks(String token) async {
     final response = await http.get(
@@ -42,4 +45,50 @@ class BookService extends ChangeNotifier {
   }
 
   int get booksCount => _books.length;
+
+  static Future<Map<String, dynamic>> getMostRatedBooks() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/books/get_top_rated'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    final body = jsonDecode(response.body);
+    print(body);
+    return {'statusCode': response.statusCode, 'body': body};
+  }
+
+  static Future<Map<String, dynamic>> getTopPicksBooks() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/books/get_top_pick'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    final body = jsonDecode(response.body);
+    print(body);
+    return {'statusCode': response.statusCode, 'body': body};
+  }
+
+  Future<void> loadBooksTopPick() async {
+    final response = await BookService.getTopPicksBooks();
+    if (response['statusCode'] == 200) {
+      final booksList = response['body']['books'] as List;
+      _books_top_pick = List<Map<String, dynamic>>.from(booksList);
+      notifyListeners();
+    } else {
+      // טפל בשגיאות כאן
+      print('Error loading books: ${response['body']['message']}');
+    }
+  }
+
+  Future<void> loadBooksRated() async {
+    final response = await BookService.getMostRatedBooks();
+    if (response['statusCode'] == 200) {
+      final booksList = response['body']['books'] as List;
+      _books_most_rated = List<Map<String, dynamic>>.from(booksList);
+      notifyListeners();
+    } else {
+      // טפל בשגיאות כאן
+      print('Error loading books: ${response['body']['message']}');
+    }
+  }
 }

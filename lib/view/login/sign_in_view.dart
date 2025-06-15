@@ -170,6 +170,10 @@ class _SignInViewState extends State<SignInView> {
                             );
                             await UserPrefs.setIsLoggedIn(isStay);
                             await context.read<BookService>().loadBooks();
+                            await context
+                                .read<BookService>()
+                                .loadBooksTopPick();
+
                             // 🟨 שליפת הספרים מהשרת
                             // final booksRes = await BookService.getUserBooks(
                             //   token,

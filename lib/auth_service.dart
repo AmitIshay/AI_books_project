@@ -35,12 +35,18 @@ class AuthService {
     required String email,
     required String password,
   }) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/api/auth/login'),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode({'email': email, 'password': password}),
-    );
+    final response = await http
+        .post(
+          Uri.parse('$baseUrl/api/auth/login'),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({'email': email, 'password': password}),
+        )
+        .timeout(Duration(seconds: 10));
 
+    print({
+      'statusCode': response.statusCode,
+      'body': json.decode(response.body),
+    });
     return {
       'statusCode': response.statusCode,
       'body': json.decode(response.body),

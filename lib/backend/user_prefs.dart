@@ -9,7 +9,7 @@ class UserPrefs {
   static const String _bio = 'bio';
   static const String _location = 'location';
   static const String _image_base64 = 'image_base64';
-
+  static const String _generes = 'generes';
   /// שומר טוקן ו-id של המשתמש
   static Future<void> saveTokenAndUserIdAndfull_name(
     String token,
@@ -29,6 +29,7 @@ class UserPrefs {
     String bio,
     String location,
     String imageBase64,
+    List<String>  genres
   ) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_tokenKey, token);
@@ -37,8 +38,13 @@ class UserPrefs {
     await prefs.setString(_bio, bio);
     await prefs.setString(_location, location);
     await prefs.setString(_image_base64, imageBase64);
+    await prefs.setStringList(_generes, genres);
   }
-
+  /// מחזיר את הזאנרים של המשתמש
+  static Future<List<String>?> getGenres() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(_generes);
+  }
   /// מחזיר את הטוקן
   static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();

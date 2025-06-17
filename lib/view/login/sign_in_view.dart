@@ -164,6 +164,9 @@ class _SignInViewState extends State<SignInView> {
                             final location = res['body']['location'] ?? "";
                             final imageBase64 =
                                 res['body']['image_base64'] ?? "";
+                            final genres_dynamic = res['body']['genres'] ;
+
+                            var genres = coventDynamicListIntoString(genres_dynamic);
 
                             await UserPrefs.saveTokenAndUserIdAndfull_name_bio_location_image_base64(
                               token,
@@ -172,6 +175,7 @@ class _SignInViewState extends State<SignInView> {
                               bio,
                               location,
                               imageBase64,
+                              genres
                             );
                             await UserPrefs.setIsLoggedIn(isStay);
 
@@ -259,5 +263,20 @@ class _SignInViewState extends State<SignInView> {
       ),
       child: Image.asset(image, height: 30),
     );
+  }
+
+  List<String> coventDynamicListIntoString(genres) {
+    List<String> genresList = []; // Default to an empty list
+
+    if (genres != null && genres is List) {
+      // Ensure every item in the list is a String before casting
+      genresList = genres.map((item) => item.toString()).toList();
+    } else if (genres == null) {
+      // Handle the case where 'genres' might be missing from the response entirely
+      // You might want to default to an empty list or handle it as an error
+      print("Genres field is null or not a list in the response.");
+    }
+      return genresList;
+
   }
 }

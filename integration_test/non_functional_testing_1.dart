@@ -28,8 +28,13 @@ void main() {
     await tester.pump(const Duration(seconds: 3));
 
 
-    const listBooks = ["The Fatal Tree","Day Four","Door to Door","cats and dogs","john big adventure"];
-
+    const listBooks = [
+      "Cat and Dog",
+      "My Ball",
+      "Big Car",
+      "Little Bear",
+      "Red Hat"
+    ];
     const String email = "yam@smail.com";
     const String password ="yamking113";
 

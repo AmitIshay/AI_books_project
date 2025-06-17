@@ -1,12 +1,14 @@
 
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart' show CachedNetworkImage;
 import 'package:flutter/material.dart';
 
 import '../common/color_extenstion.dart';
-
+import '../book_service.dart';
 class TopPicksCell extends StatelessWidget {
   final Map iObj;
+
   const TopPicksCell({super.key, required this.iObj});
 
   @override
@@ -32,8 +34,11 @@ class TopPicksCell extends StatelessWidget {
                   ]),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                    chooseImage() ,
+                child: CachedNetworkImage(
+                  imageUrl: chooseImage(),
+                  placeholder: (context, url) => CircularProgressIndicator(), // or Shimmer
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  fadeInDuration: Duration(milliseconds: 200),
                   width: media.width * 0.20,
                   height: media.width * 0.30,
                   fit: BoxFit.cover,
@@ -69,9 +74,9 @@ class TopPicksCell extends StatelessWidget {
   String chooseImage() {
     List pages = List<Map<String, dynamic>>.from(iObj["pages"]);
     var intValue = Random().nextInt(pages.length-1); // Value is >= 0 and < pages.length-1
-    String str_img = pages[intValue]["img_url"].toString();
-    if (str_img == '')
-      str_img = 'https://blog-cdn.reedsy.com/directories/gallery/248/large_65b0ae90317f7596d6f95bfdd6131398.jpg';
+    String str_img = (pages[intValue]["img_url"]?? BookService.str_img_defult).toString();
+    if (str_img == '') {
+    }
     return str_img;
   }
 }

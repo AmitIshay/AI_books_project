@@ -127,6 +127,8 @@ class _SignUpViewState extends State<SignUpView> {
                             final location = res['body']['location'] ?? "";
                             final imageBase64 =
                                 res['body']['image_base64'] ?? "";
+                            final genres = res['body']['genres'] ?? List<String>;
+
                             // final prefs = await SharedPreferences.getInstance();
                             // await prefs.setString('token', token);
                             // await prefs.setString('user_id', userId);
@@ -137,6 +139,7 @@ class _SignUpViewState extends State<SignUpView> {
                               bio,
                               location,
                               imageBase64,
+                              genres
                             );
 
                             ScaffoldMessenger.of(context).showSnackBar(

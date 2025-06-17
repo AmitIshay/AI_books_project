@@ -1,3 +1,4 @@
+import 'package:pjbooks/backend/user_prefs.dart';
 import 'package:pjbooks/book_service.dart';
 import 'package:pjbooks/common/color_extenstion.dart';
 import 'package:pjbooks/view/book_reading/book_reading_view.dart';
@@ -29,35 +30,17 @@ class _HomeViewState extends State<HomeView> {
 
   List bestArr = [];
 
-  List genresArr = [
-    {"name": "Graphic Novels", "img": "assets/img/g1.png"},
-    {"name": "Graphic Novels", "img": "assets/img/g1.png"},
-    {"name": "Graphic Novels", "img": "assets/img/g1.png"},
-  ];
+  List genresArr = [];
 
-  List recentArr = [
-    {
-      "name": "The Fatal Tree",
-      "author": "by Jake Arnott",
-      "img": "assets/img/10.jpg",
-    },
-    {
-      "name": "Day Four",
-      "author": "by LOTZ, SARAH",
-      "img": "assets/img/11.jpg",
-    },
-    {
-      "name": "Door to Door",
-      "author": "by Edward Humes",
-      "img": "assets/img/12.jpg",
-    },
-  ];
+  List recentArr = [];
 
   @override
   void initState() {
     super.initState();
     load_top_pick();
     load_most_rated();
+    load_genres_user();
+    load_recent_added();
   }
 
   @override
@@ -199,7 +182,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     ),
                     SizedBox(
-                      height: media.width * 0.6,
+                      height: media.width * 0.3,
                       child: ListView.builder(
                         padding: const EdgeInsets.symmetric(
                           vertical: 15,
@@ -208,12 +191,13 @@ class _HomeViewState extends State<HomeView> {
                         scrollDirection: Axis.horizontal,
                         itemCount: genresArr.length,
                         itemBuilder: ((context, index) {
-                          var bObj = genresArr[index] as Map? ?? {};
+                          String bObj = genresArr[index] ?? "";
 
                           return GenresCell(
                             bObj: bObj,
                             bgcolor:
                                 index % 2 == 0 ? TColor.color1 : TColor.color2,
+
                           );
                         }),
                       ),
@@ -224,7 +208,7 @@ class _HomeViewState extends State<HomeView> {
                       child: Row(
                         children: [
                           Text(
-                            "Recently Viewed",
+                            "Recently Added",
                             style: TextStyle(
                               color: TColor.text,
                               fontSize: 22,
@@ -235,7 +219,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     ),
                     SizedBox(
-                      height: media.width * 0.7,
+                      height: media.width * 0.5,
                       child: ListView.builder(
                         padding: const EdgeInsets.symmetric(
                           vertical: 15,
@@ -246,7 +230,7 @@ class _HomeViewState extends State<HomeView> {
                         itemBuilder: ((context, index) {
                           var bObj = recentArr[index] as Map? ?? {};
 
-                          return RecentlyCell(iObj: bObj);
+                          return TopPicksCell(iObj: bObj);
                         }),
                       ),
                     ),
@@ -342,6 +326,21 @@ class _HomeViewState extends State<HomeView> {
     await service.loadBooksRated();
     setState(() {
       bestArr = service.books_most_rated;
+    });
+  }
+  void load_genres_user()
+  async{
+    final genres = await UserPrefs.getGenres();
+    setState(() {
+      genresArr = genres ?? []; // ברירת מחדל אם לא קיים
+    });
+  }
+
+  //TODO
+  void load_recent_added() async{
+    await service.loadBooksRecentAdded();
+    setState(() {
+      recentArr = service.books_recent_added;
     });
   }
 }

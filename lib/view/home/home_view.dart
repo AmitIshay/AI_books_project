@@ -1,8 +1,10 @@
+import 'package:pjbooks/backend/user_prefs.dart';
 import 'package:pjbooks/book_service.dart';
 import 'package:pjbooks/common/color_extenstion.dart';
 import 'package:pjbooks/view/book_reading/book_reading_view.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+
 import '../../common_widget/best_seller_cell.dart';
 import '../../common_widget/genres_cell.dart';
 import '../../common_widget/recently_cell.dart';
@@ -14,6 +16,7 @@ import '../main_tab/main_tab_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
+
   @override
   State<HomeView> createState() => _HomeViewState();
 }
@@ -23,37 +26,21 @@ class _HomeViewState extends State<HomeView> {
   TextEditingController txtEmail = TextEditingController();
   BookService service = BookService();
 
-  //TODO לעשות טופ פיק פונקציה בשרת ובאפליקציה
   List topPicksArr = [];
 
   List bestArr = [];
-  List genresArr = [
-    {"name": "Graphic Novels", "img": "assets/img/g1.png"},
-    {"name": "Graphic Novels", "img": "assets/img/g1.png"},
-    {"name": "Graphic Novels", "img": "assets/img/g1.png"},
-  ];
-  List recentArr = [
-    {
-      "name": "The Fatal Tree",
-      "author": "by Jake Arnott",
-      "img": "assets/img/10.jpg",
-    },
-    {
-      "name": "Day Four",
-      "author": "by LOTZ, SARAH",
-      "img": "assets/img/11.jpg",
-    },
-    {
-      "name": "Door to Door",
-      "author": "by Edward Humes",
-      "img": "assets/img/12.jpg",
-    },
-  ];
+
+  List genresArr = [];
+
+  List recentArr = [];
+
   @override
   void initState() {
     super.initState();
     load_top_pick();
     load_most_rated();
+    load_genres_user();
+    load_recent_added();
   }
 
   @override
@@ -163,6 +150,7 @@ class _HomeViewState extends State<HomeView> {
                         itemCount: bestArr.length,
                         itemBuilder: ((context, index) {
                           var bObj = bestArr[index] as Map? ?? {};
+
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -173,7 +161,7 @@ class _HomeViewState extends State<HomeView> {
                                 ),
                               );
                             },
-                            child: TopPicksCell(iObj: bObj),
+                            child:  TopPicksCell (iObj: bObj),
                           );
                         }),
                       ),
@@ -194,7 +182,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     ),
                     SizedBox(
-                      height: media.width * 0.6,
+                      height: media.width * 0.3,
                       child: ListView.builder(
                         padding: const EdgeInsets.symmetric(
                           vertical: 15,
@@ -203,11 +191,13 @@ class _HomeViewState extends State<HomeView> {
                         scrollDirection: Axis.horizontal,
                         itemCount: genresArr.length,
                         itemBuilder: ((context, index) {
-                          var bObj = genresArr[index] as Map? ?? {};
+                          String bObj = genresArr[index] ?? "";
+
                           return GenresCell(
                             bObj: bObj,
                             bgcolor:
                                 index % 2 == 0 ? TColor.color1 : TColor.color2,
+
                           );
                         }),
                       ),
@@ -218,7 +208,7 @@ class _HomeViewState extends State<HomeView> {
                       child: Row(
                         children: [
                           Text(
-                            "Recently Viewed",
+                            "Recently Added",
                             style: TextStyle(
                               color: TColor.text,
                               fontSize: 22,
@@ -229,7 +219,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     ),
                     SizedBox(
-                      height: media.width * 0.7,
+                      height: media.width * 0.5,
                       child: ListView.builder(
                         padding: const EdgeInsets.symmetric(
                           vertical: 15,
@@ -239,7 +229,8 @@ class _HomeViewState extends State<HomeView> {
                         itemCount: recentArr.length,
                         itemBuilder: ((context, index) {
                           var bObj = recentArr[index] as Map? ?? {};
-                          return RecentlyCell(iObj: bObj);
+
+                          return TopPicksCell(iObj: bObj);
                         }),
                       ),
                     ),
@@ -324,17 +315,32 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  void load_top_pick() async {
+  void load_top_pick() async{
     await service.loadBooksTopPick();
     setState(() {
       topPicksArr = service.books_top_pick;
     });
   }
 
-  void load_most_rated() async {
+  void load_most_rated() async{
     await service.loadBooksRated();
     setState(() {
       bestArr = service.books_most_rated;
+    });
+  }
+  void load_genres_user()
+  async{
+    final genres = await UserPrefs.getGenres();
+    setState(() {
+      genresArr = genres ?? []; // ברירת מחדל אם לא קיים
+    });
+  }
+
+  //TODO
+  void load_recent_added() async{
+    await service.loadBooksRecentAdded();
+    setState(() {
+      recentArr = service.books_recent_added;
     });
   }
 }

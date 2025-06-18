@@ -90,7 +90,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                           pObj["title"].toString(),
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: TColor.primary,
+                            color: TColor.showMessage,
                             fontSize: 35,
                             fontWeight: FontWeight.w600,
                           ),
@@ -100,7 +100,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                           pObj["sub_title"].toString(),
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: TColor.primaryLight,
+                            color: TColor.showMessage2,
                             fontSize: 20,
                           ),
                         ),
@@ -129,6 +129,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       TextButton(
+                        key: Key('keySkip'),
                         onPressed: () async {
                           SharedPreferences prefs =
                               await SharedPreferences.getInstance();
@@ -142,8 +143,9 @@ class _OnboardingViewState extends State<OnboardingView> {
                         },
                         child: Text(
                           "Skip",
+
                           style: TextStyle(
-                            color: TColor.primary,
+                            color: TColor.showMessage2,
                             fontSize: 17,
                             fontWeight: FontWeight.w700,
                           ),
@@ -189,7 +191,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                         child: Text(
                           "Next",
                           style: TextStyle(
-                            color: TColor.primary,
+                            color: TColor.showMessage2,
                             fontSize: 17,
                             fontWeight: FontWeight.w700,
                           ),

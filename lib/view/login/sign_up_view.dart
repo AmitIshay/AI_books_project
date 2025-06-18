@@ -59,11 +59,13 @@ class _SignUpViewState extends State<SignUpView> {
                       ),
                       const SizedBox(height: 20),
                       RoundTextField(
+                        key: Key("text_input_name"),
                         controller: txtFirstName,
                         hintText: "First & Last Name",
                       ),
                       const SizedBox(height: 15),
                       RoundTextField(
+                        key: Key("text_input_email"),
                         controller: txtEmail,
                         hintText: "Email Address",
                         keyboardType: TextInputType.emailAddress,
@@ -71,12 +73,14 @@ class _SignUpViewState extends State<SignUpView> {
                       const SizedBox(height: 15),
                       const SizedBox(height: 15),
                       RoundTextField(
+                        key: Key("text_input_phone"),
                         controller: txtMobile,
                         hintText: "Mobile Phone",
                         keyboardType: TextInputType.phone,
                       ),
                       const SizedBox(height: 15),
                       RoundTextField(
+                        key: Key("text_input_password"),
                         controller: txtPassword,
                         hintText: "Password",
                         obscureText: true,
@@ -105,6 +109,7 @@ class _SignUpViewState extends State<SignUpView> {
                         ],
                       ),
                       RoundLineButton(
+                        key: Key("sign up"),
                         title: "Sign Up",
                         onPressed: () async {
                           final res = await AuthService.signUp(
@@ -117,21 +122,24 @@ class _SignUpViewState extends State<SignUpView> {
                           if (res['statusCode'] == 201) {
                             final token = res['body']['token'];
                             final userId = res['body']['userId'];
-                            final full_name = res['body']['full_name'];
+                            final fullName = res['body']['full_name'];
                             final bio = res['body']['bio'] ?? "";
                             final location = res['body']['location'] ?? "";
-                            final image_base64 =
+                            final imageBase64 =
                                 res['body']['image_base64'] ?? "";
+                            final genres = res['body']['genres'] ?? List<String>;
+
                             // final prefs = await SharedPreferences.getInstance();
                             // await prefs.setString('token', token);
                             // await prefs.setString('user_id', userId);
                             await UserPrefs.saveTokenAndUserIdAndfull_name_bio_location_image_base64(
                               token,
                               userId,
-                              full_name,
+                              fullName,
                               bio,
                               location,
-                              image_base64,
+                              imageBase64,
+                              genres
                             );
 
                             ScaffoldMessenger.of(context).showSnackBar(

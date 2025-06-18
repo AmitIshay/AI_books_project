@@ -9,36 +9,42 @@ class UserPrefs {
   static const String _bio = 'bio';
   static const String _location = 'location';
   static const String _image_base64 = 'image_base64';
-
+  static const String _generes = 'generes';
   /// שומר טוקן ו-id של המשתמש
   static Future<void> saveTokenAndUserIdAndfull_name(
     String token,
     String userId,
-    String full_name,
+    String fullName,
   ) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_tokenKey, token);
     await prefs.setString(_userIdKey, userId);
-    await prefs.setString(_full_nameKey, full_name);
+    await prefs.setString(_full_nameKey, fullName);
   }
 
   static Future<void> saveTokenAndUserIdAndfull_name_bio_location_image_base64(
     String token,
     String userId,
-    String full_name,
+    String fullName,
     String bio,
     String location,
-    String image_base64,
+    String imageBase64,
+    List<String>  genres
   ) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_tokenKey, token);
     await prefs.setString(_userIdKey, userId);
-    await prefs.setString(_full_nameKey, full_name);
+    await prefs.setString(_full_nameKey, fullName);
     await prefs.setString(_bio, bio);
     await prefs.setString(_location, location);
-    await prefs.setString(_image_base64, image_base64);
+    await prefs.setString(_image_base64, imageBase64);
+    await prefs.setStringList(_generes, genres);
   }
-
+  /// מחזיר את הזאנרים של המשתמש
+  static Future<List<String>?> getGenres() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(_generes);
+  }
   /// מחזיר את הטוקן
   static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();

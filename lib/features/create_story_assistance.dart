@@ -10,6 +10,8 @@ import 'package:pjbooks/book_service.dart';
 import 'package:pjbooks/common/color_extenstion.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 
 class BookQuestionsScreen extends StatefulWidget {
   const BookQuestionsScreen({super.key});
@@ -20,6 +22,7 @@ class BookQuestionsScreen extends StatefulWidget {
 
 class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
   // Questions grouped by category
+  bool isLoading = false;
   final Map<String, List<String>> questions = {
     "Basic Questions": [
       "What is the name of your book (if you have an idea)?",
@@ -59,6 +62,9 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
 
   final Map<String, String> userAnswers = {}; // Store user answers
   void submitStory() async {
+    setState(() {
+      isLoading =true;
+    });
     final token = await UserPrefs.getToken();
     final author = await UserPrefs.getFullName() ?? "Unknown";
     final random = Random();
@@ -113,12 +119,18 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
       final Map<String, dynamic> responseData = jsonDecode(aiResponse.body);
 
       if (aiResponse.statusCode == 200) {
+        setState(() {
+          isLoading =false;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text("Book & AI story created successfully!"),
           ),
         );
       } else {
+        setState(() {
+          isLoading =false;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("AI story error: ${aiResponse.body}")),
         );
@@ -160,6 +172,9 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
         MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
       );
     } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("Error: $e")));
@@ -168,127 +183,154 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var media = MediaQuery.of(context).size;
-
-    return Scaffold(
-      body: Stack(
-        children: [
-          Opacity(
-            opacity: 0.8,
-            child: Image.asset(
-              "assets/img/blue-background-with-isometric-book.jpg",
-              width: media.width,
-              height: media.height,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 70),
-
-                    Text(
-                      "Create your own story with assistance",
-                      style: TextStyle(
-                        color: TColor.text,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      "Answer the guiding questions to create a book tailored to your idea.",
-                      style: TextStyle(color: TColor.subTitle, fontSize: 15),
-                    ),
-                    const SizedBox(height: 15),
-                    Text(
-                      "Based on the answers you provide, we will be able to create a complete book that includes text and images based on your responses. Please note that it's not required to answer all the questions.",
-                      style: TextStyle(color: TColor.subTitle, fontSize: 15),
-                    ),
-                    const SizedBox(height: 15),
-                  ],
-                ),
+    var media = MediaQuery
+        .of(context)
+        .size;
+    if (isLoading) {
+      return loadScreen();
+    }
+    else {
+      return Scaffold(
+        body: Stack(
+          children: [
+            Opacity(
+              opacity: 0.8,
+              child: Image.asset(
+                "assets/img/blue-background-with-isometric-book.jpg",
+                width: media.width,
+                height: media.height,
+                fit: BoxFit.cover,
               ),
-              Expanded(
-                child: ListView.builder(
+            ),
+            Column(
+              children: [
+                Padding(
                   padding: const EdgeInsets.all(16.0),
-                  itemCount: questions.keys.length,
-                  itemBuilder: (context, categoryIndex) {
-                    String category = questions.keys.elementAt(categoryIndex);
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: ExpansionTile(
-                        title: Text(
-                          category,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 70),
+
+                      Text(
+                        "Create your own story with assistance",
+                        style: TextStyle(
+                          color: TColor.text,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
                         ),
-                        children:
-                            questions[category]!.map((question) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                  vertical: 8.0,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      question,
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    TextField(
-                                      decoration: InputDecoration(
-                                        border: OutlineInputBorder(),
-                                        hintText: "Write your answer here...",
-                                      ),
-                                      maxLines: null,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          userAnswers[question] = value;
-                                        });
-                                      },
-                                    ),
-                                    const SizedBox(height: 16.0),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
                       ),
-                    );
+                      const SizedBox(height: 20),
+                      Text(
+                        "Answer the guiding questions to create a book tailored to your idea.",
+                        style: TextStyle(color: TColor.subTitle, fontSize: 15),
+                      ),
+                      const SizedBox(height: 15),
+                      Text(
+                        "Based on the answers you provide, we will be able to create a complete book that includes text and images based on your responses. Please note that it's not required to answer all the questions.",
+                        style: TextStyle(color: TColor.subTitle, fontSize: 15),
+                      ),
+                      const SizedBox(height: 15),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(16.0),
+                    itemCount: questions.keys.length,
+                    itemBuilder: (context, categoryIndex) {
+                      String category = questions.keys.elementAt(categoryIndex);
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: ExpansionTile(
+                          title: Text(
+                            category,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          children:
+                          questions[category]!.map((question) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0,
+                                vertical: 8.0,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    question,
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                  const SizedBox(height: 8.0),
+                                  TextField(
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: "Write your answer here...",
+                                    ),
+                                    maxLines: null,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        userAnswers[question] = value;
+                                      });
+                                    },
+                                  ),
+                                  const SizedBox(height: 16.0),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ElevatedButton.icon(
+                    onPressed: submitStory,
+                    icon: const Icon(Icons.book),
+                    label: const Text("Create Story"),
+                  ),
+                ),
+              ],
+            ),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
                   },
+                  icon: Icon(Icons.arrow_back_ios, color: TColor.primary),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ElevatedButton.icon(
-                  onPressed: submitStory,
-                  icon: const Icon(Icons.book),
-                  label: const Text("Create Story"),
-                ),
-              ),
-            ],
-          ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.arrow_back_ios, color: TColor.primary),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    }
   }
+}
+loadScreen() {
+  return Scaffold(
+    backgroundColor: TColor.primary,
+    body: Center(
+      child: SpinKitCircle(
+        size: 140,
+        itemBuilder: (context ,index){
+          final colors = [Colors.white ,  Colors.blue , Colors.indigoAccent];
+          final color = colors[index%colors.length];
+          return DecoratedBox(
+            decoration: BoxDecoration(
+                color: color,
+                shape: BoxShape.circle
+            ),
+          );
+
+        },
+      ),
+    ),
+  );
 }

@@ -11,15 +11,15 @@ class HistoryRow extends StatelessWidget {
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
     return Container(
-      key: Key("book_${sObj["name"].toString()}"),
+      key: Key("book_${sObj["title"].toString()}"),
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.asset(
-              sObj["img"].toString(),
+            child: Image.network(
+              sObj["img"] ?? "",
               width: media.width * 0.25,
               height: media.width * 0.25 * 1.6,
               fit: BoxFit.cover,
@@ -34,7 +34,7 @@ class HistoryRow extends StatelessWidget {
                 const SizedBox(height: 8),
 
                 Text(
-                  sObj["name"].toString(),
+                  sObj["title"].toString(),
                   maxLines: 3,
                   textAlign: TextAlign.left,
                   style: TextStyle(
@@ -69,7 +69,7 @@ class HistoryRow extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  sObj["description"].toString(),
+                  sObj["genre"].toString(),
                   maxLines: 2,
                   textAlign: TextAlign.left,
                   style: TextStyle(
@@ -82,62 +82,65 @@ class HistoryRow extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: Container(
-                        height: 30.0,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(colors: TColor.button),
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: TColor.primary,
-                              blurRadius: 2,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            shadowColor: Colors.transparent,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          height: 30.0,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(colors: TColor.button),
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: TColor.primary,
+                                blurRadius: 2,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
-                          child: const Text(
-                            'Add to cart',
-                            style: TextStyle(fontSize: 12),
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                            ),
+                            child: const Text(
+                              'Create sequel to this story',
+                              style: TextStyle(fontSize: 12),
+                            ),
                           ),
                         ),
                       ),
                     ),
 
                     const SizedBox(width: 8),
-                    Expanded(
-                      child: Container(
-                        height: 30.0,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 2,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            foregroundColor: TColor.text,
-                            shadowColor: Colors.transparent,
-                          ),
-                          child: Text(
-                            'Add to wishlist',
-                            style: TextStyle(color: TColor.text, fontSize: 12),
-                          ),
-                        ),
-                      ),
-                    ),
+                    // Expanded(
+                    //   child: Container(
+                    //     height: 30.0,
+                    //     decoration: BoxDecoration(
+                    //       color: Colors.white,
+                    //       borderRadius: BorderRadius.circular(10),
+                    //       boxShadow: const [
+                    //         BoxShadow(
+                    //           color: Colors.black12,
+                    //           blurRadius: 2,
+                    //           offset: Offset(0, 2),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //     child: ElevatedButton(
+                    //       onPressed: () {},
+                    //       style: ElevatedButton.styleFrom(
+                    //         backgroundColor: Colors.transparent,
+                    //         foregroundColor: TColor.text,
+                    //         shadowColor: Colors.transparent,
+                    //       ),
+                    //       child: Text(
+                    //         'Add to wishlist',
+                    //         style: TextStyle(color: TColor.text, fontSize: 12),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ],

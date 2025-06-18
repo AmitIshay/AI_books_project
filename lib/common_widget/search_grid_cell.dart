@@ -18,7 +18,7 @@ class SearchGridCell extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            sObj["name"].toString(),
+            sObj["title"].toString(),
             maxLines: 1,
             textAlign: TextAlign.center,
             style: const TextStyle(
@@ -30,9 +30,9 @@ class SearchGridCell extends StatelessWidget {
           const SizedBox(height: 15),
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
-              sObj["img"].toString(),
-              width: media.width * 0.23,
+            child: Image.network(
+              sObj["pages"]?[0]?["img_url"],
+              width: media.width * 0.30,
               height: media.width * 0.23 * 1.6,
               fit: BoxFit.cover,
             ),

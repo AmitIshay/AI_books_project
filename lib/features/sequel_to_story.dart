@@ -1,4 +1,5 @@
 // import 'package:pjbooks/view/search/search_fiter_view.dart';
+import 'package:pjbooks/book_service.dart';
 import 'package:pjbooks/view/search/search_force_view.dart';
 import 'package:flutter/material.dart';
 
@@ -16,50 +17,56 @@ class SequelToStory extends StatefulWidget {
 
 class _SequelToStoryState extends State<SequelToStory> {
   TextEditingController txtSearch = TextEditingController();
+  BookService service = BookService();
   int selectTag = 0;
   List tagsArr = ["Your Books", "Genre", "News"];
-
-  List searchArr = [
-    {"name": "Biography", "img": "assets/img/b1.jpg"},
-    {"name": "Business", "img": "assets/img/b2.jpg"},
-    {"name": "Children", "img": "assets/img/b3.jpg"},
-    {"name": "Cookery", "img": "assets/img/b4.jpg"},
-    {"name": "Fiction", "img": "assets/img/b5.jpg"},
-    {"name": "Graphic Novels", "img": "assets/img/b6.jpg"},
-    {"name": "Biography", "img": "assets/img/b1.jpg"},
-    {"name": "Business", "img": "assets/img/b2.jpg"},
-    {"name": "Children", "img": "assets/img/b3.jpg"},
-    {"name": "Cookery", "img": "assets/img/b4.jpg"},
-    {"name": "Fiction", "img": "assets/img/b5.jpg"},
-    {"name": "Graphic Novels", "img": "assets/img/b6.jpg"},
-  ];
+  List searchArrNew = [];
+  // List searchArr = [
+  //   {"name": "Biography", "img": "assets/img/b1.jpg"},
+  //   {"name": "Business", "img": "assets/img/b2.jpg"},
+  //   {"name": "Children", "img": "assets/img/b3.jpg"},
+  //   {"name": "Cookery", "img": "assets/img/b4.jpg"},
+  //   {"name": "Fiction", "img": "assets/img/b5.jpg"},
+  //   {"name": "Graphic Novels", "img": "assets/img/b6.jpg"},
+  //   {"name": "Biography", "img": "assets/img/b1.jpg"},
+  //   {"name": "Business", "img": "assets/img/b2.jpg"},
+  //   {"name": "Children", "img": "assets/img/b3.jpg"},
+  //   {"name": "Cookery", "img": "assets/img/b4.jpg"},
+  //   {"name": "Fiction", "img": "assets/img/b5.jpg"},
+  //   {"name": "Graphic Novels", "img": "assets/img/b6.jpg"},
+  // ];
 
   List sResultArr = [
-    {
-      "name": "The Heart of Hell",
-      "img": "assets/img/h1.jpg",
-      "author": "Mitch Weiss",
-      "description":
-          "The untold story of courage and sacrifice in the shadow of Iwo Jima.",
-      "rate": 5.0,
-    },
-    {
-      "name": "Adrennes 1944",
-      "img": "assets/img/h2.jpg",
-      "author": "Antony Beevor",
-      "description":
-          "#1 international bestseller and award winning history book.",
-      "rate": 4.0,
-    },
-    {
-      "name": "War on the Gothic Line",
-      "img": "assets/img/h3.jpg",
-      "author": "Christian Jennings",
-      "description":
-          "Through the eyes of thirteen men and women from seven different nations",
-      "rate": 3.0,
-    },
+    // {
+    //   "name": "The Heart of Hell",
+    //   "img": "assets/img/h1.jpg",
+    //   "author": "Mitch Weiss",
+    //   "description":
+    //       "The untold story of courage and sacrifice in the shadow of Iwo Jima.",
+    //   "rate": 5.0,
+    // },
+    // {
+    //   "name": "Adrennes 1944",
+    //   "img": "assets/img/h2.jpg",
+    //   "author": "Antony Beevor",
+    //   "description":
+    //       "#1 international bestseller and award winning history book.",
+    //   "rate": 4.0,
+    // },
+    // {
+    //   "name": "War on the Gothic Line",
+    //   "img": "assets/img/h3.jpg",
+    //   "author": "Christian Jennings",
+    //   "description":
+    //       "Through the eyes of thirteen men and women from seven different nations",
+    //   "rate": 3.0,
+    // },
   ];
+  @override
+  void initState() {
+    super.initState();
+    load_books();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,20 +105,39 @@ class _SequelToStoryState extends State<SequelToStory> {
                     child: TextField(
                       controller: txtSearch,
                       onTap: () async {
-                        await Navigator.push(
+                        final selectedBook = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder:
                                 (context) => SearchForceView(
-                                  didSearch: (sText) {
-                                    txtSearch.text = sText;
-                                    if (mounted) {
-                                      setState(() {});
-                                    }
-                                  },
+                                  allBooks:
+                                      searchArrNew.cast<Map<String, dynamic>>(),
+                                  // didSearch: (sText) {
+                                  //   txtSearch.text = sText;
+                                  //   if (mounted) {
+                                  //     setState(() {});
+                                  //   }
+                                  // },
                                 ),
                           ),
                         );
+                        if (selectedBook != null &&
+                            selectedBook is Map<String, dynamic>) {
+                          setState(() {
+                            txtSearch.text = selectedBook["title"] ?? '';
+                            sResultArr = [
+                              // <== עדכון פה
+                              {
+                                "title": selectedBook["title"] ?? '',
+                                "img":
+                                    selectedBook["pages"]?[0]?["img_url"] ?? '',
+                                "author": selectedBook["author"] ?? '',
+                                "genre": selectedBook["genre"] ?? '',
+                                "rating": selectedBook["rating"] ?? 5.0,
+                              },
+                            ];
+                          });
+                        }
                         endEditing();
                       },
                       decoration: InputDecoration(
@@ -199,9 +225,9 @@ class _SequelToStoryState extends State<SequelToStory> {
                           crossAxisSpacing: 15,
                           mainAxisSpacing: 15,
                         ),
-                    itemCount: searchArr.length,
+                    itemCount: searchArrNew.length,
                     itemBuilder: (context, index) {
-                      var sObj = searchArr[index] as Map? ?? {};
+                      var sObj = searchArrNew[index] as Map? ?? {};
                       return SearchGridCell(sObj: sObj, index: index);
                     },
                   ),
@@ -222,5 +248,12 @@ class _SequelToStoryState extends State<SequelToStory> {
         ),
       ],
     );
+  }
+
+  void load_books() async {
+    await service.loadBooks();
+    setState(() {
+      searchArrNew = service.books;
+    });
   }
 }

@@ -85,20 +85,22 @@ class _SearchViewState extends State<SearchView> {
                 child: TextField(
                   controller: txtSearch,
                   onTap: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => SearchForceView(
-                              didSearch: (sText) {
-                                txtSearch.text = sText;
-                                if (mounted) {
-                                  setState(() {});
-                                }
-                              },
-                            ),
-                      ),
-                    );
+                    // await Navigator.push(
+                    //   context,
+                    // MaterialPageRoute(
+                    //   builder:
+                    // (context) => SearchForceView(
+                    //   allBooks:
+                    //       searchArrNew.cast<Map<String, dynamic>>(),
+                    //   didSearch: (sText) {
+                    //     txtSearch.text = sText;
+                    //     if (mounted) {
+                    //       setState(() {});
+                    //     }
+                    //   },
+                    // ),
+                    // ),
+                    // );
                     endEditing();
                   },
                   decoration: InputDecoration(

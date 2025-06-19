@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:pjbooks/features/create_own_story.dart';
 
 import '../common/color_extenstion.dart';
 
@@ -98,7 +99,19 @@ class HistoryRow extends StatelessWidget {
                             ],
                           ),
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => CreateOwnStory(
+                                        bookData: Map<String, dynamic>.from(
+                                          sObj,
+                                        ),
+                                      ),
+                                ),
+                              );
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.transparent,
                               shadowColor: Colors.transparent,

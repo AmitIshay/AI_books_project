@@ -12,7 +12,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 
 class CreateOwnStory extends StatefulWidget {
-  const CreateOwnStory({super.key});
+  final Map<String, dynamic>? bookData;
+
+  const CreateOwnStory({super.key, this.bookData});
   @override
   State<StatefulWidget> createState() => _CreateOwnStoryState();
 }
@@ -38,8 +40,7 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
     setState(() {
       isLoading = true;
     });
-    // final prefs = await SharedPreferences.getInstance();
-    // final token = prefs.getString('token');
+
     final token = await UserPrefs.getToken();
     final author = await UserPrefs.getFullName() ?? "Unknown";
 
@@ -50,99 +51,66 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
       return;
     }
 
-    if (titleController.text.trim().isEmpty) {
+    if (titleController.text.trim().isEmpty ||
+        subjectController.text.trim().isEmpty ||
+        descriptionController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter a book title")),
-      );
-      return;
-    }
-    if (subjectController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Please enter a subject")));
-      return;
-    }
-    if (descriptionController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter a description")),
+        const SnackBar(content: Text("Please fill in all required fields")),
       );
       return;
     }
 
-    Map<String, dynamic> pages = {};
-    List<String> pagesTexts = [];
+    List<String> pagesTexts =
+        controllers
+            .map((c) => c.text.trim())
+            .where((text) => text.isNotEmpty)
+            .toList();
 
-    for (int i = 0; i < controllers.length; i++) {
-      String text = controllers[i].text.trim();
-      if (text.isNotEmpty) {
-        pages[(i + 1).toString()] = {
-          "text": text,
-          "image_url": "", // נוכל למלא בהמשך כשה-AI ייצור תמונות
-        };
-        pagesTexts.add(text);
-      }
-    }
+    final aiStoryData = {
+      "subject": subjectController.text.trim(),
+      "numPages": pagesTexts.length,
+      "auther": author,
+      "description": descriptionController.text.trim(),
+      "title": titleController.text.trim(),
+      "text_to_voice": true,
+      "resolution": "1024x898",
+      "story_pages": pagesTexts,
+      if (widget.bookData != null) ...{
+        "title_previous": widget.bookData!["title"],
+        "pages_previous": widget.bookData!["pages"],
+      },
+    };
 
-    // final bookData = {
-    //   "title": titleController.text.trim(),
-    //   "author": author, // בהמשך תביא מהיוזר
-    //   "pages": pages,
-    // };
+    // בחר את ה-URL בהתאם אם זה המשך או ספר חדש
+    final uri = Uri.parse(
+      "${Config.baseUrl}/api/story-ai/MagicOfStory/Story" +
+          (widget.bookData != null ? "/Sequel" : ""),
+    );
 
     try {
-      // final response = await http.post(
-      //   Uri.parse(
-      //     "${Config.baseUrl}/api/books/createbook",
-      //   ), // שים את הכתובת הנכונה
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     "Authorization": "Bearer $token",
-      //   },
-      //   body: jsonEncode(bookData),
-      // );
-      // קריאה שנייה: יצירת סיפור עם AI
-      final aiStoryData = {
-        "subject": subjectController.text.trim(), // אתה יכול לשפר את זה מהמשתמש
-        "numPages": pagesTexts.length,
-        "auther": author,
-        "description": descriptionController.text.trim(), // אפשר לבקש מהמשתמש
-        "title": titleController.text.trim(),
-        "text_to_voice": true,
-        "resolution": "1024x898",
-        "story_pages": pagesTexts,
-      };
       final aiResponse = await http.post(
-        Uri.parse("${Config.baseUrl}/api/story-ai/MagicOfStory/Story"),
+        uri,
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $token",
         },
         body: jsonEncode(aiStoryData),
       );
-      print(aiStoryData);
-      final Map<String, dynamic> responseData = jsonDecode(aiResponse.body);
-      // if (aiResponse.statusCode == 201) {
-      if (aiResponse.statusCode == 200) {
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Book & AI story created successfully!"),
-          ),
-        );
-      } else {
-        if (!mounted) return;
-        setState(() {
-          isLoading = false;
-        });
+      print(aiStoryData);
+
+      if (aiResponse.statusCode != 200) {
+        setState(() => isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("AI story error: ${aiResponse.body}")),
         );
         return;
       }
+
+      final responseData = jsonDecode(aiResponse.body);
+
       await context.read<BookService>().loadBooks();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Book created successfully!")),
-      );
+
       final Book newBook = Book(
         title: responseData["title"],
         coverImage: responseData["cover_image"] ?? "",
@@ -161,58 +129,210 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
                   voiceUrl: "",
                   isEndPage: true,
                 ),
-              ), // עמוד סיום
+              ),
       );
+
       for (var page in newBook.pages) {
         if (page.imagePath.isNotEmpty) {
           await precacheImage(NetworkImage(page.imagePath), context);
         }
       }
 
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Book created successfully!")),
+      );
+
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
       );
-
-      // final sampleBook = Book(
-      //   title: 'sample book',
-      //   coverImage: 'assets/images/cover.jpg',
-      //   pages: [
-      //     BookPage(
-      //       imagePath: 'assets/images/image1.jpg',
-      //       text: 'the begin of our story',
-      //     ),
-      //     BookPage(
-      //       imagePath: 'assets/images/image2.jpg',
-      //       text: ' the animals go to the trip',
-      //     ),
-      //     BookPage(
-      //       imagePath: 'assets/images/image3.jpg',
-      //       text: 'the trip keep contusion with many obstetrical',
-      //     ),
-      //     BookPage(imagePath: '', text: '', isEndPage: true),
-      //   ],
-      // );
-      // Navigator.pushAndRemoveUntil(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => HomeScreen(book: sampleBook)),
-      //   (route) => false,
-      // );
-      // Navigator.pop(context); // חזרה למסך הקודם או מעבר לספר
-      // } else {
-      //   ScaffoldMessenger.of(
-      //     context,
-      //   ).showSnackBar(SnackBar(content: Text("Error: ${aiResponse.body}")));
-      // }
     } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
+      setState(() => isLoading = false);
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("Error: $e")));
     }
   }
+
+  // void submitStory() async {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //   // final prefs = await SharedPreferences.getInstance();
+  //   // final token = prefs.getString('token');
+  //   final token = await UserPrefs.getToken();
+  //   final author = await UserPrefs.getFullName() ?? "Unknown";
+
+  //   if (token == null) {
+  //     ScaffoldMessenger.of(
+  //       context,
+  //     ).showSnackBar(const SnackBar(content: Text("You must be logged in")));
+  //     return;
+  //   }
+
+  //   if (titleController.text.trim().isEmpty) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text("Please enter a book title")),
+  //     );
+  //     return;
+  //   }
+  //   if (subjectController.text.trim().isEmpty) {
+  //     ScaffoldMessenger.of(
+  //       context,
+  //     ).showSnackBar(const SnackBar(content: Text("Please enter a subject")));
+  //     return;
+  //   }
+  //   if (descriptionController.text.trim().isEmpty) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text("Please enter a description")),
+  //     );
+  //     return;
+  //   }
+
+  //   Map<String, dynamic> pages = {};
+  //   List<String> pagesTexts = [];
+
+  //   for (int i = 0; i < controllers.length; i++) {
+  //     String text = controllers[i].text.trim();
+  //     if (text.isNotEmpty) {
+  //       pages[(i + 1).toString()] = {
+  //         "text": text,
+  //         "image_url": "", // נוכל למלא בהמשך כשה-AI ייצור תמונות
+  //       };
+  //       pagesTexts.add(text);
+  //     }
+  //   }
+
+  //   // final bookData = {
+  //   //   "title": titleController.text.trim(),
+  //   //   "author": author, // בהמשך תביא מהיוזר
+  //   //   "pages": pages,
+  //   // };
+
+  //   try {
+  //     // final response = await http.post(
+  //     //   Uri.parse(
+  //     //     "${Config.baseUrl}/api/books/createbook",
+  //     //   ), // שים את הכתובת הנכונה
+  //     //   headers: {
+  //     //     "Content-Type": "application/json",
+  //     //     "Authorization": "Bearer $token",
+  //     //   },
+  //     //   body: jsonEncode(bookData),
+  //     // );
+  //     // קריאה שנייה: יצירת סיפור עם AI
+  //     final aiStoryData = {
+  //       "subject": subjectController.text.trim(), // אתה יכול לשפר את זה מהמשתמש
+  //       "numPages": pagesTexts.length,
+  //       "auther": author,
+  //       "description": descriptionController.text.trim(), // אפשר לבקש מהמשתמש
+  //       "title": titleController.text.trim(),
+  //       "text_to_voice": true,
+  //       "resolution": "1024x898",
+  //       "story_pages": pagesTexts,
+
+  //     };
+  //     final aiResponse = await http.post(
+  //       Uri.parse("${Config.baseUrl}/api/story-ai/MagicOfStory/Story"),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Authorization": "Bearer $token",
+  //       },
+  //       body: jsonEncode(aiStoryData),
+  //     );
+  //     print(aiStoryData);
+  //     final Map<String, dynamic> responseData = jsonDecode(aiResponse.body);
+  //     // if (aiResponse.statusCode == 201) {
+  //     if (aiResponse.statusCode == 200) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(
+  //           content: Text("Book & AI story created successfully!"),
+  //         ),
+  //       );
+  //     } else {
+  //       if (!mounted) return;
+  //       setState(() {
+  //         isLoading = false;
+  //       });
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text("AI story error: ${aiResponse.body}")),
+  //       );
+  //       return;
+  //     }
+  //     await context.read<BookService>().loadBooks();
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text("Book created successfully!")),
+  //     );
+  //     final Book newBook = Book(
+  //       title: responseData["title"],
+  //       coverImage: responseData["cover_image"] ?? "",
+  //       pages:
+  //           (responseData["pages"] as List<dynamic>).map((page) {
+  //               return BookPage(
+  //                 imagePath: page["img_url"] ?? "",
+  //                 text: page["text_page"] ?? "",
+  //                 voiceUrl: page["voice_file_url"] ?? "",
+  //               );
+  //             }).toList()
+  //             ..add(
+  //               BookPage(
+  //                 imagePath: "",
+  //                 text: "",
+  //                 voiceUrl: "",
+  //                 isEndPage: true,
+  //               ),
+  //             ), // עמוד סיום
+  //     );
+  //     for (var page in newBook.pages) {
+  //       if (page.imagePath.isNotEmpty) {
+  //         await precacheImage(NetworkImage(page.imagePath), context);
+  //       }
+  //     }
+
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
+  //     );
+
+  //     // final sampleBook = Book(
+  //     //   title: 'sample book',
+  //     //   coverImage: 'assets/images/cover.jpg',
+  //     //   pages: [
+  //     //     BookPage(
+  //     //       imagePath: 'assets/images/image1.jpg',
+  //     //       text: 'the begin of our story',
+  //     //     ),
+  //     //     BookPage(
+  //     //       imagePath: 'assets/images/image2.jpg',
+  //     //       text: ' the animals go to the trip',
+  //     //     ),
+  //     //     BookPage(
+  //     //       imagePath: 'assets/images/image3.jpg',
+  //     //       text: 'the trip keep contusion with many obstetrical',
+  //     //     ),
+  //     //     BookPage(imagePath: '', text: '', isEndPage: true),
+  //     //   ],
+  //     // );
+  //     // Navigator.pushAndRemoveUntil(
+  //     //   context,
+  //     //   MaterialPageRoute(builder: (context) => HomeScreen(book: sampleBook)),
+  //     //   (route) => false,
+  //     // );
+  //     // Navigator.pop(context); // חזרה למסך הקודם או מעבר לספר
+  //     // } else {
+  //     //   ScaffoldMessenger.of(
+  //     //     context,
+  //     //   ).showSnackBar(SnackBar(content: Text("Error: ${aiResponse.body}")));
+  //     // }
+  //   } catch (e) {
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //     ScaffoldMessenger.of(
+  //       context,
+  //     ).showSnackBar(SnackBar(content: Text("Error: $e")));
+  //   }
+  // }
 
   void addTextField() {
     if (controllers.last.text.trim().isNotEmpty) {
@@ -266,9 +386,7 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
 
   @override
   Widget build(BuildContext context) {
-    var media = MediaQuery
-        .of(context)
-        .size;
+    var media = MediaQuery.of(context).size;
 
     if (isLoading) {
       return loadScreen();
@@ -291,10 +409,7 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
                   padding: EdgeInsets.only(
                     left: 16,
                     right: 16,
-                    bottom: MediaQuery
-                        .of(context)
-                        .viewInsets
-                        .bottom + 24,
+                    bottom: MediaQuery.of(context).viewInsets.bottom + 24,
                     top: 16,
                   ),
                   child: Column(
@@ -375,8 +490,8 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
                                     Icons.delete,
                                     color: Color.fromARGB(255, 244, 80, 68),
                                   ),
-                                  onPressed: () =>
-                                      showDeleteWarningDialog(index),
+                                  onPressed:
+                                      () => showDeleteWarningDialog(index),
                                 ),
                               ],
                             ),
@@ -430,20 +545,16 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
     return Scaffold(
       backgroundColor: TColor.primary,
       body: Center(
-          child: SpinKitCircle(
-            size: 140,
-            itemBuilder: (context ,index){
-              final colors = [Colors.white , Colors.pink , Colors.yellow];
-              final color = colors[index%colors.length];
-              return DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: color,
-                    shape: BoxShape.circle
-                  ),
-              );
-
-              },
-          ),
+        child: SpinKitCircle(
+          size: 140,
+          itemBuilder: (context, index) {
+            final colors = [Colors.white, Colors.pink, Colors.yellow];
+            final color = colors[index % colors.length];
+            return DecoratedBox(
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+            );
+          },
+        ),
       ),
     );
   }

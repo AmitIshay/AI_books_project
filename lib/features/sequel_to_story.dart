@@ -129,11 +129,15 @@ class _SequelToStoryState extends State<SequelToStory> {
                               // <== עדכון פה
                               {
                                 "title": selectedBook["title"] ?? '',
+                                "author": selectedBook["author"] ?? '',
+                                "description":
+                                    selectedBook["description"] ?? '',
+                                "num_pages": selectedBook["num_pages"] ?? '',
+                                "rating": selectedBook["rating"] ?? '',
+                                "genre": selectedBook["genre"] ?? '',
+                                "pages": selectedBook["pages"] ?? [],
                                 "img":
                                     selectedBook["pages"]?[0]?["img_url"] ?? '',
-                                "author": selectedBook["author"] ?? '',
-                                "genre": selectedBook["genre"] ?? '',
-                                "rating": selectedBook["rating"] ?? 5.0,
                               },
                             ];
                           });

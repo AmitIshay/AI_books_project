@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:pjbooks/backend/config.dart';
+import 'package:pjbooks/backend/user_prefs.dart';
 import 'package:pjbooks/common/color_extenstion.dart';
 import 'package:pjbooks/view/main_tab/main_tab_view.dart';
 import 'package:flutter/material.dart';
@@ -193,7 +195,7 @@ class _HelpUsViewState extends State<HelpUsView> {
                                       .map((e) => e.key),
                                 ];
 
-                                final response = await http.post(
+                                final response = await http.put(
                                   Uri.parse(
                                     '${Config.baseUrl}/api/auth/update_genres',
                                   ),
@@ -205,6 +207,14 @@ class _HelpUsViewState extends State<HelpUsView> {
                                 );
 
                                 if (response.statusCode == 200) {
+                                  final prefs =
+                                  await SharedPreferences.getInstance();
+                                  await prefs.setStringList(
+                                    'generes',
+                                    selectedGenres,
+                                  );
+
+
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(

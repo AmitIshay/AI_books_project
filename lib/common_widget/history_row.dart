@@ -1,27 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:pjbooks/backend/user_prefs.dart';
 import 'package:pjbooks/features/create_own_story.dart';
 
 import '../book_service.dart';
 import '../common/color_extenstion.dart';
 import 'comment_card.dart';
 
-class HistoryRow extends StatelessWidget {
+class HistoryRow extends StatefulWidget  {
   final Map sObj;
   final BookService service;
   const HistoryRow({super.key, required this.sObj , required this.service});
 
+  @override
+  State<HistoryRow> createState() => _HistoryRowState();
+}
 
+class _HistoryRowState extends State<HistoryRow> {
+  double rating = 0.0;
+  late List comments;
+  late int totalCounterRanking;
+  late int sumRanking;
+  late double rankStory;
+  late TextEditingController commentTextController;
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
-    final dynamic rawComments = sObj["comments"];
-    final List comments = (rawComments is List && rawComments.isNotEmpty) ? rawComments : createListForTest();
+
     TextEditingController commentTextController = TextEditingController();
-    Map<String , String> mapComment;
-    double rating = 0.0;
+    Map<String , dynamic> mapComment;
+
     return Container(
-      key: Key("book_${sObj["title"].toString()}"),
+      key: Key("book_${widget.sObj["title"].toString()}"),
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +39,7 @@ class HistoryRow extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Image.network(
-              sObj["img"] ?? "",
+              widget.sObj["img"] ?? "",
               width: media.width * 0.25,
               height: media.width * 0.25 * 1.6,
               fit: BoxFit.cover,
@@ -44,7 +54,7 @@ class HistoryRow extends StatelessWidget {
                 const SizedBox(height: 8),
 
                 Text(
-                  sObj["title"].toString(),
+                  widget.sObj["title"].toString(),
                   maxLines: 3,
                   textAlign: TextAlign.left,
                   style: TextStyle(
@@ -55,7 +65,7 @@ class HistoryRow extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  sObj["author"].toString(),
+                  widget.sObj["author"].toString(),
                   maxLines: 1,
                   textAlign: TextAlign.left,
                   style: TextStyle(color: TColor.subTitle, fontSize: 13),
@@ -65,7 +75,7 @@ class HistoryRow extends StatelessWidget {
                   ignoring: true,
                   child: RatingBar.builder(
                     initialRating:
-                        double.tryParse(sObj["rating"].toString()) ?? 1,
+                        rankStory,
                     minRating: 1,
                     direction: Axis.horizontal,
                     allowHalfRating: true,
@@ -79,7 +89,7 @@ class HistoryRow extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  sObj["genre"].toString(),
+                  widget.sObj["genre"].toString(),
                   maxLines: 2,
                   textAlign: TextAlign.left,
                   style: TextStyle(
@@ -115,7 +125,7 @@ class HistoryRow extends StatelessWidget {
                                   builder:
                                       (context) => CreateOwnStory(
                                         bookData: Map<String, dynamic>.from(
-                                          sObj,
+                                          widget.sObj,
                                         ),
                                       ),
                                 ),
@@ -189,7 +199,7 @@ class HistoryRow extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () {
                           showDialog(context: context, builder:(context) => AlertDialog(
-                            title: Text("new comment for book ${sObj["title"].toString()}"),
+                            title: Text("new comment for book ${widget.sObj["title"].toString()}"),
                             content:
                             SingleChildScrollView(
                             child:
@@ -229,8 +239,25 @@ class HistoryRow extends StatelessWidget {
                             )
                             ),
                            actions: [
-                             TextButton(onPressed: ()=>{}, child: Text("Submit")),
-                             TextButton(onPressed: ()=>{}, child: Text("Cancel"))
+                             TextButton(onPressed: () async {
+                               String comment = commentTextController.text.trim();
+                               mapComment = {"comment":comment,
+                                 "rating":rating};
+                               String id = widget.sObj["_id"].toString();
+                               bool isPass = await widget.service.putNewComment(id, mapComment);
+                               if (isPass)
+                               {
+                                 String? userName = await UserPrefs.getFullName();
+                                 setState(() {
+                                   comments.add({"user":userName , "comment":comment});
+                                   rankStory = sumRanking+rating /totalCounterRanking+1;
+                                 });
+                               }
+                               Navigator.pop(context);
+                             }, child: Text("Submit")),
+                             TextButton(onPressed: ()=>{
+                               Navigator.pop(context)
+                             }, child: Text("Cancel"))
                            ],
 
                           )
@@ -322,5 +349,19 @@ class HistoryRow extends StatelessWidget {
         "comment": "I think the bunny is my favorite character ever! She’s so brave and kind. Can’t wait to read more!"
       },
     ];
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final rawComments = widget.sObj["comments"];
+    comments = (rawComments is List && rawComments.isNotEmpty)
+        ? rawComments
+        : createListForTest();
+    commentTextController = TextEditingController();
+    totalCounterRanking = widget.sObj["sum_rating"] ?? 0;
+    sumRanking = widget.sObj["counter_rating"] ?? 0;
+    rankStory = widget.sObj["rating"] ?? 2.5;
+
   }
 }

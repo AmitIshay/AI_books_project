@@ -30,7 +30,7 @@ class TColor {
 
   static List<Color> get button3 => const [
     Color(0xff669ac5),
-    Color(0xff0c18fd),
+    Color(0xff9ca1dc),
   ];
 
   static List<Color> get searchBGColor => const [

@@ -128,6 +128,7 @@ class _SequelToStoryState extends State<SequelToStory> {
                             sResultArr = [
                               // <== עדכון פה
                               {
+                                "_id" :selectedBook["id"] ?? "",
                                 "title": selectedBook["title"] ?? '',
                                 "author": selectedBook["author"] ?? '',
                                 "description":

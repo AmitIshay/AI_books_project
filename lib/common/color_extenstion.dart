@@ -22,6 +22,17 @@ class TColor {
         Color(0xff00FF81),
       ];
 
+  static List<Color> get button2 => const [
+    Color(0xffc56678),
+    Color(0xfffd0c42),
+  ];
+
+
+  static List<Color> get button3 => const [
+    Color(0xff669ac5),
+    Color(0xff0c18fd),
+  ];
+
   static List<Color> get searchBGColor => const [
         Color(0xffB7143C),
         Color(0xffE6A500),

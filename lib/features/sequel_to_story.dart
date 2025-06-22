@@ -138,6 +138,7 @@ class _SequelToStoryState extends State<SequelToStory> {
                                 "pages": selectedBook["pages"] ?? [],
                                 "img":
                                     selectedBook["pages"]?[0]?["img_url"] ?? '',
+                                "comments" : selectedBook["comments"] ?? []
                               },
                             ];
                           });
@@ -243,7 +244,7 @@ class _SequelToStoryState extends State<SequelToStory> {
                     itemCount: sResultArr.length,
                     itemBuilder: (context, index) {
                       var sObj = sResultArr[index] as Map? ?? {};
-                      return HistoryRow(sObj: sObj);
+                      return HistoryRow(sObj: sObj ,service: service);
                     },
                   ),
                 ),

@@ -51,6 +51,36 @@ class BookService extends ChangeNotifier {
     return {'statusCode': response.statusCode, 'body': body};
   }
 
+  static Future<Map<String, dynamic>> putNewCommentInBook(String token , String idBook, Map commentObj) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/api/books/newCommentAndRanking/id=$idBook'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(commentObj),
+    );
+
+    final body = jsonDecode(response.body);
+    print(body);
+    return {'statusCode': response.statusCode, 'body': body};
+  }
+
+  static Future<Map<String, dynamic>> deleteBook(String token , String idBook) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/api/books/delete/id=$idBook'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    final body = jsonDecode(response.body);
+    print(body);
+    return {'statusCode': response.statusCode, 'body': body};
+  }
+
+
   static Future<Map<String, dynamic>> getMostRatedBooks() async {
     final response = await http.get(
       Uri.parse('$baseUrl/api/books/get_top_rated'),
@@ -91,7 +121,34 @@ class BookService extends ChangeNotifier {
       print('Error loading books: ${response['body']['message']}');
     }
   }
+  Future<bool> putNewComment(String idBook,Map commentMap) async{
+    final token = await UserPrefs.getToken();
+    if (token == null) return false;
+    final response = await BookService.putNewCommentInBook(token,idBook, commentMap);
+    if (response['statusCode'] == 200) {
+      notifyListeners();
+      return true;
+    } else {
+      // טפל בשגיאות כאן
+      print('Error loading books: ${response['body']['message']}');
+      return false;
+    }
+  }
 
+
+  Future<bool> deleteBookFromDB(String idBook) async{
+    final token = await UserPrefs.getToken();
+    if (token == null) return false;
+    final response = await BookService.deleteBook(token,idBook);
+    if (response['statusCode'] == 200) {
+      notifyListeners();
+      return true;
+    } else {
+      // טפל בשגיאות כאן
+      print('Error loading books: ${response['body']['message']}');
+      return false;
+    }
+  }
   Future<void> loadBooksTopPick() async {
 
     final response = await BookService.getTopPicksBooks();

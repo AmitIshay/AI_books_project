@@ -2,15 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:pjbooks/features/create_own_story.dart';
 
+import '../book_service.dart';
 import '../common/color_extenstion.dart';
+import 'comment_card.dart';
 
 class HistoryRow extends StatelessWidget {
   final Map sObj;
-  const HistoryRow({super.key, required this.sObj});
+  final BookService service;
+  const HistoryRow({super.key, required this.sObj , required this.service});
+
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
+    final dynamic rawComments = sObj["comments"];
+    final List comments = (rawComments is List && rawComments.isNotEmpty) ? rawComments : createListForTest();
+    TextEditingController commentTextController = TextEditingController();
+    Map<String , String> mapComment;
+    double rating = 0.0;
     return Container(
       key: Key("book_${sObj["title"].toString()}"),
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
@@ -125,42 +134,193 @@ class HistoryRow extends StatelessWidget {
                       ),
                     ),
 
-                    const SizedBox(width: 8),
-                    // Expanded(
-                    //   child: Container(
-                    //     height: 30.0,
-                    //     decoration: BoxDecoration(
-                    //       color: Colors.white,
-                    //       borderRadius: BorderRadius.circular(10),
-                    //       boxShadow: const [
-                    //         BoxShadow(
-                    //           color: Colors.black12,
-                    //           blurRadius: 2,
-                    //           offset: Offset(0, 2),
-                    //         ),
-                    //       ],
-                    //     ),
-                    //     child: ElevatedButton(
-                    //       onPressed: () {},
-                    //       style: ElevatedButton.styleFrom(
-                    //         backgroundColor: Colors.transparent,
-                    //         foregroundColor: TColor.text,
-                    //         shadowColor: Colors.transparent,
-                    //       ),
-                    //       child: Text(
-                    //         'Add to wishlist',
-                    //         style: TextStyle(color: TColor.text, fontSize: 12),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          height: 30.0,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(colors: TColor.button2),
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: TColor.primary,
+                                blurRadius: 2,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              //TODO: create Delete story func
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                            ),
+                            child: const Text(
+                              'Delete Story',
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
                   ],
                 ),
+                const SizedBox(height: 20),
+                 Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      height: 30.0,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(colors: TColor.button3),
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: TColor.primary,
+                            blurRadius: 2,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          showDialog(context: context, builder:(context) => AlertDialog(
+                            title: Text("new comment for book ${sObj["title"].toString()}"),
+                            content:
+                            SingleChildScrollView(
+                            child:
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 10,),
+                                TextField(
+                                  controller: commentTextController,
+                                  decoration: const InputDecoration(
+                                    labelText: "comment",
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: null,
+                                  minLines: 3,
+                                ),
+
+                                SizedBox(height: 10,),
+                                RatingBar.builder(
+                                  initialRating: 3,
+                                  minRating: 1,
+                                  direction: Axis.horizontal,
+                                  allowHalfRating: true,
+                                  itemCount: 5,
+                                  itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                  itemBuilder: (context, _) => const Icon(Icons.star, color: Colors.amber),
+                                  onRatingUpdate: (rating) {
+
+                                    rating = rating;
+                                  },
+
+                                ),
+                                SizedBox(height: 10,)
+                              ],
+                            )
+                            ),
+                           actions: [
+                             TextButton(onPressed: ()=>{}, child: Text("Submit")),
+                             TextButton(onPressed: ()=>{}, child: Text("Cancel"))
+                           ],
+
+                          )
+
+
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                        ),
+                        child: const Text(
+                          'New Comment',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ),
+                    ),
+                  ),
+
+
+                SizedBox(height: 15,),
+
+                Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 23),
+                  child:
+
+                  ListView.builder(
+                      padding: const EdgeInsets.all(8),
+                      itemCount: comments.length,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (BuildContext context, int index) {
+
+                        return CommentCard(objComments: comments[index]);
+                      }
+                  )
+              ,
+            )
+
+
               ],
             ),
           ),
         ],
       ),
     );
+  }
+  List<Map<String, String>> createListForTest() {
+    return [
+      {
+        "user": "LiamTheReader",
+        "comment": "My little brother loved the page with the talking animals! He laughed so much at the lion wearing glasses."
+      },
+      {
+        "user": "MomOfTwins",
+        "comment": "Such a cute story! My kids asked me to read it three times before bed. The colorful pictures are magical!"
+      },
+      {
+        "user": "Ella8",
+        "comment": "I liked the part where the bear danced in the forest! Can you make more pages with singing animals?"
+      },
+      {
+        "user": "StoryTimeDad",
+        "comment": "The characters are super fun, and the lesson about kindness really stood out. Great job!"
+      },
+      {
+        "user": "ZoeLovesBooks",
+        "comment": "I think the bunny is my favorite character ever! She’s so brave and kind. Can’t wait to read more!"
+      },
+
+      {
+        "user": "LiamTheReader",
+        "comment": "My little brother loved the page with the talking animals! He laughed so much at the lion wearing glasses."
+      },
+      {
+        "user": "MomOfTwins",
+        "comment": "Such a cute story! My kids asked me to read it three times before bed. The colorful pictures are magical!"
+      },
+      {
+        "user": "Ella8",
+        "comment": "I liked the part where the bear danced in the forest! Can you make more pages with singing animals?"
+      },
+      {
+        "user": "StoryTimeDad",
+        "comment": "The characters are super fun, and the lesson about kindness really stood out. Great job!"
+      },
+      {
+        "user": "ZoeLovesBooks",
+        "comment": "I think the bunny is my favorite character ever! She’s so brave and kind. Can’t wait to read more!"
+      },
+    ];
   }
 }

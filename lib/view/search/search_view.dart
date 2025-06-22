@@ -1,3 +1,4 @@
+import 'package:pjbooks/book_service.dart';
 import 'package:pjbooks/view/search/search_fiter_view.dart';
 import 'package:pjbooks/view/search/search_force_view.dart';
 import 'package:flutter/material.dart';
@@ -223,7 +224,7 @@ class _SearchViewState extends State<SearchView> {
                 itemCount: sResultArr.length,
                 itemBuilder: (context, index) {
                   var sObj = sResultArr[index] as Map? ?? {};
-                  return HistoryRow(sObj: sObj);
+                  return HistoryRow(sObj: sObj , service: BookService());
                 },
               ),
             ),

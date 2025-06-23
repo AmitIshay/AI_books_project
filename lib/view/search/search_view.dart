@@ -224,7 +224,7 @@ class _SearchViewState extends State<SearchView> {
                 itemCount: sResultArr.length,
                 itemBuilder: (context, index) {
                   var sObj = sResultArr[index] as Map? ?? {};
-                  return HistoryRow(sObj: sObj , service: BookService());
+                  return HistoryRow(sObj: sObj);
                 },
               ),
             ),

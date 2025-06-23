@@ -1,7 +1,11 @@
+import 'dart:convert' show jsonEncode;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:http/http.dart' as http;
 import 'package:pjbooks/backend/user_prefs.dart';
 import 'package:pjbooks/features/create_own_story.dart';
+import 'package:pjbooks/backend/config.dart' show Config;
 
 import '../book_service.dart';
 import '../common/color_extenstion.dart';
@@ -9,8 +13,8 @@ import 'comment_card.dart';
 
 class HistoryRow extends StatefulWidget  {
   final Map sObj;
-  final BookService service;
-  const HistoryRow({super.key, required this.sObj , required this.service});
+
+  const HistoryRow({super.key, required this.sObj });
 
   @override
   State<HistoryRow> createState() => _HistoryRowState();
@@ -18,10 +22,14 @@ class HistoryRow extends StatefulWidget  {
 
 class _HistoryRowState extends State<HistoryRow> {
   double rating = 0.0;
+
+  bool canDelete =false;
+  double heightButton =  60;
   late List comments;
   late int totalCounterRanking;
-  late int sumRanking;
+  late double sumRanking;
   late double rankStory;
+  late BookService service;
   late TextEditingController commentTextController;
   @override
   Widget build(BuildContext context) {
@@ -59,7 +67,7 @@ class _HistoryRowState extends State<HistoryRow> {
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     color: TColor.text,
-                    fontSize: 17,
+                    fontSize: 25,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -68,7 +76,8 @@ class _HistoryRowState extends State<HistoryRow> {
                   widget.sObj["author"].toString(),
                   maxLines: 1,
                   textAlign: TextAlign.left,
-                  style: TextStyle(color: TColor.subTitle, fontSize: 13),
+                  style: TextStyle(
+                  color: TColor.subTitle, fontSize: 25),
                 ),
                 const SizedBox(height: 8),
                 IgnorePointer(
@@ -94,7 +103,7 @@ class _HistoryRowState extends State<HistoryRow> {
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     color: TColor.subTitle.withOpacity(0.3),
-                    fontSize: 11,
+                    fontSize: 18,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -105,7 +114,7 @@ class _HistoryRowState extends State<HistoryRow> {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Container(
-                          height: 30.0,
+                          height: heightButton,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(colors: TColor.button),
                             borderRadius: BorderRadius.circular(10),
@@ -145,11 +154,12 @@ class _HistoryRowState extends State<HistoryRow> {
                     ),
 
                     const SizedBox(width: 12),
+                    canDelete ==true ?
                     Expanded(
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Container(
-                          height: 30.0,
+                          height: heightButton,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(colors: TColor.button2),
                             borderRadius: BorderRadius.circular(10),
@@ -176,7 +186,8 @@ class _HistoryRowState extends State<HistoryRow> {
                           ),
                         ),
                       ),
-                    ),
+                    )
+                    :SizedBox.shrink(),
                     const SizedBox(width: 12),
                   ],
                 ),
@@ -184,7 +195,7 @@ class _HistoryRowState extends State<HistoryRow> {
                  Align(
                     alignment: Alignment.centerLeft,
                     child: Container(
-                      height: 30.0,
+                      height: heightButton,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(colors: TColor.button3),
                         borderRadius: BorderRadius.circular(10),
@@ -228,9 +239,8 @@ class _HistoryRowState extends State<HistoryRow> {
                                   itemCount: 5,
                                   itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
                                   itemBuilder: (context, _) => const Icon(Icons.star, color: Colors.amber),
-                                  onRatingUpdate: (rating) {
-
-                                    rating = rating;
+                                  onRatingUpdate: (ratingInput) {
+                                    rating = ratingInput;
                                   },
 
                                 ),
@@ -244,13 +254,26 @@ class _HistoryRowState extends State<HistoryRow> {
                                mapComment = {"comment":comment,
                                  "rating":rating};
                                String id = widget.sObj["_id"].toString();
-                               bool isPass = await widget.service.putNewComment(id, mapComment);
-                               if (isPass)
+                               //TODO: replace this with the normal comment and without the service
+                               final token = await UserPrefs.getToken();
+                               if (token == null)
+                                 Navigator.pop(context);
+                               final response = await http.put(
+                                 Uri.parse('${Config.baseUrl}/api/books/newCommentAndRanking/id=$id'),
+                                 headers: {
+                                   'Content-Type': 'application/json',
+                                   'Authorization': 'Bearer $token',
+                                 },
+                                 body: jsonEncode(mapComment),
+                               );
+
+
+                               if (response.statusCode ==200)
                                {
-                                 String? userName = await UserPrefs.getFullName();
+                                 String userName = await UserPrefs.getFullName() ?? "unknown user";
                                  setState(() {
                                    comments.add({"user":userName , "comment":comment});
-                                   rankStory = sumRanking+rating /totalCounterRanking+1;
+                                   rankStory = (sumRanking+=rating) /(totalCounterRanking+=1);
                                  });
                                }
                                Navigator.pop(context);
@@ -362,6 +385,30 @@ class _HistoryRowState extends State<HistoryRow> {
     totalCounterRanking = widget.sObj["sum_rating"] ?? 0;
     sumRanking = widget.sObj["counter_rating"] ?? 0;
     rankStory = widget.sObj["rating"] ?? 2.5;
-
+    service = BookService();
+    checkDeleteOption();
   }
+Future<void> checkDeleteOption()
+async{
+  String idBook = widget.sObj["_id"];
+  final token = await UserPrefs.getToken();
+  if (token == null) {
+    canDelete = false;
+    return;
+  }
+  final response = await http.get(
+    Uri.parse('${Config.baseUrl}/api/books/checkDeleteOption/id=$idBook'),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+  if (response.statusCode ==200) {
+    canDelete = true;
+  } else {
+    canDelete  = false;
+  }
+
+}
+
 }

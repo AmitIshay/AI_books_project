@@ -172,8 +172,26 @@ class _HistoryRowState extends State<HistoryRow> {
                             ],
                           ),
                           child: ElevatedButton(
-                            onPressed: () {
-                              //TODO: create Delete story func
+                            onPressed: () async{
+                              final token = await UserPrefs.getToken();
+                              if (token == null) return;
+                              String idBook = widget.sObj["_id"];
+                              final respond  = await http.delete(
+                                Uri.parse('${Config.baseUrl}/api/books/delete/id=$idBook'),
+                                headers: {
+                                  'Content-Type': 'application/json',
+                                  'Authorization': 'Bearer $token',
+                                },
+                              );
+                              if (respond.statusCode == 200) {
+                                //TODO show message
+                                Navigator.pop(context);
+                              } else {
+                                //TODO show message
+                                // טפל בשגיאות כאן
+                                print('Error loading books: ${respond.body}');
+                                return ;
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.transparent,
@@ -393,7 +411,10 @@ async{
   String idBook = widget.sObj["_id"];
   final token = await UserPrefs.getToken();
   if (token == null) {
+    setState(() {
     canDelete = false;
+
+    });
     return;
   }
   final response = await http.get(
@@ -404,9 +425,15 @@ async{
     },
   );
   if (response.statusCode ==200) {
+    setState(() {
+
     canDelete = true;
+    });
   } else {
+    setState(() {
+
     canDelete  = false;
+    });
   }
 
 }

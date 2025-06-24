@@ -139,7 +139,9 @@ class _SequelToStoryState extends State<SequelToStory> {
                                 "pages": selectedBook["pages"] ?? [],
                                 "img":
                                     selectedBook["pages"]?[0]?["img_url"] ?? '',
-                                "comments" : selectedBook["comments"] ?? []
+                                "comments" : selectedBook["comments"] ?? [],
+                                "sum_rating" : selectedBook["sum_rating"] ?? 0,
+                                "counter_rating" : selectedBook["counter_rating"] ?? 0
                               },
                             ];
                           });

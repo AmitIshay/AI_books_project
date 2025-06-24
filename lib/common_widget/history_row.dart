@@ -1,12 +1,10 @@
 import 'dart:convert' show jsonEncode;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:http/http.dart' as http;
 import 'package:pjbooks/backend/user_prefs.dart';
 import 'package:pjbooks/features/create_own_story.dart';
 import 'package:pjbooks/backend/config.dart' show Config;
-
 import '../book_service.dart';
 import '../common/color_extenstion.dart';
 import 'comment_card.dart';
@@ -26,7 +24,7 @@ class _HistoryRowState extends State<HistoryRow> {
   bool canDelete =false;
   double heightButton =  60;
   late List comments;
-  late int totalCounterRanking;
+  late double totalCounterRanking;
   late double sumRanking;
   late double rankStory;
   late BookService service;
@@ -67,7 +65,7 @@ class _HistoryRowState extends State<HistoryRow> {
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     color: TColor.text,
-                    fontSize: 25,
+                    fontSize: 35,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -79,7 +77,7 @@ class _HistoryRowState extends State<HistoryRow> {
                   style: TextStyle(
                   color: TColor.subTitle, fontSize: 25),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 IgnorePointer(
                   ignoring: true,
                   child: RatingBar.builder(
@@ -89,14 +87,14 @@ class _HistoryRowState extends State<HistoryRow> {
                     direction: Axis.horizontal,
                     allowHalfRating: true,
                     itemCount: 5,
-                    itemSize: 15,
+                    itemSize: 20,
                     itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
                     itemBuilder:
                         (context, _) => Icon(Icons.star, color: TColor.primary),
                     onRatingUpdate: (rating) {},
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 Text(
                   widget.sObj["genre"].toString(),
                   maxLines: 2,
@@ -184,10 +182,16 @@ class _HistoryRowState extends State<HistoryRow> {
                                 },
                               );
                               if (respond.statusCode == 200) {
-                                //TODO show message
+
+
                                 Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text("book has been deleted")),
+                                );
                               } else {
-                                //TODO show message
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text("ERROR could not delete book")),
+                                );
                                 // טפל בשגיאות כאן
                                 print('Error loading books: ${respond.body}');
                                 return ;
@@ -294,9 +298,15 @@ class _HistoryRowState extends State<HistoryRow> {
                                  });
                                }
                                Navigator.pop(context);
+                               ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text("comment added")),
+                                );
                              }, child: Text("Submit")),
-                             TextButton(onPressed: ()=>{
-                               Navigator.pop(context)
+                             TextButton(onPressed: (){
+                               Navigator.pop(context);
+                               ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text("Error Could Not Add Comment")),
+                                );
                              }, child: Text("Cancel"))
                            ],
 
@@ -399,8 +409,8 @@ class _HistoryRowState extends State<HistoryRow> {
         ? rawComments
         : createListForTest();
     commentTextController = TextEditingController();
-    totalCounterRanking = widget.sObj["sum_rating"] ?? 0;
-    sumRanking = widget.sObj["counter_rating"] ?? 0;
+    totalCounterRanking = widget.sObj["sum_rating"].toDouble() ?? 0;
+    sumRanking = widget.sObj["counter_rating"].toDouble() ?? 0.0;
     rankStory = widget.sObj["rating"] ?? 2.5;
     service = BookService();
     checkDeleteOption();

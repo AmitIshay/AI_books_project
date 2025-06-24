@@ -52,6 +52,7 @@ dependencies:
   palette_generator: ^0.3.3
   audioplayers: ^5.2.1
   cached_network_image: ^3.3.1
+  flutter_native_splash: ^2.4.4
 
 dev_dependencies:
   flutter_test:
@@ -109,3 +110,10 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+flutter_native_splash:
+  #Yelow color
+  color: "#000000"
+  image: assets/img/blue_background.png
+  android: true
+  ios: false
+  fullscreen: true

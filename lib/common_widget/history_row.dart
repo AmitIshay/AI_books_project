@@ -272,7 +272,6 @@ class _HistoryRowState extends State<HistoryRow> {
                                mapComment = {"comment":comment,
                                  "rating":rating};
                                String id = widget.sObj["_id"].toString();
-                               //TODO: replace this with the normal comment and without the service
                                final token = await UserPrefs.getToken();
                                if (token == null)
                                  Navigator.pop(context);

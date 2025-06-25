@@ -409,9 +409,9 @@ class _HistoryRowState extends State<HistoryRow> {
         ? rawComments
         : createListForTest();
     commentTextController = TextEditingController();
-    totalCounterRanking = widget.sObj["sum_rating"].toDouble() ?? 0;
+    totalCounterRanking = widget.sObj["sum_rating"].toDouble() ?? 0.0;
     sumRanking = widget.sObj["counter_rating"].toDouble() ?? 0.0;
-    rankStory = widget.sObj["rating"] ?? 2.5;
+    rankStory = widget.sObj["rating"].toDouble() ==0.0 ? 2.5: widget.sObj["rating"].toDouble();
     service = BookService();
     checkDeleteOption();
   }

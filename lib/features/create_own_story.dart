@@ -113,7 +113,7 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
 
       final Book newBook = Book(
         title: responseData["title"],
-        coverImage: responseData["cover_image"] ?? "",
+        coverImage: responseData["pages"]?[0]?["img_url"] ?? "",
         pages:
             (responseData["pages"] as List<dynamic>).map((page) {
                 return BookPage(

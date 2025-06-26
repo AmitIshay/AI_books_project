@@ -1,4 +1,6 @@
 import 'package:pjbooks/backend/user_prefs.dart';
+import 'package:pjbooks/bookPages/book.dart';
+import 'package:pjbooks/bookPages/home_screen.dart';
 import 'package:pjbooks/book_service.dart';
 import 'package:pjbooks/common/color_extenstion.dart';
 import 'package:pjbooks/view/book_reading/book_reading_view.dart';
@@ -34,6 +36,8 @@ class _HomeViewState extends State<HomeView> {
 
   List recentArr = [];
 
+  List allBooks = [];
+
   @override
   void initState() {
     super.initState();
@@ -41,6 +45,7 @@ class _HomeViewState extends State<HomeView> {
     load_most_rated();
     load_genres_user();
     load_recent_added();
+    load_books();
   }
 
   @override
@@ -112,7 +117,13 @@ class _HomeViewState extends State<HomeView> {
                           int pageViewIndex,
                         ) {
                           var iObj = topPicksArr[itemIndex] as Map? ?? {};
-                          return TopPicksCell(iObj: iObj);
+                          return GestureDetector(
+                            onTap: () {
+                              openBookById(iObj['id'], context);
+                            },
+
+                            child: TopPicksCell(iObj: iObj),
+                          );
                         },
                         options: CarouselOptions(
                           autoPlay: false,
@@ -153,15 +164,10 @@ class _HomeViewState extends State<HomeView> {
 
                           return GestureDetector(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => BookReadingView(bObj: bObj),
-                                ),
-                              );
+                              openBookById(bObj['id'], context);
                             },
-                            child:  TopPicksCell (iObj: bObj),
+
+                            child: TopPicksCell(iObj: bObj),
                           );
                         }),
                       ),
@@ -197,7 +203,6 @@ class _HomeViewState extends State<HomeView> {
                             bObj: bObj,
                             bgcolor:
                                 index % 2 == 0 ? TColor.color1 : TColor.color2,
-
                           );
                         }),
                       ),
@@ -230,7 +235,13 @@ class _HomeViewState extends State<HomeView> {
                         itemBuilder: ((context, index) {
                           var bObj = recentArr[index] as Map? ?? {};
 
-                          return TopPicksCell(iObj: bObj);
+                          return GestureDetector(
+                            onTap: () {
+                              openBookById(bObj['id'], context);
+                            },
+
+                            child: TopPicksCell(iObj: bObj),
+                          );
                         }),
                       ),
                     ),
@@ -315,21 +326,21 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  void load_top_pick() async{
+  void load_top_pick() async {
     await service.loadBooksTopPick();
     setState(() {
       topPicksArr = service.books_top_pick;
     });
   }
 
-  void load_most_rated() async{
+  void load_most_rated() async {
     await service.loadBooksRated();
     setState(() {
       bestArr = service.books_most_rated;
     });
   }
-  void load_genres_user()
-  async{
+
+  void load_genres_user() async {
     final genres = await UserPrefs.getGenres();
     setState(() {
       genresArr = genres ?? []; // ברירת מחדל אם לא קיים
@@ -337,10 +348,53 @@ class _HomeViewState extends State<HomeView> {
   }
 
   //TODO
-  void load_recent_added() async{
+  void load_recent_added() async {
     await service.loadBooksRecentAdded();
     setState(() {
       recentArr = service.books_recent_added;
     });
+  }
+
+  void load_books() async {
+    await service.loadBooks();
+    setState(() {
+      allBooks = service.books;
+    });
+  }
+
+  void openBookById(String bookId, BuildContext context) {
+    var fullBook = allBooks.firstWhere(
+      (book) => book['id'] == bookId,
+      orElse: () => <String, dynamic>{},
+    );
+
+    if (fullBook.isEmpty) {
+      // אפשר להציג הודעת שגיאה
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Book not found.")));
+      return;
+    }
+
+    final Book newBook = Book(
+      title: fullBook["title"] ?? "",
+      coverImage: fullBook["pages"]?[0]?["img_url"] ?? "",
+      pages:
+          (fullBook["pages"] as List<dynamic>? ?? []).map((page) {
+              return BookPage(
+                imagePath: page["img_url"] ?? "",
+                text: page["text_page"] ?? "",
+                voiceUrl: page["voice_file_url"] ?? "",
+              );
+            }).toList()
+            ..add(
+              BookPage(imagePath: "", text: "", voiceUrl: "", isEndPage: true),
+            ),
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
+    );
   }
 }

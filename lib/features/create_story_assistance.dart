@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 import 'dart:math';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-
 class BookQuestionsScreen extends StatefulWidget {
   const BookQuestionsScreen({super.key});
 
@@ -63,7 +62,7 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
   final Map<String, String> userAnswers = {}; // Store user answers
   void submitStory() async {
     setState(() {
-      isLoading =true;
+      isLoading = true;
     });
     final token = await UserPrefs.getToken();
     final author = await UserPrefs.getFullName() ?? "Unknown";
@@ -120,7 +119,7 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
 
       if (aiResponse.statusCode == 200) {
         setState(() {
-          isLoading =false;
+          isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -129,7 +128,7 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
         );
       } else {
         setState(() {
-          isLoading =false;
+          isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("AI story error: ${aiResponse.body}")),
@@ -140,7 +139,7 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
 
       final Book newBook = Book(
         title: responseData["title"],
-        coverImage: responseData["cover_image"] ?? "",
+        coverImage: responseData["pages"]?[0]?["img_url"] ?? "",
         pages:
             (responseData["pages"] as List<dynamic>)
                 .map(
@@ -183,13 +182,10 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var media = MediaQuery
-        .of(context)
-        .size;
+    var media = MediaQuery.of(context).size;
     if (isLoading) {
       return loadScreen();
-    }
-    else {
+    } else {
       return Scaffold(
         body: Stack(
           children: [
@@ -250,37 +246,38 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
                             ),
                           ),
                           children:
-                          questions[category]!.map((question) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0,
-                                vertical: 8.0,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    question,
-                                    style: const TextStyle(fontSize: 16),
+                              questions[category]!.map((question) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0,
+                                    vertical: 8.0,
                                   ),
-                                  const SizedBox(height: 8.0),
-                                  TextField(
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      hintText: "Write your answer here...",
-                                    ),
-                                    maxLines: null,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        userAnswers[question] = value;
-                                      });
-                                    },
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        question,
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                      const SizedBox(height: 8.0),
+                                      TextField(
+                                        decoration: InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          hintText: "Write your answer here...",
+                                        ),
+                                        maxLines: null,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            userAnswers[question] = value;
+                                          });
+                                        },
+                                      ),
+                                      const SizedBox(height: 16.0),
+                                    ],
                                   ),
-                                  const SizedBox(height: 16.0),
-                                ],
-                              ),
-                            );
-                          }).toList(),
+                                );
+                              }).toList(),
                         ),
                       );
                     },
@@ -313,22 +310,19 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
     }
   }
 }
+
 loadScreen() {
   return Scaffold(
     backgroundColor: TColor.primary,
     body: Center(
       child: SpinKitCircle(
         size: 140,
-        itemBuilder: (context ,index){
-          final colors = [Colors.white ,  Colors.blue , Colors.indigoAccent];
-          final color = colors[index%colors.length];
+        itemBuilder: (context, index) {
+          final colors = [Colors.white, Colors.blue, Colors.indigoAccent];
+          final color = colors[index % colors.length];
           return DecoratedBox(
-            decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle
-            ),
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           );
-
         },
       ),
     ),

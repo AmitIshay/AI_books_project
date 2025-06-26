@@ -36,32 +36,7 @@ class _SequelToStoryState extends State<SequelToStory> {
   //   {"name": "Graphic Novels", "img": "assets/img/b6.jpg"},
   // ];
 
-  List sResultArr = [
-    // {
-    //   "name": "The Heart of Hell",
-    //   "img": "assets/img/h1.jpg",
-    //   "author": "Mitch Weiss",
-    //   "description":
-    //       "The untold story of courage and sacrifice in the shadow of Iwo Jima.",
-    //   "rate": 5.0,
-    // },
-    // {
-    //   "name": "Adrennes 1944",
-    //   "img": "assets/img/h2.jpg",
-    //   "author": "Antony Beevor",
-    //   "description":
-    //       "#1 international bestseller and award winning history book.",
-    //   "rate": 4.0,
-    // },
-    // {
-    //   "name": "War on the Gothic Line",
-    //   "img": "assets/img/h3.jpg",
-    //   "author": "Christian Jennings",
-    //   "description":
-    //       "Through the eyes of thirteen men and women from seven different nations",
-    //   "rate": 3.0,
-    // },
-  ];
+  List sResultArr = [];
   @override
   void initState() {
     super.initState();
@@ -128,7 +103,7 @@ class _SequelToStoryState extends State<SequelToStory> {
                             sResultArr = [
                               // <== עדכון פה
                               {
-                                "_id" :selectedBook["id"] ?? "",
+                                "_id": selectedBook["id"] ?? "",
                                 "title": selectedBook["title"] ?? '',
                                 "author": selectedBook["author"] ?? '',
                                 "description":
@@ -139,9 +114,10 @@ class _SequelToStoryState extends State<SequelToStory> {
                                 "pages": selectedBook["pages"] ?? [],
                                 "img":
                                     selectedBook["pages"]?[0]?["img_url"] ?? '',
-                                "comments" : selectedBook["comments"] ?? [],
-                                "sum_rating" : selectedBook["sum_rating"] ?? 0.0,
-                                "counter_rating" : selectedBook["counter_rating"] ?? 0.0
+                                "comments": selectedBook["comments"] ?? [],
+                                "sum_rating": selectedBook["sum_rating"] ?? 0,
+                                "counter_rating":
+                                    selectedBook["counter_rating"] ?? 0,
                               },
                             ];
                           });
@@ -247,7 +223,7 @@ class _SequelToStoryState extends State<SequelToStory> {
                     itemCount: sResultArr.length,
                     itemBuilder: (context, index) {
                       var sObj = sResultArr[index] as Map? ?? {};
-                      return HistoryRow(sObj: sObj );
+                      return HistoryRow(sObj: sObj);
                     },
                   ),
                 ),

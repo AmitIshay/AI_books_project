@@ -13,13 +13,11 @@ import '../home/home_view.dart';
 import '../search/search_view.dart';
 
 class MainTabView extends StatefulWidget {
-  const   MainTabView({super.key});
+  const MainTabView({super.key});
 
   @override
   State<MainTabView> createState() => _MainTabViewState();
 }
-
-
 
 GlobalKey<ScaffoldState> sideMenuScaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -27,7 +25,7 @@ class _MainTabViewState extends State<MainTabView>
     with TickerProviderStateMixin {
   TabController? controller;
   int selectMenu = 0;
-  int size_tap  = 19;
+  int size_tap = 19;
   List menuArr = [
     {"name": "Home", "icon": Icons.home},
     {"name": "Story from scratch", "icon": Icons.book},
@@ -53,16 +51,17 @@ class _MainTabViewState extends State<MainTabView>
     var paddingScale = isPortrait ? 0.8 : 1.0;
 
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(textScale)),
+      data: MediaQuery.of(
+        context,
+      ).copyWith(textScaler: TextScaler.linear(textScale)),
       child: Scaffold(
         key: sideMenuScaffoldKey,
         endDrawer: buildDrawer(media, iconScale, textScale, paddingScale),
         body: TabBarView(
           controller: controller,
-          children: const [HomeView(), SearchView(), AccountView()],
+          children: const [HomeView(), SequelToStory(), AccountView()],
         ),
         bottomNavigationBar: BottomAppBar(
-
           color: TColor.primary,
           child: TabBar(
             controller: controller,
@@ -98,7 +97,6 @@ class _MainTabViewState extends State<MainTabView>
     double paddingScale,
   ) {
     return Drawer(
-
       backgroundColor: Colors.transparent,
       elevation: 0,
       width: media.width * 0.8,
@@ -111,70 +109,69 @@ class _MainTabViewState extends State<MainTabView>
           boxShadow: const [BoxShadow(color: Colors.black54, blurRadius: 15)],
         ),
         child: SingleChildScrollView(
-
           child: Column(
             children: [
               SizedBox(height: 80 * paddingScale),
               ...menuArr.map((mObj) {
                 var index = menuArr.indexOf(mObj);
                 return Align(
-                    alignment: Alignment.centerRight,
-                    child:Container(
-
-                  padding: EdgeInsets.symmetric(
-                    vertical: 12 * paddingScale,
-                    horizontal: 15 * paddingScale,
-                  ),
-                  decoration:
-                      selectMenu == index
-                          ? BoxDecoration(
-                            color: TColor.primary,
-                            boxShadow: [
-                              BoxShadow(
-                                color: TColor.primary,
-                                blurRadius: 10,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          )
-                          : null,
-                  constraints: BoxConstraints(
-                    minWidth: 0,
-                    maxWidth: media.width * 0.6, // or whatever fits your design
-                  ),
-                  child: GestureDetector(
-
-                    onTap: () {
-                      handleDrawerTap(index);
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          key: Key(mObj["name"].toString()),
-                          mObj["name"].toString(),
-                          style: TextStyle(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 12 * paddingScale,
+                      horizontal: 15 * paddingScale,
+                    ),
+                    decoration:
+                        selectMenu == index
+                            ? BoxDecoration(
+                              color: TColor.primary,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: TColor.primary,
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            )
+                            : null,
+                    constraints: BoxConstraints(
+                      minWidth: 0,
+                      maxWidth:
+                          media.width * 0.6, // or whatever fits your design
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        handleDrawerTap(index);
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            key: Key(mObj["name"].toString()),
+                            mObj["name"].toString(),
+                            style: TextStyle(
+                              color:
+                                  selectMenu == index
+                                      ? Colors.white
+                                      : TColor.text,
+                              fontSize: 18 * textScale,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          SizedBox(width: 10 * paddingScale),
+                          Icon(
+                            mObj["icon"] as IconData? ?? Icons.home,
                             color:
                                 selectMenu == index
                                     ? Colors.white
-                                    : TColor.text,
-                            fontSize: 18 * textScale,
-                            fontWeight: FontWeight.w700,
+                                    : TColor.primary,
+                            size: 33 * iconScale,
                           ),
-                        ),
-                        SizedBox(width: 10 * paddingScale),
-                        Icon(
-                          mObj["icon"] as IconData? ?? Icons.home,
-                          color:
-                              selectMenu == index
-                                  ? Colors.white
-                                  : TColor.primary,
-                          size: 33 * iconScale,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ));
+                );
               }),
               SizedBox(height: 20 * paddingScale),
               Container(

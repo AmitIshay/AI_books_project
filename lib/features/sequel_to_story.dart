@@ -1,4 +1,6 @@
 // import 'package:pjbooks/view/search/search_fiter_view.dart';
+import 'package:pjbooks/bookPages/book.dart';
+import 'package:pjbooks/bookPages/home_screen.dart';
 import 'package:pjbooks/book_service.dart';
 import 'package:pjbooks/view/search/search_force_view.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +22,7 @@ class _SequelToStoryState extends State<SequelToStory> {
   BookService service = BookService();
   int selectTag = 0;
   List tagsArr = ["Your Books", "Genre", "News"];
-  List searchArrNew = [];
+  List allBooks = [];
   // List searchArr = [
   //   {"name": "Biography", "img": "assets/img/b1.jpg"},
   //   {"name": "Business", "img": "assets/img/b2.jpg"},
@@ -86,13 +88,7 @@ class _SequelToStoryState extends State<SequelToStory> {
                             builder:
                                 (context) => SearchForceView(
                                   allBooks:
-                                      searchArrNew.cast<Map<String, dynamic>>(),
-                                  // didSearch: (sText) {
-                                  //   txtSearch.text = sText;
-                                  //   if (mounted) {
-                                  //     setState(() {});
-                                  //   }
-                                  // },
+                                      allBooks.cast<Map<String, dynamic>>(),
                                 ),
                           ),
                         );
@@ -209,10 +205,21 @@ class _SequelToStoryState extends State<SequelToStory> {
                           crossAxisSpacing: 15,
                           mainAxisSpacing: 15,
                         ),
-                    itemCount: searchArrNew.length,
+                    itemCount: allBooks.length,
                     itemBuilder: (context, index) {
-                      var sObj = searchArrNew[index] as Map? ?? {};
-                      return SearchGridCell(sObj: sObj, index: index);
+                      var sObj = allBooks[index] as Map? ?? {};
+                      return GestureDetector(
+                        onTap: () {
+                          if (sObj.containsKey('id')) {
+                            openBookById(sObj['id'], context);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("Book ID not found.")),
+                            );
+                          }
+                        },
+                        child: SearchGridCell(sObj: sObj, index: index),
+                      );
                     },
                   ),
                 ),
@@ -237,7 +244,43 @@ class _SequelToStoryState extends State<SequelToStory> {
   void load_books() async {
     await service.loadBooks();
     setState(() {
-      searchArrNew = service.books;
+      allBooks = service.books;
     });
+  }
+
+  void openBookById(String bookId, BuildContext context) {
+    var fullBook = allBooks.firstWhere(
+      (book) => book['id'] == bookId,
+      orElse: () => <String, dynamic>{},
+    );
+
+    if (fullBook.isEmpty) {
+      // אפשר להציג הודעת שגיאה
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Book not found.")));
+      return;
+    }
+
+    final Book newBook = Book(
+      title: fullBook["title"] ?? "",
+      coverImage: fullBook["pages"]?[0]?["img_url"] ?? "",
+      pages:
+          (fullBook["pages"] as List<dynamic>? ?? []).map((page) {
+              return BookPage(
+                imagePath: page["img_url"] ?? "",
+                text: page["text_page"] ?? "",
+                voiceUrl: page["voice_file_url"] ?? "",
+              );
+            }).toList()
+            ..add(
+              BookPage(imagePath: "", text: "", voiceUrl: "", isEndPage: true),
+            ),
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
+    );
   }
 }

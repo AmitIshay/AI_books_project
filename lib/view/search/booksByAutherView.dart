@@ -109,6 +109,16 @@ class _AuthorViewState extends State<AuthorView> {
 
                           ],
                         ),
+                        const SizedBox(height: 25,),
+                        booksUser.isEmpty ? Text(
+                          textAlign: TextAlign.center,
+                          "${widget.user["full_name"].toString()} did not wrote any books so far...",
+                          style: TextStyle(
+                            color: TColor.showMessage,
+                            fontSize: 42,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ):
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Wrap(

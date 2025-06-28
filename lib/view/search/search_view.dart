@@ -1,16 +1,15 @@
-import 'package:pjbooks/auth_service.dart';
+import 'dart:math';
+
 import 'package:pjbooks/book_service.dart';
-import 'package:pjbooks/view/search/search_fiter_view.dart';
 import 'package:pjbooks/view/search/search_force_view.dart';
 import 'package:flutter/material.dart';
-
 import '../../common/color_extenstion.dart';
 import '../../common_widget/AutherCell.dart';
 import '../../common_widget/genres_cell.dart';
 import '../../common_widget/history_row.dart';
 import '../../common_widget/search_grid_cell.dart';
 import '../../common/extenstion.dart';
-
+import '../../common/color_extenstion.dart' as color;
 class SearchView extends StatefulWidget {
   const SearchView({super.key});
 
@@ -20,11 +19,11 @@ class SearchView extends StatefulWidget {
 
 class _SearchViewState extends State<SearchView> {
   TextEditingController txtSearch = TextEditingController();
-  BookService service = BookService();
   int selectTag = 0;
   List tagsArr = ["Your Books", "Genre", "Authors"];
   List searchArrNew = [];
   List authorsList = [];
+
   List genres =[
     "Fantasy",
     "Adventure",
@@ -224,10 +223,14 @@ class _SearchViewState extends State<SearchView> {
   }
 
   void load_books() async {
+    BookService service = BookService();
     await service.loadAllBooks();
-    setState(() {
-      searchArrNew = service.allBooks;
-    });
+    if (service.allBooks.isNotEmpty)
+      {
+      setState(() {
+        searchArrNew = service.allBooks;
+      });
+      }
   }
 
 
@@ -283,10 +286,10 @@ class _SearchViewState extends State<SearchView> {
         ),
         gridDelegate:
         const SliverGridDelegateWithFixedCrossAxisCount(
-          childAspectRatio: 0.75,
-          crossAxisCount: 2,
-          crossAxisSpacing: 15,
-          mainAxisSpacing: 15,
+          childAspectRatio: 1.5,
+          crossAxisCount: 3,
+          crossAxisSpacing: 25,
+          mainAxisSpacing: 35,
         ),
         itemCount: genres.length,
         itemBuilder: (context, index) {
@@ -294,7 +297,7 @@ class _SearchViewState extends State<SearchView> {
           return GenresCell(
             bObj: bObj,
             bgcolor:
-            index % 2 == 0 ? TColor.color1 : TColor.color2,
+            color.TColor.searchBGColor[ index],
 
           );
         },
@@ -311,10 +314,10 @@ class _SearchViewState extends State<SearchView> {
         ),
         gridDelegate:
         const SliverGridDelegateWithFixedCrossAxisCount(
-          childAspectRatio: 0.75,
-          crossAxisCount: 2,
-          crossAxisSpacing: 15,
-          mainAxisSpacing: 15,
+          childAspectRatio: 1.5,
+          crossAxisCount: 3,
+          crossAxisSpacing: 25,
+          mainAxisSpacing: 35,
         ),
         itemCount: authorsList.length,
         itemBuilder: (context, index) {

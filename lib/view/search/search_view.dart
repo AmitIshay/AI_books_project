@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:pjbooks/book_service.dart';
 import 'package:pjbooks/view/search/search_force_view.dart';
 import 'package:flutter/material.dart';
+import '../../bookPages/book.dart';
 import '../../common/color_extenstion.dart';
 import '../../common_widget/AutherCell.dart';
 import '../../common_widget/genres_cell.dart';
@@ -263,15 +264,19 @@ class _SearchViewState extends State<SearchView> {
         ),
         gridDelegate:
         const SliverGridDelegateWithFixedCrossAxisCount(
-          childAspectRatio: 0.75,
+          childAspectRatio: 0.9,
           crossAxisCount: 2,
-          crossAxisSpacing: 15,
-          mainAxisSpacing: 15,
+          crossAxisSpacing: 35,
+          mainAxisSpacing: 35,
         ),
         itemCount: searchArrNew.length,
         itemBuilder: (context, index) {
           var sObj = searchArrNew[index] as Map? ?? {};
-          return SearchGridCell(sObj: sObj, index: index);
+          return GestureDetector(
+              onTap: () {
+
+          },
+            child:SearchGridCell(sObj: sObj, index: index));
         },
       ),
     );

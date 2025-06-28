@@ -38,7 +38,7 @@ class TColor {
         Color(0xffE6A500),
         Color(0xffEF4C45),
         Color(0xffF46217),
-        Color(0xff09ADE2),
+        Color(0xc5856f6f),
         Color(0xffD36A43),
 
         Color(0xff67be4a),

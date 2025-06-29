@@ -47,8 +47,8 @@ import 'package:pjbooks/main.dart' as app;
 // Simulate 3 seconds passing for Future.delayed
     await tester.pump(const Duration(seconds: 3));
 
-    const String title = "cats and dogs";
-    const String genere  = "adventure";
+    const String title = "the sleeping princess";
+    const String genreStoryInput  = "adventure";
     const String email = "yam_new@smail.com";
     const String password ="yamking113";
     const String name = "tony dan";
@@ -150,7 +150,7 @@ import 'package:pjbooks/main.dart' as app;
 
     //enter text
 
-    await tester.enterText(find.byKey(question1Key), genere);
+    await tester.enterText(find.byKey(question1Key), genreStoryInput);
 
     //click on the second question : What is the name of your book (if you have an idea)?
     await tester.tap(find.byKey(question2Key));
@@ -169,12 +169,12 @@ import 'package:pjbooks/main.dart' as app;
     await tester.tap(find.byKey(basicQuestionsKey));
     await tester.pumpAndSettle();
 
+    await tester.pump(const Duration(seconds: 5));
 
     //click on create story
     await tester.tap(find.byKey(createStoryKey));
     await tester.pumpAndSettle();
 
-    await tester.pump(const Duration(seconds: 5));
 
 
     //start timer
@@ -202,15 +202,18 @@ import 'package:pjbooks/main.dart' as app;
 
 // Simulate 3 seconds passing for Future.delayed
       await tester.pump(const Duration(seconds: 3));
+      const String title = "The Magical Paintbrush";
+      const String subject = "Creativity and Kindness";
+      const String description = "A shy boy discovers a magical paintbrush that brings his drawings to life, teaching him the power of imagination and helping others.";
 
-      const String title = "cats and dogs";
-      //pages to story
+// Pages to story
       List pages = [
-        "In a quiet town, cats and dogs lived on opposite sides of the park. They rarely spoke, but they watched each other with curiosity.One day, a mischievous puppy named Max saw a cat named Luna chasing butterflies. He barked playfully and joined in, startling her!",
-        "Instead of getting angry, Luna laughed. 'You're fast for a dog,' she said. Max wagged his tail. From that day, they met every morning.",
-        "When rain kept them inside, Luna came up with an idea. 'Let’s build a shelter for all animals!' Max barked in agreement.",
-        "Cats and dogs worked together, bringing sticks, blankets, and treats. Soon, they had a cozy spot where everyone played, no matter the weather.From then on, the park was full of wagging tails and happy purrs. Max and Luna showed everyone that even the oldest rivalries can become the best friendships."
+        "In the village of Willowbrook, a shy boy named Leo found an old paintbrush in his grandmother’s attic. It glowed with a soft blue light. Curious, he painted a tree—and to his amazement, it grew right out of the page!",
+        "Leo painted birds, butterflies, and even a tiny pond. All of them came to life! Soon, the once-quiet village was full of magical creations, and everyone came to see Leo’s gift.",
+        "But one day, he painted a thundercloud by mistake. It rumbled and poured rain for hours! 'What should I do?' he worried.",
+        "Then he had an idea—he painted a giant sun with a big smile. The sun rose into the sky and dried all the rain. From that day on, Leo used his paintbrush to bring joy, color, and a little magic to everyone he met."
       ];
+
 
 
       const String email = "yam_new2@smail.com";

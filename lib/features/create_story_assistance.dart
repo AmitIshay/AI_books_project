@@ -236,6 +236,7 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
                     itemBuilder: (context, categoryIndex) {
                       String category = questions.keys.elementAt(categoryIndex);
                       return Padding(
+                        key: Key("${questions[category]}"),
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: ExpansionTile(
                           title: Text(
@@ -257,6 +258,7 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
+                                        key: Key(question),
                                         question,
                                         style: const TextStyle(fontSize: 16),
                                       ),

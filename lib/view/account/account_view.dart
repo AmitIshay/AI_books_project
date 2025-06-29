@@ -10,12 +10,15 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pjbooks/book_service.dart';
 
+import '../../bookPages/book.dart';
+import '../../bookPages/home_screen.dart';
 import '../../common/color_extenstion.dart';
 // import '../../common_widget/your_review_row.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
+import '../../common_widget/history_row.dart';
 import '../../common_widget/top_picks_cell.dart';
 
 class AccountView extends StatefulWidget {
@@ -275,7 +278,25 @@ class _AccountViewState extends State<AccountView> {
                         int pageViewIndex,
                         ) {
                       var iObj = userBooks[itemIndex] as Map? ?? {};
-                      return TopPicksCell(iObj: iObj);
+                      return
+                        GestureDetector(
+                          //TODO:  fix in the server get books from user func
+                          // onTap: () {
+                           //      Navigator.push(
+                           //        context,
+                           //        MaterialPageRoute(
+                           //          builder: (context) => HistoryRow(sObj: iObj),
+                           //        ),
+                           //      );
+                           //    },
+                           //
+                          onTap:(){
+                            openBookById(iObj["id"] , context);
+                          },
+
+                        child:
+                        TopPicksCell(iObj: iObj)
+                        );
                     },
                     options: CarouselOptions(
                       autoPlay: false,
@@ -545,6 +566,41 @@ Container containerLocation(dynamic media)
           ),
         ],
       ),
+    );
+  }
+  void openBookById(String bookId, BuildContext context) {
+    var fullBook = userBooks.firstWhere(
+          (book) => book['id'] == bookId,
+      orElse: () => <String, dynamic>{},
+    );
+
+    if (fullBook.isEmpty) {
+      // אפשר להציג הודעת שגיאה
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Book not found.")));
+      return;
+    }
+
+    final Book newBook = Book(
+      title: fullBook["title"] ?? "",
+      coverImage: fullBook["pages"]?[0]?["img_url"] ?? "",
+      pages:
+      (fullBook["pages"] as List<dynamic>? ?? []).map((page) {
+        return BookPage(
+          imagePath: page["img_url"] ?? "",
+          text: page["text_page"] ?? "",
+          voiceUrl: page["voice_file_url"] ?? "",
+        );
+      }).toList()
+        ..add(
+          BookPage(imagePath: "", text: "", voiceUrl: "", isEndPage: true),
+        ),
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
     );
   }
 

@@ -2,6 +2,8 @@
 import 'package:pjbooks/common/color_extenstion.dart';
 import 'package:flutter/material.dart';
 
+import '../../bookPages/book.dart';
+import '../../bookPages/home_screen.dart';
 import '../../book_service.dart';
 import '../../common_widget/top_picks_cell.dart';
 
@@ -113,12 +115,7 @@ class _GenreViewState extends State<GenreView> {
 
                       return GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BookReadingView(bObj: bObj),
-                            ),
-                          );
+                          openBookById(bObj["id"],context);
                         },
                         child: TopPicksCell(iObj: bObj),
                       );
@@ -142,6 +139,42 @@ class _GenreViewState extends State<GenreView> {
     setState(() {
       books_genre = service.books_genre;
     });
+  }
+
+  void openBookById(String bookId, BuildContext context) {
+    var fullBook = books_genre.firstWhere(
+          (book) => book['id'] == bookId,
+      orElse: () => <String, dynamic>{},
+    );
+
+    if (fullBook.isEmpty) {
+      // אפשר להציג הודעת שגיאה
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Book not found.")));
+      return;
+    }
+
+    final Book newBook = Book(
+      title: fullBook["title"] ?? "",
+      coverImage: fullBook["pages"]?[0]?["img_url"] ?? "",
+      pages:
+      (fullBook["pages"] as List<dynamic>? ?? []).map((page) {
+        return BookPage(
+          imagePath: page["img_url"] ?? "",
+          text: page["text_page"] ?? "",
+          voiceUrl: page["voice_file_url"] ?? "",
+        );
+      }).toList()
+        ..add(
+          BookPage(imagePath: "", text: "", voiceUrl: "", isEndPage: true),
+        ),
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
+    );
   }
 
 }

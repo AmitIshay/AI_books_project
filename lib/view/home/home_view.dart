@@ -347,7 +347,6 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
-  //TODO
   void load_recent_added() async {
     await service.loadBooksRecentAdded();
     setState(() {

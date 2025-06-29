@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 // import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pjbooks/backend/config.dart';
 
+
 class AuthService {
   static const String baseUrl = Config.baseUrl;
 
@@ -68,6 +69,7 @@ class AuthService {
     };
   }
 
+  //TODO try to fix this
   // static final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // static Future<UserCredential?> signInWithGoogle() async {
@@ -102,4 +104,6 @@ class AuthService {
   //       await googleUser.authentication;
   //   return googleAuth.idToken; // זה ה-Token שצריך לשלוח ל-Flask
   // }
+
 }
+

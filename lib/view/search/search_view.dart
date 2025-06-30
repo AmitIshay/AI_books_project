@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:pjbooks/book_service.dart';
 import 'package:pjbooks/view/search/search_force_view.dart';
 import 'package:flutter/material.dart';
@@ -94,12 +92,6 @@ class _SearchViewState extends State<SearchView> {
                                 (context) => SearchForceView(
                                   allBooks:
                                       searchArrNew.cast<Map<String, dynamic>>(),
-                                  // didSearch: (sText) {
-                                  //   txtSearch.text = sText;
-                                  //   if (mounted) {
-                                  //     setState(() {});
-                                  //   }
-                                  // },
                                 ),
                           ),
                         );

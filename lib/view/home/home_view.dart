@@ -3,17 +3,10 @@ import 'package:pjbooks/bookPages/book.dart';
 import 'package:pjbooks/bookPages/home_screen.dart';
 import 'package:pjbooks/book_service.dart';
 import 'package:pjbooks/common/color_extenstion.dart';
-import 'package:pjbooks/view/book_reading/book_reading_view.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-
-import '../../common_widget/best_seller_cell.dart';
 import '../../common_widget/genres_cell.dart';
-import '../../common_widget/recently_cell.dart';
-// import '../../common_widget/round_button.dart';
-// import '../../common_widget/round_textfield.dart';
 import '../../common_widget/top_picks_cell.dart';
-// import '../login/sign_up_view.dart';
 import '../main_tab/main_tab_view.dart';
 
 class HomeView extends StatefulWidget {

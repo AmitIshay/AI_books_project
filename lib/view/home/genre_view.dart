@@ -1,4 +1,3 @@
-
 import 'package:pjbooks/common/color_extenstion.dart';
 import 'package:flutter/material.dart';
 
@@ -7,22 +6,19 @@ import '../../bookPages/home_screen.dart';
 import '../../book_service.dart';
 import '../../common_widget/top_picks_cell.dart';
 
-import '../book_reading/book_reading_view.dart';
 import '../main_tab/main_tab_view.dart';
 
 class GenreView extends StatefulWidget {
   final String genre;
 
-  const GenreView({super.key,required this.genre});
+  const GenreView({super.key, required this.genre});
 
   @override
   State<GenreView> createState() => _GenreViewState();
 }
 
 class _GenreViewState extends State<GenreView> {
-
   List books_genre = [];
-
 
   @override
   void initState() {
@@ -68,7 +64,10 @@ class _GenreViewState extends State<GenreView> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        icon: Icon(Icons.arrow_back_ios, color: TColor.showMessage),
+                        icon: Icon(
+                          Icons.arrow_back_ios,
+                          color: TColor.showMessage,
+                        ),
                       ),
                       actions: [
                         IconButton(
@@ -79,61 +78,58 @@ class _GenreViewState extends State<GenreView> {
                           icon: const Icon(Icons.menu, size: 30),
                         ),
                       ],
-                    )
-
-                ,Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // SizedBox(height: media.width * 0.1),
-
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        children: [
-                          Text(
-                            widget.genre.toString(),
-                            style: TextStyle(
-                              color: TColor.text,
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
-                            ),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // SizedBox(height: media.width * 0.1),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            children: [
+                              Text(
+                                widget.genre.toString(),
+                                style: TextStyle(
+                                  color: TColor.text,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Wrap(
+                        spacing: 12,
+                        runSpacing: 12,
+                        children:
+                            books_genre.map<Widget>((item) {
+                              final bObj = item as Map? ?? {};
+
+                              return GestureDetector(
+                                onTap: () {
+                                  openBookById(bObj["id"], context);
+                                },
+                                child: TopPicksCell(iObj: bObj),
+                              );
+                            }).toList(),
                       ),
                     ),
-
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
-                    children: books_genre.map<Widget>((item) {
-                      final bObj = item as Map? ?? {};
-
-                      return GestureDetector(
-                        onTap: () {
-                          openBookById(bObj["id"],context);
-                        },
-                        child: TopPicksCell(iObj: bObj),
-                      );
-                    }).toList(),
-                  ),
-                )
               ],
             ),
-
-              ],
-        ),]
+          ],
+        ),
       ),
-    )
     );
   }
 
-  void load_book_by_genre()
-  async{
+  void load_book_by_genre() async {
     BookService service = BookService();
     await service.loadBooksBaseOnGenre(widget.genre);
     setState(() {
@@ -143,7 +139,7 @@ class _GenreViewState extends State<GenreView> {
 
   void openBookById(String bookId, BuildContext context) {
     var fullBook = books_genre.firstWhere(
-          (book) => book['id'] == bookId,
+      (book) => book['id'] == bookId,
       orElse: () => <String, dynamic>{},
     );
 
@@ -159,16 +155,16 @@ class _GenreViewState extends State<GenreView> {
       title: fullBook["title"] ?? "",
       coverImage: fullBook["pages"]?[0]?["img_url"] ?? "",
       pages:
-      (fullBook["pages"] as List<dynamic>? ?? []).map((page) {
-        return BookPage(
-          imagePath: page["img_url"] ?? "",
-          text: page["text_page"] ?? "",
-          voiceUrl: page["voice_file_url"] ?? "",
-        );
-      }).toList()
-        ..add(
-          BookPage(imagePath: "", text: "", voiceUrl: "", isEndPage: true),
-        ),
+          (fullBook["pages"] as List<dynamic>? ?? []).map((page) {
+              return BookPage(
+                imagePath: page["img_url"] ?? "",
+                text: page["text_page"] ?? "",
+                voiceUrl: page["voice_file_url"] ?? "",
+              );
+            }).toList()
+            ..add(
+              BookPage(imagePath: "", text: "", voiceUrl: "", isEndPage: true),
+            ),
     );
 
     Navigator.push(
@@ -176,5 +172,4 @@ class _GenreViewState extends State<GenreView> {
       MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
     );
   }
-
 }

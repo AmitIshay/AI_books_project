@@ -23,21 +23,6 @@ class _SequelToStoryState extends State<SequelToStory> {
   int selectTag = 0;
   List tagsArr = ["Your Books", "Genre", "News"];
   List allBooks = [];
-  // List searchArr = [
-  //   {"name": "Biography", "img": "assets/img/b1.jpg"},
-  //   {"name": "Business", "img": "assets/img/b2.jpg"},
-  //   {"name": "Children", "img": "assets/img/b3.jpg"},
-  //   {"name": "Cookery", "img": "assets/img/b4.jpg"},
-  //   {"name": "Fiction", "img": "assets/img/b5.jpg"},
-  //   {"name": "Graphic Novels", "img": "assets/img/b6.jpg"},
-  //   {"name": "Biography", "img": "assets/img/b1.jpg"},
-  //   {"name": "Business", "img": "assets/img/b2.jpg"},
-  //   {"name": "Children", "img": "assets/img/b3.jpg"},
-  //   {"name": "Cookery", "img": "assets/img/b4.jpg"},
-  //   {"name": "Fiction", "img": "assets/img/b5.jpg"},
-  //   {"name": "Graphic Novels", "img": "assets/img/b6.jpg"},
-  // ];
-
   List sResultArr = [];
   @override
   void initState() {

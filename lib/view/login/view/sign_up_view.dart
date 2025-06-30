@@ -1,12 +1,9 @@
-import 'package:pjbooks/auth_service.dart';
-import 'package:pjbooks/view/login/help_us_view.dart';
 import 'package:flutter/material.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../common/color_extenstion.dart';
-import '../../common_widget/round_button.dart';
-import '../../common_widget/round_textfield.dart';
-import 'package:pjbooks/backend/user_prefs.dart';
+import 'package:pjbooks/view/login/provider/auth_provider.dart';
+import 'package:pjbooks/view/login/widgets/auth_widgets.dart';
+import '../../../common/color_extenstion.dart';
+import '../../../common_widget/round_button.dart';
+import '../../../common_widget/round_textfield.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
@@ -109,64 +106,16 @@ class _SignUpViewState extends State<SignUpView> {
                         ],
                       ),
                       RoundLineButton(
-                        key: Key("sign up"),
+                        key: const Key("sign up"),
                         title: "Sign Up",
-                        onPressed: () async {
-                          final res = await AuthService.signUp(
-                            fullName: txtFirstName.text.trim(),
-                            email: txtEmail.text.trim(),
-                            mobile: txtMobile.text.trim(),
-                            password: txtPassword.text,
-                          );
-
-                          if (res['statusCode'] == 201) {
-                            final token = res['body']['token'];
-                            final userId = res['body']['userId'];
-                            final fullName = res['body']['full_name'];
-                            final bio = res['body']['bio'] ?? "";
-                            final location = res['body']['location'] ?? "";
-                            final imageBase64 =
-                                res['body']['image_base64'] ?? "";
-                            final List<dynamic>? rawGenres = res['body']['genres'];
-                            final List<String> genres = rawGenres?.cast<String>() ?? <String>[];
-                            // final prefs = await SharedPreferences.getInstance();
-                            // await prefs.setString('token', token);
-                            // await prefs.setString('user_id', userId);
-                            await UserPrefs.saveTokenAndUserIdAndfull_name_bio_location_image_base64(
-                              token,
-                              userId,
-                              fullName,
-                              bio,
-                              location,
-                              imageBase64,
-                              genres
-                            );
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Signup successful"),
-                              ),
-                            );
-
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => HelpUsView(
-                                      userId: res['body']['userId'],
-                                    ),
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  res['body']['message'] ?? "Signup failed",
-                                ),
-                              ),
-                            );
-                          }
-                        },
+                        onPressed:
+                            () => handleSignUp(
+                              context: context,
+                              fullName: txtFirstName.text.trim(),
+                              email: txtEmail.text.trim(),
+                              mobile: txtMobile.text.trim(),
+                              password: txtPassword.text,
+                            ),
                       ),
                     ],
                   ),
@@ -174,43 +123,8 @@ class _SignUpViewState extends State<SignUpView> {
               ),
             ),
           ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.arrow_back_ios, color: TColor.primary),
-              ),
-            ),
-          ),
+          buildBackButton(context),
         ],
-      ),
-    );
-  }
-
-  Container socialIcon(image) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 15),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white, width: 2),
-      ),
-      child: Image.asset(image, height: 30),
-    );
-  }
-
-  Widget socialButton(String imagePath, VoidCallback onPressed) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade300),
-        ),
-        child: Image.asset(imagePath, height: 30),
       ),
     );
   }

@@ -1,13 +1,8 @@
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:http/http.dart' as http;
-import 'package:pjbooks/backend/config.dart';
-import 'package:pjbooks/backend/user_prefs.dart';
+import 'package:pjbooks/view/login/provider/auth_provider.dart';
+import 'package:pjbooks/view/login/widgets/auth_widgets.dart';
 import 'package:pjbooks/common/color_extenstion.dart';
-import 'package:pjbooks/view/main_tab/main_tab_view.dart';
 import 'package:flutter/material.dart';
-import '../../common_widget/round_button.dart';
+import '../../../common_widget/round_button.dart';
 
 class HelpUsView extends StatefulWidget {
   final String userId;
@@ -97,7 +92,7 @@ class _HelpUsViewState extends State<HelpUsView> {
                                         topGenres[genre] = !topGenres[genre]!;
                                       });
                                     },
-                                    key:Key(genre),
+                                    key: Key(genre),
                                     icon: Icon(
                                       topGenres[genre]!
                                           ? Icons.check_box
@@ -133,7 +128,7 @@ class _HelpUsViewState extends State<HelpUsView> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   IconButton(
-                                    key:Key(genre),
+                                    key: Key(genre),
                                     onPressed: () {
                                       setState(() {
                                         otherGenres[genre] =
@@ -185,50 +180,13 @@ class _HelpUsViewState extends State<HelpUsView> {
                             child: RoundButton(
                               key: Key("save"),
                               title: "Save",
-                              onPressed: () async {
-                                final selectedGenres = [
-                                  ...topGenres.entries
-                                      .where((e) => e.value)
-                                      .map((e) => e.key),
-                                  ...otherGenres.entries
-                                      .where((e) => e.value)
-                                      .map((e) => e.key),
-                                ];
-
-                                final response = await http.put(
-                                  Uri.parse(
-                                    '${Config.baseUrl}/api/auth/update_genres',
+                              onPressed:
+                                  () => handleSaveGenres(
+                                    context: context,
+                                    userId: widget.userId,
+                                    topGenres: topGenres,
+                                    otherGenres: otherGenres,
                                   ),
-                                  headers: {'Content-Type': 'application/json'},
-                                  body: jsonEncode({
-                                    'user_id': widget.userId,
-                                    'genres': selectedGenres,
-                                  }),
-                                );
-
-                                if (response.statusCode == 200) {
-                                  final prefs =
-                                  await SharedPreferences.getInstance();
-                                  await prefs.setStringList(
-                                    'generes',
-                                    selectedGenres,
-                                  );
-
-
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const MainTabView(),
-                                    ),
-                                  );
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text("Failed to save genres"),
-                                    ),
-                                  );
-                                }
-                              },
                             ),
                           ),
                         ],
@@ -239,17 +197,7 @@ class _HelpUsViewState extends State<HelpUsView> {
               ),
             ),
           ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.arrow_back_ios, color: TColor.primary),
-              ),
-            ),
-          ),
+          buildBackButton(context),
         ],
       ),
     );

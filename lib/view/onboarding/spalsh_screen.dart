@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pjbooks/view/main_tab/main_tab_view.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pjbooks/view/onboarding/onboarding_view.dart';
-import 'package:pjbooks/view/login/sign_in_view.dart';
+import 'package:pjbooks/view/login/view/sign_in_view.dart';
 import 'package:pjbooks/backend/user_prefs.dart';
 
 class SplashScreen extends StatefulWidget {

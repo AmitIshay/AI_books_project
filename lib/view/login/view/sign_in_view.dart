@@ -1,15 +1,10 @@
-import 'package:pjbooks/auth_service.dart';
-import 'package:pjbooks/book_service.dart';
 import 'package:pjbooks/common/color_extenstion.dart';
-import 'package:pjbooks/view/login/forgot_password_view.dart';
+import 'package:pjbooks/view/login/view/forgot_password_view.dart';
 import 'package:flutter/material.dart';
-import 'package:pjbooks/view/main_tab/main_tab_view.dart';
-import 'package:provider/provider.dart';
-
-import '../../common_widget/round_button.dart';
-import '../../common_widget/round_textfield.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pjbooks/backend/user_prefs.dart';
+import 'package:pjbooks/view/login/provider/auth_provider.dart';
+import 'package:pjbooks/view/login/widgets/auth_widgets.dart';
+import '../../../common_widget/round_button.dart';
+import '../../../common_widget/round_textfield.dart';
 
 class SignInView extends StatefulWidget {
   const SignInView({super.key});
@@ -150,86 +145,13 @@ class _SignInViewState extends State<SignInView> {
                       RoundLineButton(
                         key: Key('sign_in_key_login_screen'),
                         title: "Sign In",
-                        onPressed: () async {
-                          final res = await AuthService.signIn(
-                            email: txtEmail.text.trim(),
-                            password: txtPassword.text,
-                          );
-
-                          if (res['statusCode'] == 200) {
-                            final token = res['body']['token'];
-                            final userId = res['body']['userId'];
-                            final fullName = res['body']['full_name'];
-                            final bio = res['body']['bio'];
-                            final location = res['body']['location'] ?? "";
-                            final imageBase64 =
-                                res['body']['image_base64'] ?? "";
-                            final genres_dynamic = res['body']['genres'] ;
-
-                            var genres = coventDynamicListIntoString(genres_dynamic);
-
-                            await UserPrefs.saveTokenAndUserIdAndfull_name_bio_location_image_base64(
-                              token,
-                              userId,
-                              fullName,
-                              bio,
-                              location,
-                              imageBase64,
-                              genres
-                            );
-                            await UserPrefs.setIsLoggedIn(isStay);
-
-                            await context.read<BookService>().loadBooks();
-                            await context.read<BookService>().loadBooksTopPick();
-
-                            // 🟨 שליפת הספרים מהשרת
-                            // final booksRes = await BookService.getUserBooks(
-                            //   token,
-                            // );
-                            // if (booksRes['statusCode'] == 200) {
-                            // final books = booksRes['body']['books'];
-                            // await UserPrefs.saveBooks(
-                            //   List<Map<String, dynamic>>.from(books),
-                            // );
-
-                            // for (var book in books) {
-                            //   print(
-                            //     "Book: ${book['title']} by ${book['author']}",
-                            //   );
-                            // }
-
-                            // אם אתה רוצה לשמור בזיכרון או לשתף דרך Provider / GetX / Riverpod וכו'
-                            // או שאתה יכול להעביר ל־MainTabView ישירות
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Login successful")),
-                            );
-
-                            Navigator.pushReplacement(
+                        onPressed:
+                            () => handleSignIn(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => MainTabView(),
-                              ),
-                            );
-                            // } else {
-                            //   ScaffoldMessenger.of(context).showSnackBar(
-                            //     SnackBar(
-                            //       content: Text(
-                            //         "Login succeeded, but failed to load books",
-                            //       ),
-                            //     ),
-                            //   );
-                            // }
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  res['body']['message'] ?? "Login failed",
-                                ),
-                              ),
-                            );
-                          }
-                        },
+                              txtEmail.text.trim(),
+                              txtPassword.text,
+                              isStay,
+                            ),
                       ),
                     ],
                   ),
@@ -238,45 +160,9 @@ class _SignInViewState extends State<SignInView> {
             ),
           ),
 
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.arrow_back_ios, color: TColor.primary),
-              ),
-            ),
-          ),
+          buildBackButton(context),
         ],
       ),
     );
-  }
-
-  Container socialIcon(image) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 15),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white, width: 2),
-      ),
-      child: Image.asset(image, height: 30),
-    );
-  }
-
-  List<String> coventDynamicListIntoString(genres) {
-    List<String> genresList = []; // Default to an empty list
-
-    if (genres != null && genres is List) {
-      // Ensure every item in the list is a String before casting
-      genresList = genres.map((item) => item.toString()).toList();
-    } else if (genres == null) {
-      // Handle the case where 'genres' might be missing from the response entirely
-      // You might want to default to an empty list or handle it as an error
-      print("Genres field is null or not a list in the response.");
-    }
-      return genresList;
-
   }
 }

@@ -64,19 +64,6 @@ class _SearchForceViewState extends State<SearchForceView> {
       perviousArr = [];
     });
   }
-  // List perviousArr = [
-  //   "Search 1",
-  //   "Search 2",
-  //   "Search 3",
-  //   "Search 4",
-  //   "Search 5",
-  // ];
-  // List resultArr = [
-  //   "Gross Anatomy",
-  //   "When To Rob A Bank",
-  //   "The Bite In The Apple",
-  //   "The Ignorant Maestro",
-  // ];
 
   @override
   Widget build(BuildContext context) {

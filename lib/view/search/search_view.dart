@@ -12,6 +12,7 @@ import '../../common_widget/history_row.dart';
 import '../../common_widget/search_grid_cell.dart';
 import '../../common/extenstion.dart';
 import '../../common/color_extenstion.dart' as color;
+
 class SearchView extends StatefulWidget {
   const SearchView({super.key});
 
@@ -26,7 +27,7 @@ class _SearchViewState extends State<SearchView> {
   List searchArrNew = [];
   List authorsList = [];
 
-  List genres =[
+  List genres = [
     "Fantasy",
     "Adventure",
     "Fairy Tales",
@@ -38,7 +39,7 @@ class _SearchViewState extends State<SearchView> {
     "Non-Fiction",
     "Biography",
     "History",
-    "Thriller"
+    "Thriller",
   ];
 
   List sResultArr = [];
@@ -47,7 +48,6 @@ class _SearchViewState extends State<SearchView> {
     super.initState();
     load_books();
     loadAllUsers();
-
   }
 
   @override
@@ -92,15 +92,15 @@ class _SearchViewState extends State<SearchView> {
                           MaterialPageRoute(
                             builder:
                                 (context) => SearchForceView(
-                              allBooks:
-                              searchArrNew.cast<Map<String, dynamic>>(),
-                              // didSearch: (sText) {
-                              //   txtSearch.text = sText;
-                              //   if (mounted) {
-                              //     setState(() {});
-                              //   }
-                              // },
-                            ),
+                                  allBooks:
+                                      searchArrNew.cast<Map<String, dynamic>>(),
+                                  // didSearch: (sText) {
+                                  //   txtSearch.text = sText;
+                                  //   if (mounted) {
+                                  //     setState(() {});
+                                  //   }
+                                  // },
+                                ),
                           ),
                         );
                         if (selectedBook != null &&
@@ -114,17 +114,17 @@ class _SearchViewState extends State<SearchView> {
                                 "title": selectedBook["title"] ?? '',
                                 "author": selectedBook["author"] ?? '',
                                 "description":
-                                selectedBook["description"] ?? '',
+                                    selectedBook["description"] ?? '',
                                 "num_pages": selectedBook["num_pages"] ?? '',
                                 "rating": selectedBook["rating"] ?? '',
                                 "genre": selectedBook["genre"] ?? '',
                                 "pages": selectedBook["pages"] ?? [],
                                 "img":
-                                selectedBook["pages"]?[0]?["img_url"] ?? '',
+                                    selectedBook["pages"]?[0]?["img_url"] ?? '',
                                 "comments": selectedBook["comments"] ?? [],
                                 "sum_rating": selectedBook["sum_rating"] ?? 0,
                                 "counter_rating":
-                                selectedBook["counter_rating"] ?? 0,
+                                    selectedBook["counter_rating"] ?? 0,
                               },
                             ];
                           });
@@ -172,39 +172,37 @@ class _SearchViewState extends State<SearchView> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children:
-                    tagsArr.map((tagName) {
-                      var index = tagsArr.indexOf(tagName);
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 15,
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectTag = index;
-                            });
-                          },
-                          child: Text(
-                            tagName,
-                            style: TextStyle(
-                              color:
-                              selectTag == index
-                                  ? TColor.text
-                                  : TColor.subTitle,
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
+                        tagsArr.map((tagName) {
+                          var index = tagsArr.indexOf(tagName);
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 15,
                             ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectTag = index;
+                                });
+                              },
+                              child: Text(
+                                tagName,
+                                style: TextStyle(
+                                  color:
+                                      selectTag == index
+                                          ? TColor.text
+                                          : TColor.subTitle,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
                   ),
                 ),
               ),
-              if (txtSearch.text.isEmpty)
-                selectOptionView(selectTag),
-
+              if (txtSearch.text.isEmpty) selectOptionView(selectTag),
 
               if (txtSearch.text.isNotEmpty)
                 Expanded(
@@ -227,27 +225,26 @@ class _SearchViewState extends State<SearchView> {
   void load_books() async {
     BookService service = BookService();
     await service.loadAllBooks();
-    if (service.allBooks.isNotEmpty)
-      {
+    if (service.allBooks.isNotEmpty) {
       setState(() {
         searchArrNew = service.allBooks;
       });
-      }
-  }
-
-
-  Expanded selectOptionView(int value)
-  {
-    switch (value)
-    {
-      case 0: return booksOptionView();
-      case 1: return genresOptionView();
-      case 2: return bookWritesOptionView();
     }
-    return Expanded(child: SizedBox.shrink(),);
   }
 
-  void loadAllUsers() async{
+  Expanded selectOptionView(int value) {
+    switch (value) {
+      case 0:
+        return booksOptionView();
+      case 1:
+        return genresOptionView();
+      case 2:
+        return bookWritesOptionView();
+    }
+    return Expanded(child: SizedBox.shrink());
+  }
+
+  void loadAllUsers() async {
     BookService service = BookService();
     await service.loadAllUserFromDB();
     setState(() {
@@ -255,16 +252,11 @@ class _SearchViewState extends State<SearchView> {
     });
   }
 
-  Expanded booksOptionView()
-  {
+  Expanded booksOptionView() {
     return Expanded(
       child: GridView.builder(
-        padding: const EdgeInsets.symmetric(
-          vertical: 8,
-          horizontal: 15,
-        ),
-        gridDelegate:
-        const SliverGridDelegateWithFixedCrossAxisCount(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           childAspectRatio: 0.9,
           crossAxisCount: 2,
           crossAxisSpacing: 35,
@@ -274,24 +266,21 @@ class _SearchViewState extends State<SearchView> {
         itemBuilder: (context, index) {
           var sObj = searchArrNew[index] as Map? ?? {};
           return GestureDetector(
-              onTap: () {
-                openBookById(sObj["id"], context);
-          },
-            child:SearchGridCell(sObj: sObj, index: index));
+            onTap: () {
+              openBookById(sObj["id"], context);
+            },
+            child: SearchGridCell(sObj: sObj, index: index),
+          );
         },
       ),
     );
   }
-  Expanded genresOptionView()
-  {
+
+  Expanded genresOptionView() {
     return Expanded(
       child: GridView.builder(
-        padding: const EdgeInsets.symmetric(
-          vertical: 8,
-          horizontal: 15,
-        ),
-        gridDelegate:
-        const SliverGridDelegateWithFixedCrossAxisCount(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           childAspectRatio: 1.5,
           crossAxisCount: 3,
           crossAxisSpacing: 25,
@@ -302,24 +291,18 @@ class _SearchViewState extends State<SearchView> {
           String bObj = genres[index] ?? "";
           return GenresCell(
             bObj: bObj,
-            bgcolor:
-            color.TColor.searchBGColor[ index],
-
+            bgcolor: color.TColor.searchBGColor[index],
           );
         },
       ),
     );
   }
-  Expanded bookWritesOptionView()
-  {
+
+  Expanded bookWritesOptionView() {
     return Expanded(
       child: GridView.builder(
-        padding: const EdgeInsets.symmetric(
-          vertical: 8,
-          horizontal: 15,
-        ),
-        gridDelegate:
-        const SliverGridDelegateWithFixedCrossAxisCount(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           childAspectRatio: 1.5,
           crossAxisCount: 3,
           crossAxisSpacing: 25,
@@ -328,17 +311,15 @@ class _SearchViewState extends State<SearchView> {
         itemCount: authorsList.length,
         itemBuilder: (context, index) {
           Map bObj = authorsList[index];
-          return AuthorCell(
-            user: bObj,
-
-          );
+          return AuthorCell(user: bObj);
         },
       ),
     );
   }
+
   void openBookById(String bookId, BuildContext context) {
     var fullBook = searchArrNew.firstWhere(
-          (book) => book['id'] == bookId,
+      (book) => book['id'] == bookId,
       orElse: () => <String, dynamic>{},
     );
 
@@ -354,16 +335,16 @@ class _SearchViewState extends State<SearchView> {
       title: fullBook["title"] ?? "",
       coverImage: fullBook["pages"]?[0]?["img_url"] ?? "",
       pages:
-      (fullBook["pages"] as List<dynamic>? ?? []).map((page) {
-        return BookPage(
-          imagePath: page["img_url"] ?? "",
-          text: page["text_page"] ?? "",
-          voiceUrl: page["voice_file_url"] ?? "",
-        );
-      }).toList()
-        ..add(
-          BookPage(imagePath: "", text: "", voiceUrl: "", isEndPage: true),
-        ),
+          (fullBook["pages"] as List<dynamic>? ?? []).map((page) {
+              return BookPage(
+                imagePath: page["img_url"] ?? "",
+                text: page["text_page"] ?? "",
+                voiceUrl: page["voice_file_url"] ?? "",
+              );
+            }).toList()
+            ..add(
+              BookPage(imagePath: "", text: "", voiceUrl: "", isEndPage: true),
+            ),
     );
 
     Navigator.push(
@@ -371,6 +352,4 @@ class _SearchViewState extends State<SearchView> {
       MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
     );
   }
-
-
 }

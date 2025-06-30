@@ -5,7 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:pjbooks/backend/config.dart';
 import 'package:pjbooks/backend/user_prefs.dart';
-import 'package:pjbooks/view/login/help_us_view.dart';
+import 'package:pjbooks/view/login/view/help_us_view.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pjbooks/book_service.dart';
@@ -29,7 +29,7 @@ class AccountView extends StatefulWidget {
 }
 
 class _AccountViewState extends State<AccountView> {
-  String uid ="";
+  String uid = "";
   List userBooks = [];
   List genresUser = [];
   String fullName = '';
@@ -57,24 +57,27 @@ class _AccountViewState extends State<AccountView> {
     loadimage_base64();
     loadGenres();
   }
-  void loadUid() async{
+
+  void loadUid() async {
     final uidOut = await UserPrefs.getUserId();
     setState(() {
       uid = uidOut ?? "";
     });
   }
-  void loadGenres() async{
+
+  void loadGenres() async {
     final genres = await UserPrefs.getGenres(); // צור מתודה מתאימה ב־UserPrefs
     setState(() {
-      genresUser = genres ??[];
+      genresUser = genres ?? [];
     });
   }
+
   void loadBooks() async {
     var bookService = BookService();
     await bookService.loadBooks();
     setState(() {
       userBooks = bookService.books;
-      bookCount  = userBooks.length;
+      bookCount = userBooks.length;
     });
   }
 
@@ -147,7 +150,6 @@ class _AccountViewState extends State<AccountView> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
@@ -181,12 +183,11 @@ class _AccountViewState extends State<AccountView> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: TColor.showMessage,
-                            fontSize: fontSize+20,
+                            fontSize: fontSize + 20,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                         const SizedBox(height: 16),
-
                       ],
                     ),
                   ),
@@ -199,60 +200,57 @@ class _AccountViewState extends State<AccountView> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child:
-                      _imageFile != null
-                          ? Image.file(
-                        _imageFile!,
-                        width: 160,
-                        height: 160,
-                        fit: BoxFit.cover,
-                      )
-                          : (image_base64.isNotEmpty &&
-                          image_base64 != "image_base64")
-                          ? Image.memory(
-                        base64Decode(image_base64),
-                        width: 160,
-                        height: 160,
-                        fit: BoxFit.cover,
-                      )
-                          : Image.asset(
-                        "assets/img/u1.png",
-                        width: 160,
-                        height: 160,
-                      ),
+                          _imageFile != null
+                              ? Image.file(
+                                _imageFile!,
+                                width: 160,
+                                height: 160,
+                                fit: BoxFit.cover,
+                              )
+                              : (image_base64.isNotEmpty &&
+                                  image_base64 != "image_base64")
+                              ? Image.memory(
+                                base64Decode(image_base64),
+                                width: 160,
+                                height: 160,
+                                fit: BoxFit.cover,
+                              )
+                              : Image.asset(
+                                "assets/img/u1.png",
+                                width: 160,
+                                height: 160,
+                              ),
                     ),
                   ),
-
                 ],
               ),
             ),
 
-            SizedBox(height: 10,),
+            SizedBox(height: 10),
             containerBio(media),
-            SizedBox(height: 30,),
+            SizedBox(height: 30),
             containerLocation(media),
-            SizedBox(height: 30,),
+            SizedBox(height: 30),
             containerGenres(media),
-            SizedBox(height: 10,),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
-        child:
-        //continer genres
-        Column(
-
-              children:[
-
-                Text(
-                  "Your Books ($booksCount):",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: TColor.showMessage,
-                    fontSize: fontSize+5,
-                    fontWeight: FontWeight.w700,
+            SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+              child:
+              //continer genres
+              Column(
+                children: [
+                  Text(
+                    "Your Books ($booksCount):",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: TColor.showMessage,
+                      fontSize: fontSize + 5,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                ),
-              ]
-        )
-        ),
+                ],
+              ),
+            ),
             Stack(
               alignment: Alignment.centerLeft,
               children: [
@@ -273,30 +271,28 @@ class _AccountViewState extends State<AccountView> {
                   child: CarouselSlider.builder(
                     itemCount: userBooks.length,
                     itemBuilder: (
-                        BuildContext context,
-                        int itemIndex,
-                        int pageViewIndex,
-                        ) {
+                      BuildContext context,
+                      int itemIndex,
+                      int pageViewIndex,
+                    ) {
                       var iObj = userBooks[itemIndex] as Map? ?? {};
-                      return
-                        GestureDetector(
-                          //TODO:  fix in the server get books from user func
-                          // onTap: () {
-                           //      Navigator.push(
-                           //        context,
-                           //        MaterialPageRoute(
-                           //          builder: (context) => HistoryRow(sObj: iObj),
-                           //        ),
-                           //      );
-                           //    },
-                           //
-                          onTap:(){
-                            openBookById(iObj["id"] , context);
-                          },
+                      return GestureDetector(
+                        //TODO:  fix in the server get books from user func
+                        // onTap: () {
+                        //      Navigator.push(
+                        //        context,
+                        //        MaterialPageRoute(
+                        //          builder: (context) => HistoryRow(sObj: iObj),
+                        //        ),
+                        //      );
+                        //    },
+                        //
+                        onTap: () {
+                          openBookById(iObj["id"], context);
+                        },
 
-                        child:
-                        TopPicksCell(iObj: iObj)
-                        );
+                        child: TopPicksCell(iObj: iObj),
+                      );
                     },
                     options: CarouselOptions(
                       autoPlay: false,
@@ -310,222 +306,180 @@ class _AccountViewState extends State<AccountView> {
                 ),
               ],
             ),
-
-
           ],
-
         ),
-
-      ) );
+      ),
+    );
   }
 
-
-
-
-Container containerBio(dynamic media)
-{
-  return Container(
-    width: media.width*0.6,
-    decoration: BoxDecoration(
-      border: Border.all(color: Colors.blue, width: 2),
-      borderRadius: BorderRadius.circular(8),
-    ),
-    padding: EdgeInsets.all(8),
-    child:
-    Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(Icons.edit_note, color: TColor.primary),
-        const SizedBox(width: 8),
-        Expanded(
-          child:
-          isEditingBio
-              ? TextField(
-            controller: bioController,
-            maxLines: 4,
-            decoration: InputDecoration(
-              hintText:
-              "Write something about yourself...",
-              filled: true,
-              fillColor: Colors.grey.shade100,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(
-                  10,
-                ),
-              ),
-            ),
-          )
-              : Text(
-            bio.isNotEmpty
-                ? bio
-                : "No bio yet. Tap edit to add one.",
-            style: TextStyle(
-              color: TColor.subTitle,
-              fontSize: fontSize,
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        IconButton(
-          icon: Icon(
-            isEditingBio ? Icons.check : Icons.edit,
-            color: TColor.primary,
-          ),
-          onPressed: () async {
-            if (isEditingBio) {
-              final userId = await UserPrefs.getUserId();
-              final newBio = bioController.text;
-
-              final response = await http.post(
-                Uri.parse(
-                  '${Config.baseUrl}/api/auth/update_bio',
-                ),
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: jsonEncode({
-                  'user_id': userId,
-                  'bio': newBio,
-                }),
-              );
-
-              if (response.statusCode == 200) {
-                final prefs =
-                await SharedPreferences.getInstance();
-                await prefs.setString('bio', newBio);
-                setState(() {
-                  bio = newBio;
-                  isEditingBio = false;
-                });
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Bio updated"),
-                  ),
-                );
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Failed to update bio"),
-                  ),
-                );
-              }
-            } else {
-              setState(() {
-                bioController.text = bio;
-                isEditingBio = true;
-              });
-            }
-          },
-        ),
-      ],
-    ),
-
-  );
-}
-Container containerLocation(dynamic media)
-{
-  return Container(
-    width: media.width*0.6,
-    decoration: BoxDecoration(
-      border: Border.all(color: Colors.blue, width: 2),
-      borderRadius: BorderRadius.circular(8),
-    ),
-    padding: EdgeInsets.all(8),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(Icons.near_me_sharp, color: TColor.primary),
-        const SizedBox(width: 8),
-        Expanded(
-          child:
-          isEditingLocation
-              ? TextField(
-            controller: locationController,
-            maxLines: 4,
-            decoration: InputDecoration(
-              hintText: "Where are you from...",
-              filled: true,
-              fillColor: Colors.grey.shade100,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(
-                  10,
-                ),
-              ),
-            ),
-          )
-              : Text(
-            location.isNotEmpty
-                ? location
-                : "No location yet. Tap edit to add one.",
-            style: TextStyle(
-              color: TColor.subTitle,
-              fontSize: fontSize,
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        IconButton(
-          icon: Icon(
-            isEditingLocation ? Icons.check : Icons.edit,
-            color: TColor.primary,
-          ),
-          onPressed: () async {
-            if (isEditingLocation) {
-              final userId = await UserPrefs.getUserId();
-              final newlocation = locationController.text;
-
-              final response = await http.post(
-                Uri.parse(
-                  '${Config.baseUrl}/api/auth/update_location',
-                ),
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: jsonEncode({
-                  'user_id': userId,
-                  'location': newlocation,
-                }),
-              );
-
-              if (response.statusCode == 200) {
-                final prefs =
-                await SharedPreferences.getInstance();
-                await prefs.setString(
-                  'location',
-                  newlocation,
-                );
-                setState(() {
-                  location = newlocation;
-                  isEditingLocation = false;
-                });
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("location updated"),
-                  ),
-                );
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      "Failed to update location",
+  Container containerBio(dynamic media) {
+    return Container(
+      width: media.width * 0.6,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.blue, width: 2),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: EdgeInsets.all(8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.edit_note, color: TColor.primary),
+          const SizedBox(width: 8),
+          Expanded(
+            child:
+                isEditingBio
+                    ? TextField(
+                      controller: bioController,
+                      maxLines: 4,
+                      decoration: InputDecoration(
+                        hintText: "Write something about yourself...",
+                        filled: true,
+                        fillColor: Colors.grey.shade100,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    )
+                    : Text(
+                      bio.isNotEmpty ? bio : "No bio yet. Tap edit to add one.",
+                      style: TextStyle(
+                        color: TColor.subTitle,
+                        fontSize: fontSize,
+                      ),
                     ),
-                  ),
+          ),
+          const SizedBox(height: 12),
+          IconButton(
+            icon: Icon(
+              isEditingBio ? Icons.check : Icons.edit,
+              color: TColor.primary,
+            ),
+            onPressed: () async {
+              if (isEditingBio) {
+                final userId = await UserPrefs.getUserId();
+                final newBio = bioController.text;
+
+                final response = await http.post(
+                  Uri.parse('${Config.baseUrl}/api/auth/update_bio'),
+                  headers: {'Content-Type': 'application/json'},
+                  body: jsonEncode({'user_id': userId, 'bio': newBio}),
                 );
+
+                if (response.statusCode == 200) {
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setString('bio', newBio);
+                  setState(() {
+                    bio = newBio;
+                    isEditingBio = false;
+                  });
+
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(const SnackBar(content: Text("Bio updated")));
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Failed to update bio")),
+                  );
+                }
+              } else {
+                setState(() {
+                  bioController.text = bio;
+                  isEditingBio = true;
+                });
               }
-            } else {
-              setState(() {
-                bioController.text = bio;
-                isEditingLocation = true;
-              });
-            }
-          },
-        ),
-      ],
-    ),
-  );
-}
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container containerLocation(dynamic media) {
+    return Container(
+      width: media.width * 0.6,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.blue, width: 2),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: EdgeInsets.all(8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.near_me_sharp, color: TColor.primary),
+          const SizedBox(width: 8),
+          Expanded(
+            child:
+                isEditingLocation
+                    ? TextField(
+                      controller: locationController,
+                      maxLines: 4,
+                      decoration: InputDecoration(
+                        hintText: "Where are you from...",
+                        filled: true,
+                        fillColor: Colors.grey.shade100,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    )
+                    : Text(
+                      location.isNotEmpty
+                          ? location
+                          : "No location yet. Tap edit to add one.",
+                      style: TextStyle(
+                        color: TColor.subTitle,
+                        fontSize: fontSize,
+                      ),
+                    ),
+          ),
+          const SizedBox(height: 12),
+          IconButton(
+            icon: Icon(
+              isEditingLocation ? Icons.check : Icons.edit,
+              color: TColor.primary,
+            ),
+            onPressed: () async {
+              if (isEditingLocation) {
+                final userId = await UserPrefs.getUserId();
+                final newlocation = locationController.text;
+
+                final response = await http.post(
+                  Uri.parse('${Config.baseUrl}/api/auth/update_location'),
+                  headers: {'Content-Type': 'application/json'},
+                  body: jsonEncode({
+                    'user_id': userId,
+                    'location': newlocation,
+                  }),
+                );
+
+                if (response.statusCode == 200) {
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setString('location', newlocation);
+                  setState(() {
+                    location = newlocation;
+                    isEditingLocation = false;
+                  });
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("location updated")),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Failed to update location")),
+                  );
+                }
+              } else {
+                setState(() {
+                  bioController.text = bio;
+                  isEditingLocation = true;
+                });
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
   Container containerGenres(dynamic media) {
     return Container(
@@ -545,10 +499,7 @@ Container containerLocation(dynamic media)
               genresUser.isNotEmpty
                   ? genresUser.join(", ")
                   : "No genres yet. Tap edit to add some.",
-              style: TextStyle(
-                color: TColor.subTitle,
-                fontSize: fontSize,
-              ),
+              style: TextStyle(color: TColor.subTitle, fontSize: fontSize),
             ),
           ),
           const SizedBox(width: 8),
@@ -568,9 +519,10 @@ Container containerLocation(dynamic media)
       ),
     );
   }
+
   void openBookById(String bookId, BuildContext context) {
     var fullBook = userBooks.firstWhere(
-          (book) => book['id'] == bookId,
+      (book) => book['id'] == bookId,
       orElse: () => <String, dynamic>{},
     );
 
@@ -586,16 +538,16 @@ Container containerLocation(dynamic media)
       title: fullBook["title"] ?? "",
       coverImage: fullBook["pages"]?[0]?["img_url"] ?? "",
       pages:
-      (fullBook["pages"] as List<dynamic>? ?? []).map((page) {
-        return BookPage(
-          imagePath: page["img_url"] ?? "",
-          text: page["text_page"] ?? "",
-          voiceUrl: page["voice_file_url"] ?? "",
-        );
-      }).toList()
-        ..add(
-          BookPage(imagePath: "", text: "", voiceUrl: "", isEndPage: true),
-        ),
+          (fullBook["pages"] as List<dynamic>? ?? []).map((page) {
+              return BookPage(
+                imagePath: page["img_url"] ?? "",
+                text: page["text_page"] ?? "",
+                voiceUrl: page["voice_file_url"] ?? "",
+              );
+            }).toList()
+            ..add(
+              BookPage(imagePath: "", text: "", voiceUrl: "", isEndPage: true),
+            ),
     );
 
     Navigator.push(
@@ -603,5 +555,4 @@ Container containerLocation(dynamic media)
       MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
     );
   }
-
 }

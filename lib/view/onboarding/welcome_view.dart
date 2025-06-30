@@ -1,5 +1,5 @@
-import 'package:pjbooks/view/login/sign_in_view.dart';
-import 'package:pjbooks/view/login/sign_up_view.dart';
+import 'package:pjbooks/view/login/view/sign_in_view.dart';
+import 'package:pjbooks/view/login/view/sign_up_view.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/color_extenstion.dart';

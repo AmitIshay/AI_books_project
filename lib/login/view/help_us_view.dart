@@ -1,8 +1,8 @@
-import 'package:pjbooks/view/login/provider/auth_provider.dart';
-import 'package:pjbooks/view/login/widgets/auth_widgets.dart';
+import 'package:pjbooks/login/provider/auth_provider.dart';
+import 'package:pjbooks/login/widgets/auth_widgets.dart';
 import 'package:pjbooks/common/color_extenstion.dart';
 import 'package:flutter/material.dart';
-import '../../../common_widget/round_button.dart';
+import '../../common_widget/round_button.dart';
 
 class HelpUsView extends StatefulWidget {
   final String userId;

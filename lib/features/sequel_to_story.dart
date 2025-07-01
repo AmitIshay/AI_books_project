@@ -1,8 +1,8 @@
 // import 'package:pjbooks/view/search/search_fiter_view.dart';
 import 'package:pjbooks/bookPages/book.dart';
 import 'package:pjbooks/bookPages/home_screen.dart';
-import 'package:pjbooks/book_service.dart';
-import 'package:pjbooks/view/search/search_force_view.dart';
+import 'package:pjbooks/backend/book_service.dart';
+import 'package:pjbooks/search/search_force_view.dart';
 import 'package:flutter/material.dart';
 
 import '../common/color_extenstion.dart';
@@ -40,13 +40,12 @@ class _SequelToStoryState extends State<SequelToStory> {
   List tagsArr = ["Your Books", "Genre", "News"];
   List allBooks = [];
   List sResultArr = [];
-  List authorsList =[];
+  List authorsList = [];
   @override
   void initState() {
     super.initState();
     load_books();
     loadAllUsers();
-
   }
 
   @override
@@ -209,7 +208,6 @@ class _SequelToStoryState extends State<SequelToStory> {
                 )
               else
                 selectOptionView(selectTag),
-
             ],
           ),
         ),
@@ -260,7 +258,7 @@ class _SequelToStoryState extends State<SequelToStory> {
     );
   }
 
-  void loadAllUsers() async{
+  void loadAllUsers() async {
     BookService service = BookService();
     await service.loadAllUserFromDB();
     setState(() {
@@ -317,10 +315,7 @@ class _SequelToStoryState extends State<SequelToStory> {
         itemCount: genres.length,
         itemBuilder: (context, index) {
           String bObj = genres[index] ?? "";
-          return GenresCell(
-            bObj: bObj,
-            bgcolor: TColor.searchBGColor[index],
-          );
+          return GenresCell(bObj: bObj, bgcolor: TColor.searchBGColor[index]);
         },
       ),
     );

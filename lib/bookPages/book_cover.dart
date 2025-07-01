@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pjbooks/common/color_extenstion.dart';
 
 class BookCover extends StatelessWidget {
   final String imagePath;

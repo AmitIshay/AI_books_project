@@ -6,7 +6,7 @@ import 'package:pjbooks/backend/config.dart';
 import 'package:pjbooks/backend/user_prefs.dart';
 import 'package:pjbooks/bookPages/book.dart';
 import 'package:pjbooks/bookPages/home_screen.dart';
-import 'package:pjbooks/book_service.dart';
+import 'package:pjbooks/backend/book_service.dart';
 import 'package:pjbooks/common/color_extenstion.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';

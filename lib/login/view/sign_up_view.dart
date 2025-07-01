@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pjbooks/view/login/provider/auth_provider.dart';
-import 'package:pjbooks/view/login/widgets/auth_widgets.dart';
-import '../../../common/color_extenstion.dart';
-import '../../../common_widget/round_button.dart';
-import '../../../common_widget/round_textfield.dart';
+import 'package:pjbooks/login/provider/auth_provider.dart';
+import 'package:pjbooks/login/widgets/auth_widgets.dart';
+import '../../common/color_extenstion.dart';
+import '../../common_widget/round_button.dart';
+import '../../common_widget/round_textfield.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});

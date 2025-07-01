@@ -1,10 +1,10 @@
 import 'package:pjbooks/common/color_extenstion.dart';
-import 'package:pjbooks/view/login/view/forgot_password_view.dart';
+import 'package:pjbooks/login/view/forgot_password_view.dart';
 import 'package:flutter/material.dart';
-import 'package:pjbooks/view/login/provider/auth_provider.dart';
-import 'package:pjbooks/view/login/widgets/auth_widgets.dart';
-import '../../../common_widget/round_button.dart';
-import '../../../common_widget/round_textfield.dart';
+import 'package:pjbooks/login/provider/auth_provider.dart';
+import 'package:pjbooks/login/widgets/auth_widgets.dart';
+import '../../common_widget/round_button.dart';
+import '../../common_widget/round_textfield.dart';
 
 class SignInView extends StatefulWidget {
   const SignInView({super.key});

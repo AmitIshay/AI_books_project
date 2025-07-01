@@ -2,7 +2,7 @@ import 'package:pjbooks/common_widget/round_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-import '../../common/color_extenstion.dart';
+import '../common/color_extenstion.dart';
 
 class SearchFilterView extends StatefulWidget {
   final Function(Map)? didFilter;

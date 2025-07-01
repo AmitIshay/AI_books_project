@@ -1,13 +1,11 @@
-import 'package:pjbooks/backend/user_prefs.dart';
-import 'package:pjbooks/bookPages/book.dart';
-import 'package:pjbooks/bookPages/home_screen.dart';
-import 'package:pjbooks/book_service.dart';
+import 'package:pjbooks/backend/book_service.dart';
 import 'package:pjbooks/common/color_extenstion.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:pjbooks/home/provider/home_provider.dart';
 import '../../common_widget/genres_cell.dart';
 import '../../common_widget/top_picks_cell.dart';
-import '../main_tab/main_tab_view.dart';
+import 'main_tab_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -19,26 +17,22 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   TextEditingController txtName = TextEditingController();
   TextEditingController txtEmail = TextEditingController();
-  BookService service = BookService();
-
-  List topPicksArr = [];
-
-  List bestArr = [];
-
-  List genresArr = [];
-
-  List recentArr = [];
-
-  List allBooks = [];
+  late HomeViewProvider provider;
+  final BookService service = BookService();
 
   @override
   void initState() {
     super.initState();
-    load_top_pick();
-    load_most_rated();
-    load_genres_user();
-    load_recent_added();
-    load_books();
+    provider = HomeViewProvider(
+      service: service,
+      setState: setState,
+      context: context,
+    );
+    provider.loadTopPick();
+    provider.loadMostRated();
+    provider.loadGenresUser();
+    provider.loadRecentAdded();
+    provider.loadBooks();
   }
 
   @override
@@ -103,16 +97,17 @@ class _HomeViewState extends State<HomeView> {
                       width: media.width,
                       height: media.width * 0.5,
                       child: CarouselSlider.builder(
-                        itemCount: topPicksArr.length,
+                        itemCount: provider.topPicksArr.length,
                         itemBuilder: (
                           BuildContext context,
                           int itemIndex,
                           int pageViewIndex,
                         ) {
-                          var iObj = topPicksArr[itemIndex] as Map? ?? {};
+                          var iObj =
+                              provider.topPicksArr[itemIndex] as Map? ?? {};
                           return GestureDetector(
                             onTap: () {
-                              openBookById(iObj['id'], context);
+                              provider.openBookById(iObj['id'], context);
                             },
 
                             child: TopPicksCell(iObj: iObj),
@@ -151,13 +146,13 @@ class _HomeViewState extends State<HomeView> {
                           horizontal: 8,
                         ),
                         scrollDirection: Axis.horizontal,
-                        itemCount: bestArr.length,
+                        itemCount: provider.bestArr.length,
                         itemBuilder: ((context, index) {
-                          var bObj = bestArr[index] as Map? ?? {};
+                          var bObj = provider.bestArr[index] as Map? ?? {};
 
                           return GestureDetector(
                             onTap: () {
-                              openBookById(bObj['id'], context);
+                              provider.openBookById(bObj['id'], context);
                             },
 
                             child: TopPicksCell(iObj: bObj),
@@ -188,9 +183,9 @@ class _HomeViewState extends State<HomeView> {
                           horizontal: 8,
                         ),
                         scrollDirection: Axis.horizontal,
-                        itemCount: genresArr.length,
+                        itemCount: provider.genresArr.length,
                         itemBuilder: ((context, index) {
-                          String bObj = genresArr[index] ?? "";
+                          String bObj = provider.genresArr[index] ?? "";
 
                           return GenresCell(
                             bObj: bObj,
@@ -224,13 +219,13 @@ class _HomeViewState extends State<HomeView> {
                           horizontal: 8,
                         ),
                         scrollDirection: Axis.horizontal,
-                        itemCount: recentArr.length,
+                        itemCount: provider.recentArr.length,
                         itemBuilder: ((context, index) {
-                          var bObj = recentArr[index] as Map? ?? {};
+                          var bObj = provider.recentArr[index] as Map? ?? {};
 
                           return GestureDetector(
                             onTap: () {
-                              openBookById(bObj['id'], context);
+                              provider.openBookById(bObj['id'], context);
                             },
 
                             child: TopPicksCell(iObj: bObj),
@@ -316,77 +311,6 @@ class _HomeViewState extends State<HomeView> {
           ],
         ),
       ),
-    );
-  }
-
-  void load_top_pick() async {
-    await service.loadBooksTopPick();
-    setState(() {
-      topPicksArr = service.books_top_pick;
-    });
-  }
-
-  void load_most_rated() async {
-    await service.loadBooksRated();
-    setState(() {
-      bestArr = service.books_most_rated;
-    });
-  }
-
-  void load_genres_user() async {
-    final genres = await UserPrefs.getGenres();
-    setState(() {
-      genresArr = genres ?? []; // ברירת מחדל אם לא קיים
-    });
-  }
-
-  void load_recent_added() async {
-    await service.loadBooksRecentAdded();
-    setState(() {
-      recentArr = service.books_recent_added;
-    });
-  }
-
-  void load_books() async {
-    await service.loadBooks();
-    setState(() {
-      allBooks = service.books;
-    });
-  }
-
-  void openBookById(String bookId, BuildContext context) {
-    var fullBook = allBooks.firstWhere(
-      (book) => book['id'] == bookId,
-      orElse: () => <String, dynamic>{},
-    );
-
-    if (fullBook.isEmpty) {
-      // אפשר להציג הודעת שגיאה
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Book not found.")));
-      return;
-    }
-
-    final Book newBook = Book(
-      title: fullBook["title"] ?? "",
-      coverImage: fullBook["pages"]?[0]?["img_url"] ?? "",
-      pages:
-          (fullBook["pages"] as List<dynamic>? ?? []).map((page) {
-              return BookPage(
-                imagePath: page["img_url"] ?? "",
-                text: page["text_page"] ?? "",
-                voiceUrl: page["voice_file_url"] ?? "",
-              );
-            }).toList()
-            ..add(
-              BookPage(imagePath: "", text: "", voiceUrl: "", isEndPage: true),
-            ),
-    );
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
     );
   }
 }

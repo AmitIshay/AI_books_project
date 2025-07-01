@@ -1,12 +1,12 @@
 import 'package:pjbooks/common/color_extenstion.dart';
 import 'package:flutter/material.dart';
 
-import '../../bookPages/book.dart';
-import '../../bookPages/home_screen.dart';
-import '../../book_service.dart';
-import '../../common_widget/top_picks_cell.dart';
+import '../bookPages/book.dart';
+import '../bookPages/home_screen.dart';
+import '../backend/book_service.dart';
+import '../common_widget/top_picks_cell.dart';
 
-import '../main_tab/main_tab_view.dart';
+import '../home/view/main_tab_view.dart';
 
 class AuthorView extends StatefulWidget {
   final Map user;

@@ -1,8 +1,8 @@
-import 'package:pjbooks/book_service.dart';
+import 'package:pjbooks/backend/book_service.dart';
 import 'package:pjbooks/common/color_extenstion.dart';
 // import 'package:pjbooks/view/main_tab/main_tab_view.dart';
 // import 'package:pjbooks/view/onboarding/onboarding_view.dart';
-import 'package:pjbooks/view/onboarding/spalsh_screen.dart';
+import 'package:pjbooks/onboarding/spalsh_screen.dart';
 // import 'package:pjbooks/view/onboarding/welcome_view.dart';
 // import 'package:pjbooks/view/page.dart';
 import 'package:flutter/material.dart';

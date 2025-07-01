@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../common/color_extenstion.dart';
+import '../common/color_extenstion.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchForceView extends StatefulWidget {

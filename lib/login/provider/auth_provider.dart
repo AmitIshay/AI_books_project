@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:pjbooks/view/login/provider/auth_service.dart';
+import 'package:pjbooks/login/provider/auth_service.dart';
 import 'package:pjbooks/backend/config.dart';
 import 'package:pjbooks/backend/user_prefs.dart';
-import 'package:pjbooks/book_service.dart';
-import 'package:pjbooks/view/login/view/help_us_view.dart';
-import 'package:pjbooks/view/main_tab/main_tab_view.dart';
+import 'package:pjbooks/backend/book_service.dart';
+import 'package:pjbooks/login/view/help_us_view.dart';
+import 'package:pjbooks/home/view/main_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

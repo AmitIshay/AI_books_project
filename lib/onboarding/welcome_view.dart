@@ -1,9 +1,9 @@
-import 'package:pjbooks/view/login/view/sign_in_view.dart';
-import 'package:pjbooks/view/login/view/sign_up_view.dart';
+import 'package:pjbooks/login/view/sign_in_view.dart';
+import 'package:pjbooks/login/view/sign_up_view.dart';
 import 'package:flutter/material.dart';
 
-import '../../common/color_extenstion.dart';
-import '../../common_widget/round_button.dart';
+import '../common/color_extenstion.dart';
+import '../common_widget/round_button.dart';
 
 class WelcomeView extends StatefulWidget {
   const WelcomeView({super.key});

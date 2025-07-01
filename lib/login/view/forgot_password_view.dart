@@ -1,9 +1,9 @@
 import 'package:pjbooks/common/color_extenstion.dart';
 import 'package:flutter/material.dart';
-import 'package:pjbooks/view/login/provider/auth_provider.dart';
+import 'package:pjbooks/login/provider/auth_provider.dart';
 
-import '../../../common_widget/round_button.dart';
-import '../../../common_widget/round_textfield.dart';
+import '../../common_widget/round_button.dart';
+import '../../common_widget/round_textfield.dart';
 
 class ForgotPasswordView extends StatefulWidget {
   const ForgotPasswordView({super.key});

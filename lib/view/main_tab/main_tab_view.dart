@@ -56,7 +56,7 @@ class _MainTabViewState extends State<MainTabView>
         endDrawer: buildDrawer(media, iconScale, textScale, paddingScale),
         body: TabBarView(
           controller: controller,
-          children: const [HomeView(), SearchView(), AccountView()],
+          children: const [HomeView(), SequelToStory(), AccountView()],
         ),
         bottomNavigationBar: BottomAppBar(
           color: TColor.primary,

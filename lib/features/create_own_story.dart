@@ -100,7 +100,9 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
       print(aiStoryData);
 
       if (aiResponse.statusCode != 200) {
-        setState(() => isLoading = false);
+        setState(() {
+          isLoading = false;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("AI story error: ${aiResponse.body}")),
         );
@@ -147,11 +149,16 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
         MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
       );
     } catch (e) {
-      setState(() => isLoading = false);
+      setState(() {
+        isLoading = false;
+      });
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("Error: $e")));
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void addTextField() {

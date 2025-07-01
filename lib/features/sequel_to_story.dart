@@ -6,6 +6,8 @@ import 'package:pjbooks/view/search/search_force_view.dart';
 import 'package:flutter/material.dart';
 
 import '../common/color_extenstion.dart';
+import '../common_widget/AutherCell.dart';
+import '../common_widget/genres_cell.dart';
 import '../common_widget/history_row.dart';
 import '../common_widget/search_grid_cell.dart';
 import '../common/extenstion.dart';
@@ -21,13 +23,30 @@ class _SequelToStoryState extends State<SequelToStory> {
   TextEditingController txtSearch = TextEditingController();
   BookService service = BookService();
   int selectTag = 0;
+  List genres = [
+    "Fantasy",
+    "Adventure",
+    "Fairy Tales",
+    "Mystery",
+    "Bedtime Stories",
+    "Science Fiction",
+    "Romance",
+    "Horror",
+    "Non-Fiction",
+    "Biography",
+    "History",
+    "Thriller",
+  ];
   List tagsArr = ["Your Books", "Genre", "News"];
   List allBooks = [];
   List sResultArr = [];
+  List authorsList =[];
   @override
   void initState() {
     super.initState();
     load_books();
+    loadAllUsers();
+
   }
 
   @override
@@ -90,7 +109,7 @@ class _SequelToStoryState extends State<SequelToStory> {
                                 "description":
                                     selectedBook["description"] ?? '',
                                 "num_pages": selectedBook["num_pages"] ?? '',
-                                "rating": selectedBook["rating"] ?? '',
+                                "rating": selectedBook["rating"] ?? 0,
                                 "genre": selectedBook["genre"] ?? '',
                                 "pages": selectedBook["pages"] ?? [],
                                 "img":
@@ -176,38 +195,7 @@ class _SequelToStoryState extends State<SequelToStory> {
                   ),
                 ),
               ),
-              if (txtSearch.text.isEmpty)
-                Expanded(
-                  child: GridView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 15,
-                    ),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          childAspectRatio: 0.75,
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 15,
-                          mainAxisSpacing: 15,
-                        ),
-                    itemCount: allBooks.length,
-                    itemBuilder: (context, index) {
-                      var sObj = allBooks[index] as Map? ?? {};
-                      return GestureDetector(
-                        onTap: () {
-                          if (sObj.containsKey('id')) {
-                            openBookById(sObj['id'], context);
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Book ID not found.")),
-                            );
-                          }
-                        },
-                        child: SearchGridCell(sObj: sObj, index: index),
-                      );
-                    },
-                  ),
-                ),
+
               if (txtSearch.text.isNotEmpty)
                 Expanded(
                   child: ListView.builder(
@@ -218,7 +206,10 @@ class _SequelToStoryState extends State<SequelToStory> {
                       return HistoryRow(sObj: sObj);
                     },
                   ),
-                ),
+                )
+              else
+                selectOptionView(selectTag),
+
             ],
           ),
         ),
@@ -266,6 +257,91 @@ class _SequelToStoryState extends State<SequelToStory> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
+    );
+  }
+
+  void loadAllUsers() async{
+    BookService service = BookService();
+    await service.loadAllUserFromDB();
+    setState(() {
+      authorsList = service.users;
+    });
+  }
+
+  Expanded selectOptionView(int selectTag) {
+    switch (selectTag) {
+      case 0:
+        return booksOptionView();
+      case 1:
+        return genresOptionView();
+      case 2:
+        return bookWritesOptionView();
+    }
+    return Expanded(child: SizedBox.shrink());
+  }
+
+  Expanded booksOptionView() {
+    return Expanded(
+      child: GridView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          childAspectRatio: 0.9,
+          crossAxisCount: 2,
+          crossAxisSpacing: 35,
+          mainAxisSpacing: 35,
+        ),
+        itemCount: allBooks.length,
+        itemBuilder: (context, index) {
+          var sObj = allBooks[index] as Map? ?? {};
+          return GestureDetector(
+            onTap: () {
+              openBookById(sObj["id"], context);
+            },
+            child: SearchGridCell(sObj: sObj, index: index),
+          );
+        },
+      ),
+    );
+  }
+
+  Expanded genresOptionView() {
+    return Expanded(
+      child: GridView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          childAspectRatio: 1.5,
+          crossAxisCount: 3,
+          crossAxisSpacing: 25,
+          mainAxisSpacing: 35,
+        ),
+        itemCount: genres.length,
+        itemBuilder: (context, index) {
+          String bObj = genres[index] ?? "";
+          return GenresCell(
+            bObj: bObj,
+            bgcolor: TColor.searchBGColor[index],
+          );
+        },
+      ),
+    );
+  }
+
+  Expanded bookWritesOptionView() {
+    return Expanded(
+      child: GridView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          childAspectRatio: 1.5,
+          crossAxisCount: 3,
+          crossAxisSpacing: 25,
+          mainAxisSpacing: 35,
+        ),
+        itemCount: authorsList.length,
+        itemBuilder: (context, index) {
+          Map bObj = authorsList[index];
+          return AuthorCell(user: bObj);
+        },
+      ),
     );
   }
 }

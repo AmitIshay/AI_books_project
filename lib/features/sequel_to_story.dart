@@ -37,7 +37,7 @@ class _SequelToStoryState extends State<SequelToStory> {
     "History",
     "Thriller",
   ];
-  List tagsArr = ["Your Books", "Genre", "News"];
+  List tagsArr = ["All Books", "Genre", "Book Authors"];
   List allBooks = [];
   List sResultArr = [];
   List authorsList = [];
@@ -216,9 +216,9 @@ class _SequelToStoryState extends State<SequelToStory> {
   }
 
   void load_books() async {
-    await service.loadBooks();
+    await service.loadAllBooks();
     setState(() {
-      allBooks = service.books;
+      allBooks = service.allBooks;
     });
   }
 

@@ -50,9 +50,9 @@ class HomeViewProvider {
   }
 
   void loadBooks() async {
-    await service.loadBooks();
+    await service.loadAllBooks();
     setState(() {
-      allBooks = service.books;
+      allBooks = service.allBooks;
     });
   }
 

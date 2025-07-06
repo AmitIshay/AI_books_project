@@ -84,6 +84,7 @@ class _SequelToStoryState extends State<SequelToStory> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: TextField(
+                      key: Key("search"),
                       controller: txtSearch,
                       onTap: () async {
                         final selectedBook = await Navigator.push(

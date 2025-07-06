@@ -48,7 +48,6 @@ import 'package:pjbooks/main.dart' as app;
     await tester.pump(const Duration(seconds: 3));
 
     const String title = "the sleeping princess";
-    const String genreStoryInput  = "adventure";
     const String email = "yam_new@smail.com";
     const String password ="yamking113";
     const String name = "tony dan";
@@ -71,8 +70,18 @@ import 'package:pjbooks/main.dart' as app;
     const keyAssistance = Key("Story with assistance");
     const saveButtonKey = Key("save");
     const basicQuestionsKey = Key("Basic Questions");
-    const question1Key = Key("text_input_What is the genre of the book you want to write?");
-    const question2Key = Key("text_input_What is the name of your book (if you have an idea)?");
+    const questions =
+    [
+      {
+       "question" :"What is the name of your book (if you have an idea)?",
+        "answer" :"the magic dragon friends"
+      },
+      {
+        "question":"What is the main idea or the subject of your book?",
+        "answer" : "the main idea is to show how to make friends and work together"
+      }
+    ];
+
 
 
     const createStoryKey= Key("create story");
@@ -80,7 +89,6 @@ import 'package:pjbooks/main.dart' as app;
     await tester.pumpAndSettle(); // Wait for all UI to settle
 
     //tap on skip
-    print("Tapping skip");
     expect(find.byKey(Key('keySkip')), findsOneWidget); // Add this check
 
     await tester.tap(find.byKey(skipButtonKey));
@@ -113,7 +121,6 @@ import 'package:pjbooks/main.dart' as app;
 
 
 
-
     //tap on sign in
     await tester.pumpAndSettle();
     print("Tapping sign in 1");
@@ -130,46 +137,31 @@ import 'package:pjbooks/main.dart' as app;
     //click on menu
     await tester.tap(find.byKey(keyMenu));
     await tester.pumpAndSettle();
-    await tester.pump(const Duration(seconds: 5));
 
     //click on Story with assistance
     await tester.tap(find.byKey(keyAssistance));
     await tester.pumpAndSettle();
-    await tester.pump(const Duration(seconds: 5));
 
     //click on Basic Questions
     await tester.tap(find.byKey(basicQuestionsKey));
     await tester.pumpAndSettle();
-    await tester.pump(const Duration(seconds: 5));
+    await tester.pump(const Duration(seconds: 2));
 
-    //click on the first question: What is the genre of the book you want to write?
-    await tester.tap(find.byKey(question1Key));
-    await tester.pumpAndSettle();
-
-    await tester.pump(const Duration(seconds: 5));
-
-    //enter text
-
-    await tester.enterText(find.byKey(question1Key), genreStoryInput);
-
-    //click on the second question : What is the name of your book (if you have an idea)?
-    await tester.tap(find.byKey(question2Key));
-    await tester.pumpAndSettle();
-
-    await tester.pump(const Duration(seconds: 5));
-
-    //enter text
-    await tester.enterText(find.byKey(question2Key), title);
-
-    //enter done
-    await tester.testTextInput.receiveAction(TextInputAction.done);
-    await tester.pumpAndSettle();
+    for (var section in questions)
+    {
+      var finder = find.byKey(Key("text_input_${section["question"]}"));
+      await tester.tap(finder);
+      await tester.enterText(finder, section["answer"]!);
+      //enter done
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+    }
 
     //click on Basic Questions
     await tester.tap(find.byKey(basicQuestionsKey));
     await tester.pumpAndSettle();
 
-    await tester.pump(const Duration(seconds: 5));
+    await tester.pump(const Duration(seconds: 2));
 
     //click on create story
     await tester.tap(find.byKey(createStoryKey));
@@ -190,6 +182,12 @@ import 'package:pjbooks/main.dart' as app;
     final difference = end.difference(start); // This is a Duration object
     //print time diffrents
     print('Time difference is ${difference.inSeconds} seconds');
+
+    await tester.pump(const Duration(seconds:10));
+
+
+    expect(find.text('the magic dragon friends'), findsOneWidget);
+
     SystemNavigator.pop();
 
 
@@ -238,9 +236,11 @@ import 'package:pjbooks/main.dart' as app;
 
       const keyMenu = Key("menu");
       const keyOption = Key("Story from scratch");
-      const titleKey = Key("title");
-      const addPageKey =Key("add page");
-      const createStoryKey= Key("create story");
+      const titleKey = Key("Book Title");
+      const descriptionKey  = Key("Description");
+      const subjectKey  = Key("subject");
+      const addPageKey =Key("Add Page");
+      const createStoryKey= Key("Create Story");
 
       await tester.pumpAndSettle(); // Wait for all UI to settle
 
@@ -281,7 +281,6 @@ import 'package:pjbooks/main.dart' as app;
 
       //tap on sign in
       await tester.pumpAndSettle();
-      print("Tapping sign in 1");
 
       await tester.tap(find.byKey(saveButtonKey));
       await tester.pump(const Duration(seconds: 5));
@@ -297,16 +296,25 @@ import 'package:pjbooks/main.dart' as app;
       await tester.pumpAndSettle();
       await tester.pump(const Duration(seconds: 5));
 
-      //click on Story with assistance
+      //click on Story from scratch
       await tester.tap(find.byKey(keyOption));
       await tester.pumpAndSettle();
       await tester.pump(const Duration(seconds: 2));
+      //subject
+      await tester.tap(find.byKey(subjectKey));
+      await tester.enterText(find.byKey(subjectKey), subject);
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+      //description
+      await tester.tap(find.byKey(descriptionKey));
+      await tester.enterText(find.byKey(descriptionKey), description);
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
 
       //title
 
       await tester.tap(find.byKey(titleKey));
       await tester.enterText(find.byKey(titleKey), title);
-      //enter done
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
       int index = 0;
@@ -323,12 +331,12 @@ import 'package:pjbooks/main.dart' as app;
         await tester.pumpAndSettle();
         index+=1;
       }
-
+      final scrollableFinder = find.byType(ListView); // Or find.byKey(Key('my_scrollable_list'))
+      await tester.drag(scrollableFinder, const Offset(0.0, -400.0)); // Negative dy scrolls down
       //click on create story
       await tester.tap(find.byKey(createStoryKey));
       await tester.pumpAndSettle();
 
-      await tester.pump(const Duration(seconds: 5));
 
 
       //start timer

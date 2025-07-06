@@ -141,6 +141,7 @@ class _HistoryRowState extends State<HistoryRow> {
                               shadowColor: Colors.transparent,
                             ),
                             child: const Text(
+                              key: Key("make sequel"),
                               'Create sequel to this story',
                               style: TextStyle(fontSize: 12),
                             ),

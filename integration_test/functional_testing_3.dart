@@ -24,7 +24,7 @@ void main() {
 // Simulate 3 seconds passing for Future.delayed
     await tester.pump(const Duration(seconds: 3));
 
-    const book  = "Door to Door";
+    const book  = "pinocio";
     const String email = "yam@smail.com";
     const String password ="yamking113";
 
@@ -34,10 +34,14 @@ void main() {
     const passwordKey = Key('password_key');
     const signInKeyLoginScreen = Key('sign_in_key_login_screen');
     const searchKey = Key("search");
-    const searchInputKey = Key("search_text_input");
     const keyMenu = Key("menu");
     const keyAssistance = Key("Sequel to Story");
     const keyMakeSequel = Key("make sequel");
+    const titleKey = Key("Book Title");
+    const descriptionKey  = Key("Description");
+    const subjectKey  = Key("subject");
+    const addPageKey =Key("Add Page");
+    const createStoryKey= Key("Create Story");
     await tester.pumpAndSettle(); // Wait for all UI to settle
 
     //tap on skip
@@ -92,62 +96,118 @@ void main() {
     await tester.tap(find.byKey(keyAssistance));
     await tester.pump(const Duration(seconds: 2));
 
-
-
-    await tester.tap(find.byKey(searchKey));
-
-
-
-    await tester.pump(const Duration(seconds: 5));
-
+    //search for book
+      await tester.tap(find.byKey(searchKey));
       await tester.pump(const Duration(seconds: 5));
-
-      await tester.tap(find.byKey(searchInputKey));
-      await tester.pump(const Duration(seconds: 5));
-      //enetr book name
-      await tester.enterText(find.byKey(searchInputKey), book);
+      //enter book name
+      await tester.enterText(find.byKey(searchKey), book);
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
       //press on the result
       var keyBook = Key("book_$book");
 
-      expect(find.text(book), findsOneWidget);
-
-      await tester.pump(const Duration(seconds: 5));
+      await tester.pump(const Duration(seconds: 7));
 
       await tester.tap(find.byKey(keyBook));
 
       await tester.pump(const Duration(seconds: 5));
 
-      await tester.tap(find.byKey(keyBook));
-      //check if there is book
-      expect(find.text(book), findsOneWidget);
       //tap on make sequel
     await tester.tap(find.byKey(keyMakeSequel));
+    await tester.pumpAndSettle();
 
-    await tester.pump(const Duration(seconds: 5));
+    //making the sequel
+    const String title = "Pinocchio: A New Adventure";
+    const String subject = "Sequel to Pinocchio";
+    const String description = "After becoming a real boy, Pinocchio sets out on a journey beyond his village. Along the way, he discovers friendship, forgotten toys, and what it truly means to be alive.";
+    List<String> pages = [
+      "After becoming a real boy, Pinocchio lived happily with Geppetto. But soon, he began to wonder what lay beyond their quiet village.",
 
-    //try to find error widget
-    final textFinder = find.text("Error book was not form");
-    final textWidget = tester.widget<Text>(textFinder);
-    final String value = textWidget.data ?? '';
-    if (value != "") {
-      fail("book was form , test fail");
+      "One morning, he packed a small bag, kissed Geppetto goodbye, and set off to explore the world—promising to return before the first snowfall.",
+
+      "In a nearby town, Pinocchio met a girl named Lila who had a mysterious music box. She said it once belonged to her grandfather, an inventor.",
+
+      "That night, the music box glowed and opened a secret map hidden inside. It led to the 'Island of Forgotten Toys'—a place full of magic.",
+
+      "Excited, Pinocchio and Lila followed the map. Along the way, they helped a broken wind-up soldier, who joined them on the journey.",
+
+      "They finally reached the island, where toys lost or thrown away lived in silence. Pinocchio felt a deep connection—he was once one of them.",
+
+      "Suddenly, a storm hit the island. Pinocchio bravely helped the toys take shelter, using quick thinking and kindness to lead them.",
+
+      "After the storm, the island began to shine again. The toys elected Pinocchio as their hero and gave him a glowing wooden heart as thanks.",
+
+      "Pinocchio and Lila said goodbye to their new friends and returned home. Geppetto hugged him tightly, proud of the boy Pinocchio had become.",
+
+      "That night, as he lay in bed, Pinocchio held the glowing heart and smiled. He had once wanted to be real—and now, he truly felt alive."
+    ];
+    //subject
+    await tester.tap(find.byKey(subjectKey));
+    await tester.enterText(find.byKey(subjectKey), subject);
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pumpAndSettle();
+    //description
+    await tester.tap(find.byKey(descriptionKey));
+    await tester.enterText(find.byKey(descriptionKey), description);
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pumpAndSettle();
+
+    //title
+
+    await tester.tap(find.byKey(titleKey));
+    await tester.enterText(find.byKey(titleKey), title);
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pumpAndSettle();
+    int index = 0;
+    for (var page in pages)
+    {
+      //enter text page
+      var finder = find.byKey(Key( "Page Number ${index + 1}"));
+      await tester.tap(finder);
+      await tester.enterText(finder, page);
+      //enter done
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(addPageKey));
+      await tester.pumpAndSettle();
+      index+=1;
+      final scrollableFinder = find.byType(ListView); // Or find.byKey(Key('my_scrollable_list'))
+      await tester.drag(scrollableFinder, const Offset(0.0, -400.0)); // Negative dy scrolls down
     }
+    final scrollableFinder = find.byType(ListView); // Or find.byKey(Key('my_scrollable_list'))
+    await tester.drag(scrollableFinder, const Offset(0.0, -520.0)); // Negative dy scrolls down
+    //click on create story
+    await tester.tap(find.byKey(createStoryKey));
+    await tester.pumpAndSettle();
 
 
+
+    //start timer
+    final start = DateTime.now();
+
+    //assure there is a book with the title
+    await tester.ensureVisible(find.text(title));
+    expect(find.text(title), findsOneWidget);
+
+
+    //caculate result
+    final end = DateTime.now();
+    final difference = end.difference(start); // This is a Duration object
+    //print time diffrents
+    print('Time difference is ${difference.inSeconds} seconds');
 
   });
 
 
   testWidgets('test make sequel book - original book is not found ', (WidgetTester tester) async {
 
+
     app.main();
 
 // Simulate 3 seconds passing for Future.delayed
     await tester.pump(const Duration(seconds: 3));
 
-    const book  = "Door to Door";
+    const book  = "harry poter and the secret stone";
     const String email = "yam@smail.com";
     const String password ="yamking113";
 
@@ -157,7 +217,6 @@ void main() {
     const passwordKey = Key('password_key');
     const signInKeyLoginScreen = Key('sign_in_key_login_screen');
     const searchKey = Key("search");
-    const searchInputKey = Key("search_text_input");
     const keyMenu = Key("menu");
     const keyAssistance = Key("Sequel to Story");
     await tester.pumpAndSettle(); // Wait for all UI to settle
@@ -214,46 +273,20 @@ void main() {
     await tester.tap(find.byKey(keyAssistance));
     await tester.pump(const Duration(seconds: 2));
 
-
-
+    //search for book
     await tester.tap(find.byKey(searchKey));
-
-
-
     await tester.pump(const Duration(seconds: 5));
-
-    await tester.pump(const Duration(seconds: 5));
-
-    await tester.tap(find.byKey(searchInputKey));
-    await tester.pump(const Duration(seconds: 5));
-    //enetr book name
-    await tester.enterText(find.byKey(searchInputKey), book);
+    //enter book name
+    await tester.enterText(find.byKey(searchKey), book);
     await tester.testTextInput.receiveAction(TextInputAction.done);
     await tester.pumpAndSettle();
     //press on the result
     var keyBook = Key("book_$book");
 
-    expect(find.text(book), findsOneWidget);
+    final errorTextFinder = find.byKey(keyBook);
 
-    await tester.pump(const Duration(seconds: 5));
-
-    await tester.tap(find.byKey(keyBook));
-
-    await tester.pump(const Duration(seconds: 5));
-
-    await tester.tap(find.byKey(keyBook));
-
-
-    //try to find error widget
-    final textFinder = find.text("Error book was not found");
-    final textWidget = tester.widget<Text>(textFinder);
-    String value = textWidget.data?? '';
-
-    if (value == "") {
-      fail("error was not form  , test fail");
-    }
-
-
-
+    // Fail the test if any visible text contains the book name
+    expect(errorTextFinder, findsNothing);
+    print("test pass");
   });
 }

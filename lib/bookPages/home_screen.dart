@@ -39,6 +39,7 @@ class HomeScreen extends StatelessWidget {
                   );
                 },
                 child: const Text(
+                  key: Key("Open Book"),
                   'Open Book',
                   style: TextStyle(fontSize: 30, color: Colors.black),
                 ),

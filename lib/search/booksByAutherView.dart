@@ -88,7 +88,6 @@ class _AuthorViewState extends State<AuthorView> {
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Row(
                             children: [
-                              //TODO change this text to the account  view one
                               Text(
                                 widget.user["full_name"].toString(),
                                 style: TextStyle(
@@ -204,7 +203,6 @@ class _AuthorViewState extends State<AuthorView> {
     );
   }
 
-  //TODO: this func is found in more places , best to move it into one file
   void openBookById(String bookId, BuildContext context) {
     var fullBook = booksUser.firstWhere(
       (book) => book['id'] == bookId,

@@ -14,14 +14,10 @@ import 'package:pjbooks/main.dart' as app;
 
 
 // //test 1 functional testing
-// making a new Story from Scratch
+// making a new Story
   void main() {
 
 
-  // Balance sliders:
-  // Manual
-  // With the help of artificial intelligence
-  //
 
     // Script:
     // 1. We will enter a new user into the system

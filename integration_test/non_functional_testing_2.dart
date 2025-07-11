@@ -51,8 +51,6 @@ void main() {
     const passwordKey = Key('password_key');
     const signInKeyLoginScreen = Key('sign_in_key_login_screen');
     const searchKey = Key("search");
-    const searchInputKey = Key("search_text_input");
-    const cancelKey = Key("cancel");
 
     //key to find the text to speach button
     const textToSpeechKey = Key("text_to_speech_key");

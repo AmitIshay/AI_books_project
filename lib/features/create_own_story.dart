@@ -264,6 +264,7 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
                       ),
                       const SizedBox(height: 15),
                       TextField(
+                        key: Key("subject"),
                         controller: subjectController,
                         decoration: const InputDecoration(
                           labelText: "Subject",
@@ -272,6 +273,7 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
                       ),
                       const SizedBox(height: 15),
                       TextField(
+                        key: Key("Description"),
                         controller: descriptionController,
                         decoration: const InputDecoration(
                           labelText: "Description",
@@ -280,6 +282,7 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
                       ),
                       const SizedBox(height: 15),
                       TextField(
+                        key: Key("Book Title"),
                         controller: titleController,
                         decoration: const InputDecoration(
                           labelText: "Book Title",
@@ -301,6 +304,7 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
                               children: [
                                 Expanded(
                                   child: TextField(
+                                    key: Key("Page Number ${index + 1}"),
                                     controller: controllers[index],
                                     minLines: 1,
                                     maxLines: null,
@@ -333,12 +337,14 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
                         child: Column(
                           children: [
                             ElevatedButton.icon(
+                              key: Key("Add Page"),
                               onPressed: addTextField,
                               icon: const Icon(Icons.add),
                               label: const Text("Add Page"),
                             ),
                             const SizedBox(height: 10),
                             ElevatedButton.icon(
+                              key: Key("Create Story"),
                               onPressed: submitStory,
                               icon: const Icon(Icons.book),
                               label: const Text("Create Story"),

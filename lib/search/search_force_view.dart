@@ -82,6 +82,7 @@ class _SearchForceViewState extends State<SearchForceView> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: TextField(
+                  key: Key("search"),
                   controller: txtSearch,
                   onChanged: (value) {
                     setState(() {
@@ -229,6 +230,7 @@ class _SearchForceViewState extends State<SearchForceView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
+                                  key: Key('book_${ book["title"] ?? ''}'),
                                   book["title"] ?? '',
                                   style: TextStyle(
                                     color: TColor.text,

@@ -143,9 +143,11 @@ class _DoublePageBookViewerState extends State<DoublePageBookViewer> {
             ),
           ),
           Positioned(
+           key: Key("Next Page"),
             right: 8,
             top: MediaQuery.of(context).size.height / 2 - 24,
             child: _arrowButton(
+
               icon: Icons.arrow_forward_ios,
               onTap: _goToNextPagePair,
             ),
@@ -281,6 +283,7 @@ class _DoublePageBookViewerState extends State<DoublePageBookViewer> {
                 top: 8,
                 right: 8,
                 child: InkWell(
+                  key: Key("Play Sound$index"),
                   onTap: () => _playVoice(page.voiceUrl, index),
                   child: CircleAvatar(
                     backgroundColor: Colors.black.withOpacity(0.6),
@@ -315,6 +318,7 @@ class _DoublePageBookViewerState extends State<DoublePageBookViewer> {
                     ),
                     child: SingleChildScrollView(
                       child: Text(
+                        key: Key("Page$index"),
                         page.text,
                         style: const TextStyle(
                           fontSize: 18,

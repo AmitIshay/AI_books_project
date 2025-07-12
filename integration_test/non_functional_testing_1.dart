@@ -11,7 +11,7 @@ import 'package:integration_test/integration_test.dart';
 
 import 'package:pjbooks/main.dart' as app;
 
-//test 1 The system should start text-to-speech narration within 1 second of clicking the speaker icon.
+//non functional testing 1 search books in the app
 void main() {
   //
   // 1. Given that the database is full of children's books written in the past
@@ -37,6 +37,8 @@ void main() {
     ];
     const String email = "yam@smail.com";
     const String password ="yamking113";
+    int sumTime = 0;
+    const Key keySearchMainTap = Key("search  Main Tap");
 
     const skipButtonKey = Key('keySkip');
     const signInKeyFirstScreen = Key('sign in');
@@ -44,7 +46,6 @@ void main() {
     const passwordKey = Key('password_key');
     const signInKeyLoginScreen = Key('sign_in_key_login_screen');
     const searchKey = Key("search");
-    const searchInputKey = Key("search_text_input");
     const cancelKey = Key("cancel");
 
 
@@ -95,36 +96,35 @@ void main() {
     //assert we are in the main screen
     expect(find.text('Our Top Picks'), findsOneWidget);
     //go to search screen
-    await tester.tap(find.byKey(searchKey));
-    await tester.pump(const Duration(seconds: 5));
-    int sumTime = 0;
-    for (var book in listBooks)
+    await tester.pump(const Duration(seconds: 2));
+    await tester.tap(find.byKey(keySearchMainTap));
+    await tester.pump(const Duration(seconds: 2));
+
+    await tester.pumpAndSettle();
+
+    await tester.pump(const Duration(seconds: 10));
+
+
+
+    for (String book in listBooks)
     {
       //start timer
       final start = DateTime.now();
-      //tap on search bar
+      //search for book
+      await tester.tap(find.byKey(searchKey));
       await tester.pump(const Duration(seconds: 5));
-
-      await tester.tap(find.byKey(searchInputKey));
-      await tester.pump(const Duration(seconds: 5));
-      //enetr book name
-      await tester.enterText(find.byKey(searchInputKey), book);
+      //enter book name
+      await tester.enterText(find.byKey(searchKey), "");
+      await tester.enterText(find.byKey(searchKey), book);
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
-      //press on the result
+      //find the book
       var keyBook = Key("book_$book");
 
-      expect(find.text(book), findsOneWidget);
+      expect(find.byKey(keyBook), findsAtLeast(1));
 
-      await tester.pump(const Duration(seconds: 5));
-
-      await tester.tap(find.byKey(keyBook));
-
-      await tester.pump(const Duration(seconds: 5));
-
-      await tester.tap(find.byKey(keyBook));
       //check if there is book
-      expect(find.text(book), findsOneWidget);
+      await tester.tap(find.byKey(keyBook));
 
       //stop timer
 

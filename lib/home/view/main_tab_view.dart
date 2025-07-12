@@ -67,7 +67,7 @@ class _MainTabViewState extends State<MainTabView>
             tabs: [
               Tab(icon: Icon(Icons.home, size: 30 * iconScale), text: "Home"),
               Tab(
-                key: Key("search"),
+                key: Key("search  Main Tap"),
                 icon: Icon(Icons.search, size: 30 * iconScale),
                 text: "Search",
               ),

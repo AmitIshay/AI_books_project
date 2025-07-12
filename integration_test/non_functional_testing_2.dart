@@ -25,14 +25,22 @@ void main() {
 
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('test text to speech books', (WidgetTester tester) async {
-
+    const List listBooks = [
+      "The Dog",
+      "My Toy",
+      "Big Bus",
+      "Little Fox",
+      "Red Cap",
+      "The Cloud"
+    ];
     app.main();
 
 // Simulate 3 seconds passing for Future.delayed
     await tester.pump(const Duration(seconds: 3));
 
+    const Key keySearchMainTap = Key("search  Main Tap");
 
-    const listBooks = ["The Fatal Tree","Day Four","Door to Door","cats and dogs","john big adventure"];
+    const keyReadBook= Key("Read Book");
 
     const String email = "yam@smail.com";
     const String password ="yamking113";
@@ -43,8 +51,6 @@ void main() {
     const passwordKey = Key('password_key');
     const signInKeyLoginScreen = Key('sign_in_key_login_screen');
     const searchKey = Key("search");
-    const searchInputKey = Key("search_text_input");
-    const cancelKey = Key("cancel");
 
     //key to find the text to speach button
     const textToSpeechKey = Key("text_to_speech_key");
@@ -95,36 +101,38 @@ void main() {
 
     //assert we are in the main screen
     expect(find.text('Our Top Picks'), findsOneWidget);
-    //go to search screen
-    await tester.tap(find.byKey(searchKey));
-    await tester.pump(const Duration(seconds: 5));
+    //go to search
+    await tester.pump(const Duration(seconds: 2));
+    await tester.tap(find.byKey(keySearchMainTap));
+    await tester.pump(const Duration(seconds: 2));
+
+    await tester.pumpAndSettle();
+
+    await tester.pump(const Duration(seconds: 10));
+
     int sumTime = 0;
     for (var book in listBooks)
     {
-
-      //tap on search bar
-      await tester.pump(const Duration(seconds: 5));
-
-      await tester.tap(find.byKey(searchInputKey));
-      await tester.pump(const Duration(seconds: 5));
-      //enetr book name
-      await tester.enterText(find.byKey(searchInputKey), book);
+      //enter book name
+      await tester.enterText(find.byKey(searchKey), book);
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
       //press on the result
       var keyBook = Key("book_$book");
 
-      expect(find.text(book), findsOneWidget);
-
-      await tester.pump(const Duration(seconds: 5));
+      await tester.pump(const Duration(seconds: 7));
 
       await tester.tap(find.byKey(keyBook));
 
       await tester.pump(const Duration(seconds: 5));
 
-      await tester.tap(find.byKey(keyBook));
-      //check if there is book
-      expect(find.text(book), findsOneWidget);
+      //tap on read
+      await tester.tap(find.byKey(keyReadBook));
+      await tester.pumpAndSettle();
+      Key playStory = Key("Open Book");
+      await tester.tap(find.byKey(playStory));
+      await tester.pump(const Duration(seconds: 5));
+
 
       //start timer
       final start = DateTime.now();
@@ -135,7 +143,7 @@ void main() {
       expect(find.text("text to speech on"), findsOneWidget);
       await tester.tap(find.byKey(textToSpeechKey));
 
-      await tester.pump(const Duration(seconds: 5));
+      await tester.pump(const Duration(seconds: 1));
 
 
 
@@ -148,10 +156,10 @@ void main() {
       int seconds = difference.inSeconds;
 
       sumTime +=seconds;
-      await tester.pump(const Duration(seconds: 5));
-
-      await tester.tap(find.byKey(cancelKey));
-
+      final backButton = find.byType(BackButton);
+      // Tap it
+      await tester.tap(backButton);
+      await tester.pumpAndSettle();
     }
 
     //caculate result

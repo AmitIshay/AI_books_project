@@ -240,6 +240,7 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: ExpansionTile(
                           title: Text(
+                            key: Key(category),
                             category,
                             style: const TextStyle(
                               fontSize: 18,
@@ -268,6 +269,7 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
                                           border: OutlineInputBorder(),
                                           hintText: "Write your answer here...",
                                         ),
+                                        key: Key('text_input_$question'),
                                         maxLines: null,
                                         onChanged: (value) {
                                           setState(() {
@@ -288,6 +290,7 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: ElevatedButton.icon(
+                    key: Key("create story"),
                     onPressed: submitStory,
                     icon: const Icon(Icons.book),
                     label: const Text("Create Story"),

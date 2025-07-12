@@ -6,6 +6,9 @@ import 'package:pjbooks/backend/user_prefs.dart';
 import 'package:pjbooks/features/create_own_story.dart';
 import 'package:pjbooks/backend/config.dart' show Config;
 import '../backend/book_service.dart';
+import '../bookPages/book.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import '../bookPages/home_screen.dart';
 import '../common/color_extenstion.dart';
 import 'comment_card.dart';
 
@@ -42,15 +45,28 @@ class _HistoryRowState extends State<HistoryRow> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+      GestureDetector(
+          key: Key("Read Book"),
+          onTap:() {
+          openBookById(widget.sObj["_id"] , context);
+          },
+          child:
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              widget.sObj["img"] ?? "",
-              width: media.width * 0.25,
-              height: media.width * 0.25 * 1.6,
+            child: CachedNetworkImage(
+              imageUrl:widget.sObj["img"] ?? "",
+              placeholder:
+                  (context, url) => CircularProgressIndicator(), // or Shimmer
+              errorWidget: (context, url, error) => Icon(Icons.error),
+              fadeInDuration: Duration(milliseconds: 200),
+              width: media.width * 0.20,
+              height: media.width * 0.30,
               fit: BoxFit.cover,
             ),
-          ),
+          )
+
+      ),
+
           const SizedBox(width: 15),
           Expanded(
             child: Column(
@@ -141,6 +157,7 @@ class _HistoryRowState extends State<HistoryRow> {
                               shadowColor: Colors.transparent,
                             ),
                             child: const Text(
+                              key: Key("make sequel"),
                               'Create sequel to this story',
                               style: TextStyle(fontSize: 12),
                             ),
@@ -491,5 +508,31 @@ class _HistoryRowState extends State<HistoryRow> {
         canDelete = false;
       });
     }
+  }
+
+
+
+  void openBookById(String bookId, BuildContext context) {
+
+    final Book newBook = Book(
+      title: widget.sObj["title"] ?? "",
+      coverImage: widget.sObj["pages"]?[0]?["img_url"] ?? "",
+      pages:
+      (widget.sObj["pages"] as List<dynamic>? ?? []).map((page) {
+        return BookPage(
+          imagePath: page["img_url"] ?? "",
+          text: page["text_page"] ?? "",
+          voiceUrl: page["voice_file_url"] ?? "",
+        );
+      }).toList()
+        ..add(
+          BookPage(imagePath: "", text: "", voiceUrl: "", isEndPage: true),
+        ),
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
+    );
   }
 }

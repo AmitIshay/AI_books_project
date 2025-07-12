@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
 import 'package:http/http.dart' as http;
@@ -61,6 +62,12 @@ static Future<Map<String , dynamic>> getAllBooks(String token) async{
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
+    },
+  ).timeout(
+    const Duration(seconds: 10), // Wait for 10 seconds for the entire request
+    onTimeout: () {
+      // This callback is executed if the timeout occurs
+      throw TimeoutException('The connection timed out after 10 seconds. Check server or network.');
     },
   );
 
@@ -146,7 +153,9 @@ Future<void> loadAllBooks()async{
   final response = await BookService.getAllBooks(token);
   if (response['statusCode'] == 200) {
     final booksList = response['body']['books'] as List;
-    _Allbooks = List<Map<String, dynamic>>.from(booksList);
+    if (booksList.isNotEmpty) {
+      _Allbooks = List<Map<String, dynamic>>.from(booksList);
+    }
     notifyListeners();
   } else {
     // טפל בשגיאות כאן

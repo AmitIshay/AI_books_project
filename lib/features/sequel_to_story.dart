@@ -4,6 +4,7 @@ import 'package:pjbooks/bookPages/home_screen.dart';
 import 'package:pjbooks/backend/book_service.dart';
 import 'package:pjbooks/search/search_force_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../common/color_extenstion.dart';
 import '../common_widget/AutherCell.dart';
@@ -83,6 +84,7 @@ class _SequelToStoryState extends State<SequelToStory> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: TextField(
+                      key: Key("search"),
                       controller: txtSearch,
                       onTap: () async {
                         final selectedBook = await Navigator.push(
@@ -218,7 +220,9 @@ class _SequelToStoryState extends State<SequelToStory> {
   void load_books() async {
     await service.loadAllBooks();
     setState(() {
-      allBooks = service.allBooks;
+      if (service.allBooks.isNotEmpty) {
+        allBooks = service.allBooks;
+      }
     });
   }
 
@@ -279,7 +283,7 @@ class _SequelToStoryState extends State<SequelToStory> {
   }
 
   Expanded booksOptionView() {
-    return Expanded(
+    return allBooks.isNotEmpty? Expanded(
       child: GridView.builder(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -299,7 +303,10 @@ class _SequelToStoryState extends State<SequelToStory> {
           );
         },
       ),
-    );
+    )
+        :
+    Expanded(child: loadScreen());
+
   }
 
   Expanded genresOptionView() {
@@ -336,6 +343,23 @@ class _SequelToStoryState extends State<SequelToStory> {
           Map bObj = authorsList[index];
           return AuthorCell(user: bObj);
         },
+      ),
+    );
+  }
+  loadScreen() {
+    return Scaffold(
+      backgroundColor: TColor.primary,
+      body: Center(
+        child: SpinKitCircle(
+          size: 140,
+          itemBuilder: (context, index) {
+            final colors = [Colors.white, Colors.blue, Colors.indigoAccent];
+            final color = colors[index % colors.length];
+            return DecoratedBox(
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+            );
+          },
+        ),
       ),
     );
   }

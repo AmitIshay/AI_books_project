@@ -145,4 +145,34 @@ class AccountProvider {
       MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
     );
   }
+
+  Future<void> toggleShareBook(Map iObj, bool shouldShare) async {
+    final bookId = iObj["id"];
+    final url = Uri.parse('${Config.baseUrl}/api/books/update_share_status/$bookId');
+
+    try {
+      final response = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${await UserPrefs.getToken()}',
+        },
+        body: jsonEncode({'is_shared': shouldShare}),
+      );
+
+      print("🟡 Status: ${response.statusCode}");
+      print("🟡 Body: ${response.body}");
+
+      if (response.statusCode != 200) {
+        debugPrint('🔴 Failed to update share status');
+        throw Exception('Failed to update share status');
+      } else {
+        debugPrint('🟢 Share status updated successfully');
+      }
+    } catch (e) {
+      debugPrint('🔴 Error updating share: $e');
+      rethrow;
+    }
+  }
+
 }

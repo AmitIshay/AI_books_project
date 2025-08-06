@@ -157,25 +157,17 @@ class BookService extends ChangeNotifier {
 
   Future<void> loadAllBooks() async {
     final token = await UserPrefs.getToken();
-    final userId = await UserPrefs.getUserId();
-    if (token == null || userId == null) return;
+    if (token == null) return;
 
     final response = await BookService.getAllBooks(token);
     if (response['statusCode'] == 200) {
       final booksList = response['body']['books'] as List;
-
-      // סינון הספרים
-      final filteredBooks =
-          booksList.where((book) {
-            final ownerId = book['user_id'];
-            final isShared = book['is_shared'] == true;
-            return ownerId == userId || isShared;
-          }).toList();
-
-      _Allbooks = List<Map<String, dynamic>>.from(filteredBooks);
-
+      if (booksList.isNotEmpty) {
+        _Allbooks = List<Map<String, dynamic>>.from(booksList);
+      }
       notifyListeners();
     } else {
+      // טפל בשגיאות כאן
       print('Error loading books: ${response['body']['message']}');
     }
   }
@@ -257,19 +249,10 @@ class BookService extends ChangeNotifier {
   List get books_genre => _books_genre;
 
   Future<void> loadBooksBaseOnGenre(String genre) async {
-    final userId = await UserPrefs.getUserId();
     final response = await BookService.getBookGenre(genre);
     if (response['statusCode'] == 200) {
       final booksList = response['body']['books'] as List;
-
-      final filteredBooks =
-          booksList.where((book) {
-            final ownerId = book['user_id'];
-            final isShared = book['is_shared'] == true;
-            return ownerId == userId || isShared;
-          }).toList();
-
-      _books_genre = List<Map<String, dynamic>>.from(filteredBooks);
+      _books_genre = List<Map<String, dynamic>>.from(booksList);
       notifyListeners();
     } else {
       // טפל בשגיאות כאן
@@ -291,24 +274,13 @@ class BookService extends ChangeNotifier {
 
   Future<void> loadBooksByUser(String id_user) async {
     final token = await UserPrefs.getToken();
-    final currentUserId = await UserPrefs.getUserId();
-    if (token == null || currentUserId == null) return;
+    if (token == null) return;
 
     final response = await BookService.getBooksByUserRequest(token, id_user);
     if (response["statusCode"] == 200) {
       final booksList = response['body']['books'] as List;
-      final filteredBooks =
-          booksList.where((book) {
-            final ownerId = book['user_id'];
-            final isShared = book['is_shared'] == true;
-            // הצגת ספרים של בעל המשתמש או ספרים של אחרים רק אם is_shared == true
-            return ownerId == currentUserId || isShared;
-          }).toList();
-
-      _books_diffrent_user = List<Map<String, dynamic>>.from(filteredBooks);
+      _books_diffrent_user = List<Map<String, dynamic>>.from(booksList);
       notifyListeners();
-    } else {
-      print('Error loading books: ${response['body']['message']}');
     }
   }
 

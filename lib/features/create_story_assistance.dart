@@ -61,9 +61,7 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
 
   final Map<String, String> userAnswers = {}; // Store user answers
   void submitStory() async {
-    setState(() {
-      isLoading = true;
-    });
+
     final token = await UserPrefs.getToken();
     final author = await UserPrefs.getFullName() ?? "Unknown";
     final random = Random();
@@ -105,7 +103,9 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
         "text_to_voice": true,
         "resolution": "1024x898",
       };
-
+      setState(() {
+        isLoading = true;
+      });
       final aiResponse = await http.post(
         Uri.parse("${Config.baseUrl}/api/story-ai/MagicOfStory/Story"),
         headers: {
@@ -166,7 +166,7 @@ class _BookQuestionsScreenState extends State<BookQuestionsScreen> {
         }
       }
 
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
       );

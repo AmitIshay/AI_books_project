@@ -2,6 +2,7 @@
 import 'package:pjbooks/bookPages/book.dart';
 import 'package:pjbooks/bookPages/home_screen.dart';
 import 'package:pjbooks/backend/book_service.dart';
+import 'package:pjbooks/home/view/home_view.dart';
 import 'package:pjbooks/search/search_force_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -12,6 +13,7 @@ import '../common_widget/genres_cell.dart';
 import '../common_widget/history_row.dart';
 import '../common_widget/search_grid_cell.dart';
 import '../common/extenstion.dart';
+import '../home/view/main_tab_view.dart';
 
 class SequelToStory extends StatefulWidget {
   const SequelToStory({super.key});
@@ -71,7 +73,10 @@ class _SequelToStoryState extends State<SequelToStory> {
             elevation: 0,
             leading: IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context,
+                    MaterialPageRoute(builder: (_) => MainTabView())
+                );
               },
               icon: Icon(Icons.arrow_back_ios, color: TColor.primary),
             ),

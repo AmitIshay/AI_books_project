@@ -408,62 +408,6 @@ class _HistoryRowState extends State<HistoryRow> {
     );
   }
 
-  List<Map<String, String>> createListForTest() {
-    return [
-      {
-        "user": "LiamTheReader",
-        "comment":
-            "My little brother loved the page with the talking animals! He laughed so much at the lion wearing glasses.",
-      },
-      {
-        "user": "MomOfTwins",
-        "comment":
-            "Such a cute story! My kids asked me to read it three times before bed. The colorful pictures are magical!",
-      },
-      {
-        "user": "Ella8",
-        "comment":
-            "I liked the part where the bear danced in the forest! Can you make more pages with singing animals?",
-      },
-      {
-        "user": "StoryTimeDad",
-        "comment":
-            "The characters are super fun, and the lesson about kindness really stood out. Great job!",
-      },
-      {
-        "user": "ZoeLovesBooks",
-        "comment":
-            "I think the bunny is my favorite character ever! She’s so brave and kind. Can’t wait to read more!",
-      },
-
-      {
-        "user": "LiamTheReader",
-        "comment":
-            "My little brother loved the page with the talking animals! He laughed so much at the lion wearing glasses.",
-      },
-      {
-        "user": "MomOfTwins",
-        "comment":
-            "Such a cute story! My kids asked me to read it three times before bed. The colorful pictures are magical!",
-      },
-      {
-        "user": "Ella8",
-        "comment":
-            "I liked the part where the bear danced in the forest! Can you make more pages with singing animals?",
-      },
-      {
-        "user": "StoryTimeDad",
-        "comment":
-            "The characters are super fun, and the lesson about kindness really stood out. Great job!",
-      },
-      {
-        "user": "ZoeLovesBooks",
-        "comment":
-            "I think the bunny is my favorite character ever! She’s so brave and kind. Can’t wait to read more!",
-      },
-    ];
-  }
-
   @override
   void initState() {
     super.initState();
@@ -471,7 +415,7 @@ class _HistoryRowState extends State<HistoryRow> {
     comments =
         (rawComments is List && rawComments.isNotEmpty)
             ? rawComments
-            : createListForTest();
+            : List.empty();
     commentTextController = TextEditingController();
     totalCounterRanking = widget.sObj["sum_rating"].toDouble() ?? 0.0;
     sumRanking = widget.sObj["counter_rating"].toDouble() ?? 0.0;

@@ -37,9 +37,7 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
   }
 
   void submitStory() async {
-    setState(() {
-      isLoading = true;
-    });
+
 
     final token = await UserPrefs.getToken();
     final author = await UserPrefs.getFullName() ?? "Unknown";
@@ -88,6 +86,10 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
     );
 
     try {
+      setState(() {
+        isLoading = true;
+      });
+
       final aiResponse = await http.post(
         uri,
         headers: {
@@ -144,7 +146,7 @@ class _CreateOwnStoryState extends State<CreateOwnStory> {
         const SnackBar(content: Text("Book created successfully!")),
       );
 
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen(book: newBook)),
       );

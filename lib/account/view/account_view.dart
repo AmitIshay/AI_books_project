@@ -173,12 +173,69 @@ class _AccountViewState extends State<AccountView> {
                       int pageViewIndex,
                     ) {
                       var iObj = provider.userBooks[itemIndex] as Map? ?? {};
-                      return GestureDetector(
-                        onTap: () {
-                          provider.openBookById(iObj["id"], context);
-                        },
 
-                        child: TopPicksCell(iObj: iObj),
+                      bool isShared = false;
+
+                      if (iObj.containsKey("is_shared") &&
+                          iObj["is_shared"] is bool) {
+                        isShared = iObj["is_shared"] == true;
+                      }
+
+                      return Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              provider.openBookById(iObj["id"], context);
+                            },
+                            child: TopPicksCell(iObj: iObj),
+                          ),
+                          const SizedBox(height: 8),
+                          ElevatedButton.icon(
+                            onPressed: () async {
+                              debugPrint(
+                                "📤 Button pressed. Current isShared: $isShared, sending: ${!isShared}",
+                              );
+
+                              await provider.toggleShareBook(iObj, !isShared);
+                              provider.loadBooks(); // רענן את הרשימה מהשרת
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    !isShared
+                                        ? "✅ Your book is now shared and visible to other users in the library."
+                                        : "🚫 Your book is no longer shared and is hidden from other users.",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  backgroundColor: Colors.black87,
+                                  duration: const Duration(seconds: 3),
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              );
+                            },
+                            icon: Icon(isShared ? Icons.link_off : Icons.share),
+                            label: Text(
+                              isShared ? "Unshare" : "Share",
+                              style: TextStyle(
+                                color: Colors.white, // טקסט לבן
+                                fontSize: 18, // ⬅️ גודל טקסט מוגדל
+                                fontWeight:
+                                    FontWeight.bold, // אופציונלי – מודגש יותר
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  isShared ? Colors.red : Colors.blue,
+                              minimumSize: Size(180, 50),
+                              foregroundColor: Colors.white,
+                            ),
+                          ),
+                        ],
                       );
                     },
                     options: CarouselOptions(

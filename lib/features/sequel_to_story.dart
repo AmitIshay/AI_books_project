@@ -40,7 +40,7 @@ class _SequelToStoryState extends State<SequelToStory> {
     "History",
     "Thriller",
   ];
-  List tagsArr = ["All Books", "Genre", "Book Authors"];
+  List tagsArr = ["Community library", "Genre", "Book Authors"];
   List allBooks = [];
   List sResultArr = [];
   List authorsList = [];

@@ -72,7 +72,7 @@ class _HomeViewState extends State<HomeView> {
                       title: Row(
                         children: const [
                           Text(
-                            "Our Top Picks",
+                            "Our Recommended Books:",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 22,

@@ -128,15 +128,15 @@ class _SignInViewState extends State<SignInView> {
                           const SizedBox(width: 20),
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                socialIcon("assets/img/google.png"),
-                                SizedBox(width: 12), // Space between children,
-                                socialIcon("assets/img/facebook.png"),
-                                SizedBox(width: 12), // Space between children
-                                socialIcon("assets/img/apple.png"),
-                              ],
-                            ),
+                            // child: Row(
+                            //   children: [
+                            //     socialIcon("assets/img/google.png"),
+                            //     SizedBox(width: 12), // Space between children,
+                            //     socialIcon("assets/img/facebook.png"),
+                            //     SizedBox(width: 12), // Space between children
+                            //     socialIcon("assets/img/apple.png"),
+                            //   ],
+                            // ),
                           ),
                           const SizedBox(width: 20),
                         ],

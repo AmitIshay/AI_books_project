@@ -40,7 +40,7 @@ class _SequelToStoryState extends State<SequelToStory> {
     "History",
     "Thriller",
   ];
-  List tagsArr = ["All Books", "Genre", "Book Authors"];
+  List tagsArr = ["Community library", "Genre", "Book Authors"];
   List allBooks = [];
   List sResultArr = [];
   List authorsList = [];
@@ -75,7 +75,7 @@ class _SequelToStoryState extends State<SequelToStory> {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                    MaterialPageRoute(builder: (_) => MainTabView())
+                  MaterialPageRoute(builder: (_) => MainTabView()),
                 );
               },
               icon: Icon(Icons.arrow_back_ios, color: TColor.primary),
@@ -288,30 +288,29 @@ class _SequelToStoryState extends State<SequelToStory> {
   }
 
   Expanded booksOptionView() {
-    return allBooks.isNotEmpty? Expanded(
-      child: GridView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          childAspectRatio: 0.9,
-          crossAxisCount: 2,
-          crossAxisSpacing: 35,
-          mainAxisSpacing: 35,
-        ),
-        itemCount: allBooks.length,
-        itemBuilder: (context, index) {
-          var sObj = allBooks[index] as Map? ?? {};
-          return GestureDetector(
-            onTap: () {
-              openBookById(sObj["id"], context);
+    return allBooks.isNotEmpty
+        ? Expanded(
+          child: GridView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              childAspectRatio: 0.9,
+              crossAxisCount: 2,
+              crossAxisSpacing: 35,
+              mainAxisSpacing: 35,
+            ),
+            itemCount: allBooks.length,
+            itemBuilder: (context, index) {
+              var sObj = allBooks[index] as Map? ?? {};
+              return GestureDetector(
+                onTap: () {
+                  openBookById(sObj["id"], context);
+                },
+                child: SearchGridCell(sObj: sObj, index: index),
+              );
             },
-            child: SearchGridCell(sObj: sObj, index: index),
-          );
-        },
-      ),
-    )
-        :
-    Expanded(child: loadScreen());
-
+          ),
+        )
+        : Expanded(child: loadScreen());
   }
 
   Expanded genresOptionView() {
@@ -351,6 +350,7 @@ class _SequelToStoryState extends State<SequelToStory> {
       ),
     );
   }
+
   loadScreen() {
     return Scaffold(
       backgroundColor: TColor.primary,

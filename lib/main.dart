@@ -12,8 +12,8 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.remove('seen_onboarding');
+  // final prefs = await SharedPreferences.getInstance();
+  // await prefs.remove('seen_onboarding');
   await Firebase.initializeApp();
   runApp(
     MultiProvider(
